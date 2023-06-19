@@ -14,7 +14,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
 import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import { LinkType, DocumentType } from "@/types/documents.types";
-import { BASE_DOCUMENT_VIEW_PATH } from "@/app/_utils/classNames";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "@/app/(application)/documents/[document_id]/_components/newLinkModal";
@@ -36,7 +35,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
 
   const { link_id, link_name, created_at, views } = props;
 
-  const path = `${BASE_DOCUMENT_VIEW_PATH}/${link_id}`;
+  const path = `${process.env.BASE_URL}/d/${link_id}`;
 
   /*================================ FUNCTIONS ==============================*/
 

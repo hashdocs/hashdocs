@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { BASE_DOCUMENT_VIEW_PATH, classNames } from "@/app/_utils/classNames";
+import { classNames } from "@/app/_utils/classNames";
 import { BiCopy, BiLinkExternal } from "react-icons/bi";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import { DocumentType } from "@/types/documents.types";
@@ -149,7 +149,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
 
     const toastPromiseText = {
       loading: link_id ? "Updating link..." : "Generating link...",
-      success: (data: any) => (
+      success: (link_id: any) => (
         <div className={`flex items-center justify-start space-x-2`}>
           <p className="font-normal">
             {link_id
@@ -161,19 +161,19 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
               e.stopPropagation();
               toast.dismiss(`${link_id}-toast`);
             }}
-            href={`https://${BASE_DOCUMENT_VIEW_PATH}/${data}`}
+            href={`https://${process.env.BASE_URL}/d/${link_id}`}
             target="_blank"
             rel="noreferrer"
             className="flex flex-row space-x-2"
           >
-            <span className="text-stratos-default underline">{`${BASE_DOCUMENT_VIEW_PATH}/${data}`}</span>
+            <span className="text-stratos-default underline">{`${process.env.BASE_URL}/d/${link_id}`}</span>
             <BiLinkExternal className="h-4 w-4" />
           </Link>
           <BiCopy
             className="h-4 w-4 cursor-pointer"
             onClick={() =>
               CopyLinkToClipboard(
-                `https://${BASE_DOCUMENT_VIEW_PATH}/${data}`,
+                `https://${process.env.BASE_URL}/d/${link_id}`,
                 true,
                 `${link_id}-toast`
               )
@@ -277,7 +277,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                       <div
                         onClick={() =>
                           CopyLinkToClipboard(
-                            `https://${BASE_DOCUMENT_VIEW_PATH}/${link_id}`
+                            `https://${process.env.BASE_URL}/d/${link_id}`
                           )
                         }
                         className={`flex items-center space-x-2 rounded-xl py-1 ${
@@ -286,13 +286,13 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                             : "pointer-events-none text-shade-pencil-light"
                         } `}
                       >
-                        <span className="px-1 font-mono">{`${BASE_DOCUMENT_VIEW_PATH}/${link_id}`}</span>
+                        <span className="px-1 font-mono">{`${process.env.BASE_URL}/d/${link_id}`}</span>
                         <BiCopy className="h-4 w-4 " />
                         <Link
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
-                          href={`https://${BASE_DOCUMENT_VIEW_PATH}/${link_id}`}
+                          href={`https://${process.env.BASE_URL}/d/${link_id}`}
                           target="_blank"
                           rel="noreferrer"
                           className="px-1"

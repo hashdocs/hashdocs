@@ -1,8 +1,9 @@
-import { Database } from "@/app/(application)/_types/supabase.types";
+import { Database } from "@/types/supabase.types";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import ViewerAuth from "./components/viewer_auth";
 import InvalidLink from "./components/invalid_link";
+import { GetLinkProps } from "@/types/documents.types";
 
 export async function getLinkProps(link_id: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
