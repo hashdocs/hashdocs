@@ -1,0 +1,7 @@
+// {
+//   "deno.enable": true,
+//   "deno.lint": true,
+//   "editor.defaultFormatter": "denoland.vscode-deno",
+//   "deno.enablePaths": ["./supabase/functions"],
+//   "deno.importMap": "./supabase/functions/import_map.json"
+// }

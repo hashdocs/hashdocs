@@ -1,0 +1,12 @@
+{
+    "editor.formatOnSave": false,
+    "vscode-postgres.defaultConnection": "hashdocs-local",
+    "vscode-postgres.defaultDatabase": "postgres",
+    "vscode-postgres.setConnectionFromExplorer": "ifunset",
+    "deno.enable": true,
+    "deno.unstable": true,
+    "deno.enablePaths": [
+        "./supabase/functions"
+    ],
+    "deno.importMap": "./supabase/functions/import_map.json"
+}
