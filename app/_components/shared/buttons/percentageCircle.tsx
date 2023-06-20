@@ -10,6 +10,7 @@ const PercentageCircle: React.FC<PercentageCirlceProps> = ({ percentage }) => {
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
+    <div className="flex space-x-2 justify-center">
     <svg width="20" height="20" viewBox="0 0 120 120">
       <circle
         stroke="#eee"
@@ -32,6 +33,8 @@ const PercentageCircle: React.FC<PercentageCirlceProps> = ({ percentage }) => {
         transform={`rotate(-90 60 60)`}
       />
     </svg>
+    <span className="">{(`${percentage}%`)}</span>
+    </div>
   );
 };
 

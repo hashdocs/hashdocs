@@ -111,7 +111,9 @@ export default function DocumentHeader({
                 </p>
               }
               Label={
-                document.is_enabled ? "Links are enabled" : "All links disabled"
+                isEnabled
+                  ? `${document?.links.length} links are enabled`
+                  : "All links are disabled"
               }
             />
             {rowButtons.map((button) => (

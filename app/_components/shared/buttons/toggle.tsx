@@ -145,7 +145,7 @@ const Toggle: React.FC<ToggleProps> = ({
         {Label ? (
           <Switch.Label
             className={classNames(
-              "ml-4 text-xs text-left font-semibold leading-6",
+              "ml-4 text-xs text-left font-semibold leading-6 w-[120px] truncate",
               isChecked ? "text-stratos-default" : "text-shade-pencil-light"
             )}
           >

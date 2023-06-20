@@ -9,7 +9,7 @@ interface MediumButtonProps extends BaseButtonProps {
   ButtonText: string;
   ButtonIcon: React.ForwardRefExoticComponent<any>;
   ButtonSize?: number;
-  ButtonHref: Url;
+  ButtonHref?: Url;
 }
 
 const MediumButton: React.FC<MediumButtonProps> = (props) => {
@@ -18,7 +18,7 @@ const MediumButton: React.FC<MediumButtonProps> = (props) => {
     ButtonText,
     ButtonIcon,
     ButtonSize,
-    ButtonHref,
+    ButtonHref = "",
     ...restProps
   } = props;
 

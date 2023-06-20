@@ -201,33 +201,37 @@ export default function ViewsPage() {
         </div>
       </div>
 
-      <div className="flex flex-col rounded-md border">
-        <div className="grid grid-cols-12  border-b px-2 py-3 text-xs  uppercase text-shade-pencil-light shadow-sm">
-          <div className="col-span-3 grid">{"Name"}</div>
-          <div className="col-span-3 grid">{"Link"}</div>
-          <div className="col-span-2 grid">{"Date"}</div>
-          <div className="col-span-2 grid">{"Duration (min)"}</div>
-          <div className="col-span-1 grid">{"Completion %"}</div>
-          <div className="col-span-1 grid">{""}</div>
+      <div className="flex flex-col rounded-md border bg-white">
+        <div className="grid grid-cols-12 border-b bg-shade-overlay px-6 py-4 text-xs uppercase text-shade-pencil-light shadow-sm ">
+          <div className="col-span-2 grid">{"Name"}</div>
+          <div className="col-span-3 grid justify-center">{"Link"}</div>
+          <div className="col-span-2 grid justify-center">{"Date"}</div>
+          <div className="col-span-2 grid justify-center">
+            {"Duration (min)"}
+          </div>
+          <div className="col-span-2 grid justify-center">{"Completion %"}</div>
         </div>
         {views && views.length > 0 ? (
           views.map((view, idx) => (
             <div
               key={`${view.view_id}`}
-              className="grid grid-cols-12 items-center border-t border-dashed bg-white px-2 py-3"
+              className="mx-2 grid grid-cols-12 items-center border-t p-4 "
             >
-              <div className="col-span-3 flex items-center space-x-4">
+              <div className="col-span-2 flex items-center space-x-4">
                 <div className="h-6 w-6 rounded-full border border-shade-line"></div>
                 <p className={`font-semibold`}>{view.viewer}</p>
               </div>
-              <div className="col-span-3 grid">{view.link_name}</div>
-              <div className="col-span-2 grid">
+              <div className="col-span-3 grid justify-center">
+                {view.link_name}
+              </div>
+              <div className="col-span-2 grid justify-center">
                 {view.viewed_at && formatDate(view.viewed_at, "MMM D", true)}
               </div>
-              <div className="col-span-2 grid">{formatTime(view.duration)}</div>
-              <div className="col-span-1 flex items-center gap-x-2">
+              <div className="col-span-2 grid justify-center">
+                {formatTime(view.duration)}
+              </div>
+              <div className="col-span-2 justify-center">
                 <PercentageCircle percentage={view.completion} />
-                {`${view.completion}%`}
               </div>
               <div className="col-span-1 grid justify-end">
                 <IconButton

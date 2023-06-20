@@ -13,6 +13,7 @@ import IconButton from "@/app/_components/shared/buttons/iconButton";
 import { useState } from "react";
 import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
+import EditLinkModal from "../[document_id]/_components/newLinkModal";
 
 /*=========================================== CONSTANTS ===========================================*/
 
@@ -32,9 +33,15 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
     is_enabled,
     total_view_count,
     total_links_count,
+    links,
   } = props;
 
+  const [document, setDocument] = useState<DocumentType>(props);
   const [isEnabled, setIsEnabled] = useState<boolean>(is_enabled);
+  const [showNewLinkModal, setShowNewLinkModal] = useState(false);
+
+  const active_links_count =
+    links.filter((link) => link.is_active === true).length ?? 0;
 
   const handleToggle = async (checked: boolean) => {
     return new Promise(async (resolve, reject) => {
@@ -103,7 +110,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           ButtonText={"New Link"}
           ButtonIcon={LinkIcon}
           ButtonSize={4}
-          ButtonHref={""}
+          onClick={() => setShowNewLinkModal(true)}
         />
         <Toggle
           toggleId={`${document_id}-toggle`}
@@ -127,6 +134,11 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           ErrorToastText={
             <p>Error in updating {document_name}. Please try again!</p>
           }
+          Label={
+            isEnabled
+              ? `${active_links_count} links are enabled`
+              : "All links are disabled"
+          }
         />
         <div className="space-x-1">
           {rowButtons.map((button) => (
@@ -139,6 +151,13 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           ))}
         </div>
       </div>
+      <EditLinkModal
+        isOpen={showNewLinkModal}
+        setIsOpen={setShowNewLinkModal}
+        link_id={null}
+        setDocument={setDocument}
+        {...document}
+      />
     </li>
   );
 };
