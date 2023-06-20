@@ -35,7 +35,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
 
   const { link_id, link_name, created_at, views } = props;
 
-  const path = `${process.env.BASE_URL}/d/${link_id}`;
+  const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
 
   /*================================ FUNCTIONS ==============================*/
 
@@ -90,7 +90,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
           data-tooltip-content={`🚫 Disabled`}
         >
           <div
-            onClick={() => CopyLinkToClipboard(path)}
+            onClick={() => CopyLinkToClipboard(path,true, `${link_id}-url`)}
             className={`flex items-center space-x-2 rounded-xl bg-shade-overlay px-4 py-2 ${
               isActive && document?.is_enabled
                 ? "cursor-pointer text-stratos-default "
@@ -233,7 +233,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
                     </div>
                   ) : null
                 )}
-              <div className=" grid grid-cols-12 justify-end pt-2 text-xs text-shade-pencil-light shadow-sm hover:text-shade-pencil-black hover:underline">
+              <div className=" grid grid-cols-12 justify-end pt-2 text-xs text-shade-pencil-light shadow-sm hover:text-stratos-default hover:underline">
                 <Link
                   href={{
                     pathname: `/documents/${document?.document_id}/views`,
@@ -241,7 +241,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
                   }}
                   className="col-span-12 flex justify-end"
                 >
-                  {`showing ${views.length < 5 ? views.length : 5} of ${
+                  {`see all ${
                     views.length
                   } views`}
                 </Link>

@@ -27,7 +27,7 @@ export default function ViewerAuth() {
 
   return (
     <section className="flex flex-1 flex-col items-center">
-      <div className="flex h-full w-full flex-1 items-center justify-center space-x-4 rounded-lg text-center ">
+      <div className="flex flex-1 items-center justify-center space-x-4 rounded-lg text-center ">
         <input
           name="email"
           onChange={(e) => setEmail(e.target.value)}

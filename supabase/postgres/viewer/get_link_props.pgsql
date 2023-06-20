@@ -26,6 +26,8 @@ BEGIN
 		LEFT JOIN tbl_document_versions ON tbl_links.document_id = tbl_document_versions.document_id
 	WHERE
 		link_id = link_id_input
+		AND tbl_documents.is_enabled = TRUE
+		AND tbl_links.is_active = TRUE
 		AND tbl_document_versions.is_enabled = TRUE) t INTO return_data;
 	--
 	--

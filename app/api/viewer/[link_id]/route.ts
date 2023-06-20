@@ -1,6 +1,6 @@
 import { Database } from "@/types/supabase.types";
 import { AuthorizeViewerType } from "@/types/viewer.types";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient, createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -12,15 +12,18 @@ export async function POST(
   request: Request,
   { params: { link_id } }: { params: { link_id: string } }
 ) {
-  const supabase = createRouteHandlerClient<Database>({ cookies });
+  const supabase = createClientComponentClient<Database>();
 
   const { email } = await request.json();
 
-  const { data, error } = await supabase
-    .rpc("authorize_viewer", { link_id_input: link_id, email_input: email })
-    .returns<AuthorizeViewerType>();
+  const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
+    "authorize-viewer",
+    {
+      body: { link_id_input: link_id, email_input: email },
+    }
+  );
 
-  if (error || !data) return NextResponse.error();
+  if (error || !data) return NextResponse.json(null, { status: 401 });
 
   cookies().set({
     name: `hashdocs-token`,

@@ -1,4 +1,4 @@
-import TopBar from "@/app/_components/navigation/topbar";
+import ViewerTopBar from "@/app/(viewer)/_components/viewerTopbar";
 
 export default function ViewerLayout({
   children,
@@ -6,14 +6,16 @@ export default function ViewerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-full w-full">
-      <aside className="h-screen" style={{ height: "100vh" }}></aside>
+    // <div className="flex h-full w-full">
+      // <aside className="h-screen" style={{ height: "100vh" }}></aside>
       <main className="flex flex-1 flex-col items-center overflow-auto">
-        <div className="sticky top-0 z-10 w-full">{/* <TopBar /> */}</div>
-        <div className=" flex h-full w-full max-w-screen-xl flex-1 flex-col p-8">
+        <div className="sticky top-0 z-10 w-full">
+          <ViewerTopBar />
+        </div>
+        <div className=" flex max-w-screen-xl flex-1 flex-col p-8">
           {children}
         </div>
       </main>
-    </div>
+    // </div>
   );
 }

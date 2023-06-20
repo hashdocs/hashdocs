@@ -161,19 +161,19 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
               e.stopPropagation();
               toast.dismiss(`${link_id}-toast`);
             }}
-            href={`https://${process.env.BASE_URL}/d/${link_id}`}
+            href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}
             target="_blank"
             rel="noreferrer"
             className="flex flex-row space-x-2"
           >
-            <span className="text-stratos-default underline">{`${process.env.BASE_URL}/d/${link_id}`}</span>
+            <span className="text-stratos-default underline">{`${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}</span>
             <BiLinkExternal className="h-4 w-4" />
           </Link>
           <BiCopy
             className="h-4 w-4 cursor-pointer"
             onClick={() =>
               CopyLinkToClipboard(
-                `https://${process.env.BASE_URL}/d/${link_id}`,
+                `https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
                 true,
                 `${link_id}-toast`
               )
@@ -277,7 +277,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                       <div
                         onClick={() =>
                           CopyLinkToClipboard(
-                            `https://${process.env.BASE_URL}/d/${link_id}`
+                            `https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`
                           )
                         }
                         className={`flex items-center space-x-2 rounded-xl py-1 ${
@@ -286,13 +286,13 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                             : "pointer-events-none text-shade-pencil-light"
                         } `}
                       >
-                        <span className="px-1 font-mono">{`${process.env.BASE_URL}/d/${link_id}`}</span>
+                        <span className="px-1 font-mono">{`${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}</span>
                         <BiCopy className="h-4 w-4 " />
                         <Link
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
-                          href={`https://${process.env.BASE_URL}/d/${link_id}`}
+                          href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}
                           target="_blank"
                           rel="noreferrer"
                           className="px-1"
