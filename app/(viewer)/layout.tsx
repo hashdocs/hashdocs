@@ -8,11 +8,11 @@ export default function ViewerLayout({
   return (
     // <div className="flex h-full w-full">
       // <aside className="h-screen" style={{ height: "100vh" }}></aside>
-      <main className="flex flex-1 flex-col items-center overflow-auto">
+      <main className="flex flex-1 flex-col h-screen w-full">
         <div className="sticky top-0 z-10 w-full">
           <ViewerTopBar />
         </div>
-        <div className=" flex flex-1 flex-col p-8">
+        <div className=" flex flex-1 w-full max-h-screen justify-center overflow-hidden">
           {children}
         </div>
       </main>

@@ -20,7 +20,17 @@
   color: ;
 } */
 
-.tooltip{
+.tooltip {
   border-radius: 6px;
-  color: rgb(200,50,100); 
+  color: rgb(200, 50, 100);
+}
+
+@media print {
+  .no-print {
+    display: none;
+  }
+}
+
+.hashdocs-scrollbar {
+  @apply overflow-y-scroll scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled;
 }
