@@ -2,12 +2,14 @@ import React from "react";
 
 const Loader: React.FC = () => {
   return (
-    <div className="flex flex-1 w-full h-full items-center justify-center rounded-lg p-24 ">
+    <div className="flex h-full w-full flex-1 items-center justify-center rounded-lg">
       <svg
         style={{
           margin: "auto",
           background: "transparent",
           display: "block",
+          maxHeight: "100%",
+          maxWidth: "100%"
         }}
         width="50px"
         height="50px"

@@ -35,12 +35,12 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   /*-------------------------------- SET DEFAULT VALUES ------------------------------*/
 
   const {
-    email_required = true,
-    password_required = false,
-    verify_email = false,
-    domain_restricted = false,
-    download_allowed = false,
-    watermarked = false,
+    is_email_required = true,
+    is_password_required = false,
+    is_verification_required = false,
+    is_domain_restricted = false,
+    is_download_allowed = false,
+    is_watermarked = false,
   } = props && props.links && props.links.length > 0
     ? props.links.find((link) => link.link_id === link_id) ?? props.links[0]
     : {};
@@ -64,15 +64,17 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   /*-------------------------------- SET STATE VARIABLES FOR PROPS (9 + INHERITED ACTIVE) ------------------------------*/
 
   const [isEmailRequired, setIsEmailRequired] =
-    useState<boolean>(email_required);
-  const [isVerifyEmail, setIsVerifyEmail] = useState<boolean>(verify_email);
+    useState<boolean>(is_email_required);
+  const [isVerifyEmail, setIsVerifyEmail] = useState<boolean>(
+    is_verification_required
+  );
   const [isDomainRestricted, setIsDomainRestricted] =
-    useState<boolean>(domain_restricted);
+    useState<boolean>(is_domain_restricted);
   const [isPasswordRequired, setIsPasswordRequired] =
-    useState<boolean>(password_required);
+    useState<boolean>(is_password_required);
   const [isDownloadAllowed, setIsDownloadAllowed] =
-    useState<boolean>(download_allowed);
-  const [isWatermarked, setIsWatermarked] = useState<boolean>(watermarked);
+    useState<boolean>(is_download_allowed);
+  const [isWatermarked, setIsWatermarked] = useState<boolean>(is_watermarked);
   const [domains, setDomains] = useState<string | null>(restricted_domains);
   const [password, setPassword] = useState<string | null>(link_password);
   const [linkName, setLinkName] = useState<string | null>(link_name);
@@ -85,12 +87,12 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     }
 
     if (!isOpen && !isSaved) {
-      setIsEmailRequired(email_required);
-      setIsVerifyEmail(verify_email);
-      setIsDomainRestricted(domain_restricted);
-      setIsPasswordRequired(password_required);
-      setIsDownloadAllowed(download_allowed);
-      setIsWatermarked(watermarked);
+      setIsEmailRequired(is_email_required);
+      setIsVerifyEmail(is_verification_required);
+      setIsDomainRestricted(is_domain_restricted);
+      setIsPasswordRequired(is_password_required);
+      setIsDownloadAllowed(is_download_allowed);
+      setIsWatermarked(is_watermarked);
       setDomains(restricted_domains);
       setPassword(link_password);
       setLinkName(link_name);

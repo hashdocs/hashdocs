@@ -6,8 +6,6 @@ import InvalidLink from "./_components/invalid_link";
 import { GetLinkProps } from "@/types/documents.types";
 import { createClient } from "@supabase/supabase-js";
 
-export const revalidate = 0;
-
 export async function getLinkProps(link_id: string) {
 
   const supabase = createClientComponentClient<Database>();
@@ -17,8 +15,6 @@ export async function getLinkProps(link_id: string) {
     .returns<GetLinkProps | null>();
 
   if (error || !data) return null;
-
-  console.log(data);
 
   return data;
 }

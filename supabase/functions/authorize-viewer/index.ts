@@ -79,19 +79,19 @@ function validateViewer(
 
   /* -------------------------- EXECUTION BODY -------------------------- */
 
-  if (link_props.email_required && !validateEmail(input_props.email_input)) {
+  if (link_props.is_email_required && !validateEmail(input_props.email_input)) {
     return false;
   }
 
   if (
-    link_props.password_required &&
+    link_props.is_password_required &&
     !validatePassword(input_props.password_input)
   ) {
     return false;
   }
 
   if (
-    link_props.domain_restricted &&
+    link_props.is_domain_restricted &&
     !validateDomain(input_props.email_input)
   ) {
     return false;

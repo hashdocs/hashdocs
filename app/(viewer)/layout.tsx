@@ -12,7 +12,7 @@ export default function ViewerLayout({
         <div className="sticky top-0 z-10 w-full">
           <ViewerTopBar />
         </div>
-        <div className=" flex max-w-screen-xl flex-1 flex-col p-8">
+        <div className=" flex flex-1 flex-col p-8">
           {children}
         </div>
       </main>

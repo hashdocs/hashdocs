@@ -130,6 +130,8 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           isChecked={isEnabled}
           setIsChecked={setIsEnabled}
           onToggle={handleToggle}
+          EnabledHoverText="Disable all links"
+          DisabledHoverText="Enable links"
           LoadingToastText={<p>Updating {document_name}...</p>}
           ErrorToastText={
             <p>Error in updating {document_name}. Please try again!</p>

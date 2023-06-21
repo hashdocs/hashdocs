@@ -1,5 +1,5 @@
 import CustomTooltip from "../tooltip";
-import { ButtonHTMLAttributes, useRef } from "react";
+import { ButtonHTMLAttributes } from "react";
 
 type BaseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -14,13 +14,7 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
   let { ButtonId, ButtonText, ButtonIcon, ButtonSize, onClick, ...restProps } =
     props;
 
-  const btnRef = useRef(null);
-
   const handleClick = (event: any) => {
-    if(btnRef.current) {
-      //@ts-ignore
-      btnRef.current.blur();
-    }
     if (onClick) {
       onClick(event);
     }
@@ -31,7 +25,6 @@ const IconButton: React.FC<IconButtonProps> = (props) => {
       type="button"
       key={ButtonId}
       onClick={handleClick}
-      ref={btnRef}
       className="relative inline-flex items-center rounded-md px-2 py-2 text-shade-pencil-dark  hover:bg-stratos-overlay hover:text-stratos-default focus:z-10"
       data-tooltip-id={ButtonId}
       data-tooltip-content={ButtonText}

@@ -45,10 +45,10 @@ export default function Sidebar() {
     >
       <div className="flex flex-col gap-y-6  ">
         <div className="flex flex-row items-center">
-          <div className="overflow-hidden w-9 h-12 scale-50 -ml-1 relative rounded-md">
-            <Image src={"/hashdocs_logo.svg"} fill={true} alt={"hashdocs"}/>
+          <div className="overflow-hidden w-9 h-12 scale-75 -ml-1 relative">
+            <Image src={"/hashdocs.svg"} fill={true} alt={"hashdocs"}/>
           </div>
-          <h1 className="font-bold text-2xl leading-6 ml-1 tracking-wide">hashdocs</h1>
+          <h1 className="font-bold text-2xl mt-1 leading-6 ml-1 tracking-wide">hashdocs</h1>
         </div>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>

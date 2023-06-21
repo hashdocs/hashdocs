@@ -104,6 +104,8 @@ export default function DocumentHeader({
               isChecked={isEnabled}
               setIsChecked={setIsEnabled}
               onToggle={handleToggle}
+              EnabledHoverText="Disable all links"
+              DisabledHoverText="Enable links"
               LoadingToastText={<p>Updating {document?.document_name}...</p>}
               ErrorToastText={
                 <p>

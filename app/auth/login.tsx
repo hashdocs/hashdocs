@@ -27,7 +27,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex max-w-lg flex-col space-y-4">
+    <div className="flex flex-1 justify-center max-w-lg flex-col space-y-4">
       <input
         name="email"
         onChange={(e) => setEmail(e.target.value)}
