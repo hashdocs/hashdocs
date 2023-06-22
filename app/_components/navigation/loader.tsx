@@ -11,8 +11,8 @@ const Loader: React.FC = () => {
           maxHeight: "100%",
           maxWidth: "100%"
         }}
-        width="50px"
-        height="50px"
+        width="min(100%, 50px)"
+        height="min(100%, 50px)"
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid"
       >

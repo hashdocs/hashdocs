@@ -1,7 +1,5 @@
 import { Database } from "@/types/supabase.types";
-import {
-  createClientComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import ViewerAuth from "./_components/viewer_auth";
 import InvalidLink from "./_components/invalid_link";
@@ -64,5 +62,5 @@ export default async function DocumentViewerPage({
 
   const signedUrl = await getSignedURL();
 
-  return !signedUrl ? <ViewerAuth /> : <PDFViewerPage signedURL={signedUrl} />
+  return !signedUrl ? <ViewerAuth /> : <PDFViewerPage signedURL={signedUrl} />;
 }

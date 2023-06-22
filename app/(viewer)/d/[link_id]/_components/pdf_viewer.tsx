@@ -7,60 +7,31 @@ import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { RefObject, createRef, useEffect, useRef, useState } from "react";
 import { Document, Page, Thumbnail } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import { OnItemClickArgs, PageCallback } from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-export default function PDFViewer({signedURL}:{signedURL:string}) {
-
-    console.log('pageurl',signedURL);
-
+export default function PDFViewer({ signedURL }: { signedURL: string }) {
   const [numPages, setNumPages] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
-  const [scrollY, setScrollY] = useState<number>(0);
-  const thumbnailRef = useRef<HTMLDivElement>(null);
   const pageHeight = window.innerHeight * 0.8;
   const pageWidth = window.innerWidth * 0.65;
-  const thumbnailWidth = window.innerWidth * 0.15;
-  const thumbnailHeight = window.innerHeight * 0.15;
+  const thumbnailWidth = window.innerWidth * 0.12;
+  const thumbnailHeight = window.innerHeight * 0.2;
   const [zoom, setZoom] = useState(1);
+  const [pageRefs, setPageRefs] = useState<
+    (RefObject<HTMLDivElement> | null)[]
+  >([]);
+  const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+
+  /* -------------------------------- FUNCTIONS ------------------------------- */
 
   // Handle thumbnail click
   function handleThumbnailClick(args: OnItemClickArgs) {
     setActivePage(args.pageNumber);
   }
-
-  // Handle key down
-  function handleKeyDown(e: KeyboardEvent) {
-    if (e.key === "ArrowDown") {
-      setActivePage((prevActivePage) => {
-        return Math.min(numPages, prevActivePage + 1);
-      });
-    }
-  }
-
-  // Handle key up
-  function handleKeyUp(e: KeyboardEvent) {
-    if (e.key === "ArrowUp") {
-      setActivePage((prevActivePage) => {
-        return Math.max(1, prevActivePage - 1);
-      });
-    }
-  }
-
-  // Fires when active page changes
-  useEffect(() => {
-    if (thumbnailRef.current) {
-      thumbnailRef.current.scrollTop =
-        (activePage - 4) * window.innerHeight * 0.18;
-    }
-  }, [activePage]);
 
   // First call when the document loads to set the page count
   function onDocumentLoadSuccess({
@@ -69,31 +40,13 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
     numPages: number;
   }) {
     setNumPages(nextNumPages);
-  }
 
-  //TODO: Function handler when a page is rendered
-  function handleRenderSuccess(page: PageCallback) {
-    // console.log(page._pageIndex);
-  }
-
-  // Main scroll handler
-  function handleScroll(e: any) {
-    setScrollY((prevScrollY) => {
-      const nextScrollY = prevScrollY + e.deltaY;
-
-      if (nextScrollY > 60) {
-        if (activePage < numPages) {
-          setActivePage(activePage + 1);
-        }
-        return 0;
-      } else if (nextScrollY < -60) {
-        if (activePage > 1) {
-          setActivePage(activePage - 1);
-        }
-        return 0;
-      }
-      return nextScrollY;
-    });
+    // Initialize an array of refs
+    setPageRefs((oldRefs) =>
+      Array(nextNumPages)
+        .fill(null)
+        .map((_, i) => oldRefs[i] || createRef())
+    );
   }
 
   // Handle zoom in and out
@@ -105,24 +58,64 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
     setZoom((prevZoom) => Math.max(prevZoom - 0.1, 0.5)); // limit min zoom level to 0.5
   };
 
-  // Use effect to handle key down and up
+  /* ------------------------------- USE EFFECTS ------------------------------ */
+
   useEffect(() => {
-    const keyDownHandler = (e: KeyboardEvent) => {
-      handleKeyDown(e);
-    };
-    const keyUpHandler = (e: KeyboardEvent) => {
-      handleKeyUp(e);
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const pageIndex = pageRefs.findIndex(
+              (ref) => ref?.current === entry.target
+            );
+            setActivePage(pageIndex + 1); // pages are 1-indexed
+          }
+        });
+      },
+      { threshold: 0.7 }
+    );
 
-    window.addEventListener("keydown", keyDownHandler);
-    window.addEventListener("keyup", keyUpHandler);
+    pageRefs.forEach((ref) => ref?.current && observer.observe(ref.current));
 
-    // Cleanup when component unmounts
+    // Scroll the thumbnail container
+    if (thumbnailContainerRef.current) {
+      const scrollTo = (activePage - 1) * thumbnailHeight;
+      thumbnailContainerRef.current.scrollTo({
+        top: scrollTo,
+        behavior: "smooth",
+      });
+    }
+
     return () => {
-      window.removeEventListener("keydown", keyDownHandler);
-      window.removeEventListener("keyup", keyUpHandler);
+      pageRefs.forEach(
+        (ref) => ref?.current && observer.unobserve(ref.current)
+      );
     };
-  }, [numPages]);
+  }, [pageRefs, activePage]);
+
+  //   /* ---------------------------------- SCROLL HANDLER ---------------------------------- */
+  //   useEffect(() => {
+  //     let timeoutId: NodeJS.Timeout | null = null;
+
+  //     const scrollListener = () => {
+  //       // set state to scrolling
+  //       setScrolling(true);
+
+  //       // clear our timeout throughout the scroll
+  //       timeoutId && clearTimeout(timeoutId);
+
+  //       // set timeout to run function after scroll ends
+  //       timeoutId = setTimeout(function () {
+  //         setScrolling(false);
+  //       }, 150); // wait for 150ms after the last scroll event
+  //     };
+
+  //     window.addEventListener("scroll", scrollListener);
+
+  //     return () => {
+  //       window.removeEventListener("scroll", scrollListener);
+  //     };
+  //   }, []);
 
   return (
     <Document
@@ -130,22 +123,30 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
       onLoadSuccess={onDocumentLoadSuccess}
       loading={<Loader />}
       onContextMenu={(e) => e.preventDefault()}
-      className="no-print flex w-full flex-1 flex-row bg-shade-overlay justify-center"
+      className="no-print flex w-full flex-1 flex-row justify-center bg-shade-overlay"
       externalLinkTarget="_blank"
     >
       <div
         className="hashdocs-scrollbar hidden flex-col py-2 lg:flex"
-        ref={thumbnailRef}
+        ref={thumbnailContainerRef}
       >
         {Array.from({ length: numPages }, (_, index) => (
           <div
             key={`page_${index + 1}`}
             className="flex flex-row justify-center gap-x-2 px-2 py-2"
           >
-            <p className={classNames(activePage == index + 1 ? "text-stratos-default font-semibold" : "")}>{index + 1}</p>
+            <p
+              className={classNames(
+                activePage == index + 1
+                  ? "font-semibold text-stratos-default"
+                  : ""
+              )}
+            >
+              {index + 1}
+            </p>
             <Thumbnail
               pageNumber={index + 1}
-              // width={window.innerWidth * 0.15}
+              //   width={thumbnailWidth}
               height={thumbnailHeight}
               onItemClick={handleThumbnailClick}
               className={classNames(
@@ -158,8 +159,8 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
           </div>
         ))}
       </div>
-      <div className="hashdocs-scrollbar hidden flex-1 flex-col items-center  lg:flex">
-        <div className="mt-4 flex flex-row justify-center items-center gap-x-4 rounded-lg bg-white px-3 py-2 shadow-lg">
+      <div className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex">
+        <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
           <div className="flex flex-row gap-x-2">
             <div
               className="flex items-center justify-center font-semibold text-shade-pencil-light"
@@ -187,24 +188,6 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
             </div>
           </div>
           <div className="flex flex-row gap-x-2">
-            <ArrowDownCircleIcon
-              onClick={(e) =>
-                setActivePage((prevActivePage) => {
-                  return Math.min(numPages, prevActivePage + 1);
-                })
-              }
-              className="h-6 w-6 cursor-pointer  text-shade-pencil-light hover:text-shade-pencil-black"
-            />
-            <ArrowUpCircleIcon
-              onClick={(e) =>
-                setActivePage((prevActivePage) => {
-                  return Math.max(1, prevActivePage - 1);
-                })
-              }
-              className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
-            />
-          </div>
-          <div className="flex flex-row gap-x-2">
             <MagnifyingGlassPlusIcon
               className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
               onClick={handleZoomIn}
@@ -215,21 +198,21 @@ export default function PDFViewer({signedURL}:{signedURL:string}) {
             />
           </div>
         </div>
-        <div
-          className="hidden flex-1 flex-col items-center justify-center overflow-auto p-8 focus:outline-none lg:flex "
-          onWheel={handleScroll}
-        >
-          <Page
-            key={`page_${activePage}`}
-            pageNumber={activePage}
-            onRenderSuccess={handleRenderSuccess}
-            loading={<Loader />}
-            renderAnnotationLayer={false}
-            renderTextLayer={false}
-            height={pageHeight}
-            // width={pageWidth}
-            scale={zoom}
-          />
+        <div className="hidden flex-1 flex-col p-8 focus:outline-none lg:flex ">
+          {Array.from({ length: numPages }, (_, index) => (
+            <Page
+              key={`page_${index + 1}`}
+              pageNumber={index + 1}
+              loading={<Loader />}
+              renderAnnotationLayer={false}
+              renderTextLayer={false}
+              className="my-4"
+              height={pageHeight}
+              // width={pageWidth}
+              scale={zoom}
+              inputRef={pageRefs[index]}
+            />
+          ))}
         </div>
       </div>
     </Document>
