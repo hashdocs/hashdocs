@@ -5,9 +5,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { classNames } from "@/app/_utils/classNames";
 import { BiCopy, BiLinkExternal } from "react-icons/bi";
 import Toggle from "@/app/_components/shared/buttons/toggle";
-import { DocumentType } from "@/types/documents.types";
+import { DocumentType, LinkType } from "@/types/documents.types";
 import toast from "react-hot-toast";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { Database } from "@/types/supabase.types";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -41,6 +44,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     is_domain_restricted = false,
     is_download_allowed = false,
     is_watermarked = false,
+    is_expiration_enabled = false,
   } = props && props.links && props.links.length > 0
     ? props.links.find((link) => link.link_id === link_id) ?? props.links[0]
     : {};
@@ -60,6 +64,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const maxHeight = 128;
   const [height, setHeight] = useState<number>(32);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
   /*-------------------------------- SET STATE VARIABLES FOR PROPS (9 + INHERITED ACTIVE) ------------------------------*/
 
@@ -78,6 +83,9 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const [domains, setDomains] = useState<string | null>(restricted_domains);
   const [password, setPassword] = useState<string | null>(link_password);
   const [linkName, setLinkName] = useState<string | null>(link_name);
+  const [isExpirationEnabled, setIsExpirationEnabled] = useState<boolean>(
+    is_expiration_enabled
+  );
 
   /*-------------------------------- RESET STATE ON CLOSE ------------------------------*/
 
@@ -120,20 +128,24 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
         ? `/api/documents/${props.document_id}/${link_id}`
         : `/api/documents/${props.document_id}`;
 
+      const saveProps: Database["public"]["Tables"]["tbl_links"]["Update"] = {
+        document_id: props.document_id,
+        link_name: linkName!,
+        link_password: password,
+        restricted_domains: domains,
+        is_active: isActive,
+        is_email_required: isEmailRequired,
+        is_password_required: isPasswordRequired,
+        is_verification_required: isVerifyEmail,
+        is_domain_restricted: isDomainRestricted,
+        is_download_allowed: isDownloadAllowed,
+        is_expiration_enabled: isExpirationEnabled,
+        is_watermarked: isWatermarked,
+      };
+
       const res = await fetch(_url, {
         method: "POST",
-        body: JSON.stringify({
-          link_name: linkName,
-          link_password: password,
-          restricted_domains: domains,
-          email_required: isEmailRequired,
-          password_required: isPasswordRequired,
-          verify_email: isVerifyEmail,
-          domain_restricted: isDomainRestricted,
-          download_allowed: isDownloadAllowed,
-          watermarked: isWatermarked,
-          is_active: isActive,
-        }),
+        body: JSON.stringify(saveProps),
       });
 
       if (res.status !== 200) reject(res.statusText);
@@ -411,6 +423,44 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                               maxHeight: `128px`,
                               minHeight: `32px`,
                             }}
+                          />
+                        </div>
+                      }
+                    </AnimatePresence>
+                  </motion.div>
+                </div>
+                <div className="flex flex-col">
+                  <LinkModalCheckBox
+                    isChecked={isExpirationEnabled}
+                    setIsChecked={setIsExpirationEnabled}
+                    id={"expiry-checkbox"}
+                    name={"expiry-checkbox"}
+                    label={"Expiration settings"}
+                    disabled={true}
+                    description={
+                      "Set the link to automatically expire after a certain date"
+                    }
+                  />
+                  <motion.div
+                    initial={isExpirationEnabled}
+                    animate={isExpirationEnabled ? "open" : "closed"}
+                    variants={{
+                      open: { height: "auto", opacity: 1 },
+                      closed: { height: 0, opacity: 0 },
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    style={{ overflow: "hidden" }}
+                  >
+                    <AnimatePresence initial={isExpirationEnabled}>
+                      {
+                        <div className="accordion-content ml-7 mt-4 flex w-full flex-col space-y-4">
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) =>
+                              setStartDate(date ?? new Date())
+                            }
+                            className="rounded-md border-0 py-1.5 text-sm shadow-inner ring-1 ring-inset ring-shade-line placeholder:text-shade-disabled focus:ring-inset focus:ring-stratos-default"
+                            calendarClassName="font-inter"
                           />
                         </div>
                       }

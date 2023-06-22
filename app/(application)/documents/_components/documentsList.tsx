@@ -32,7 +32,7 @@ const DocumentsList: React.FC = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <ul role="list" className="flex flex-col">
+    <ul role="list" className="flex flex-col flex-1 w-full">
       {documents &&
         documents.map((document) => (
           <DocumentRow key={document.document_id} {...document} />

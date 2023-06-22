@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full w-full bg-shade-overlay">
-      <body className="flex min-h-full min-w-full text-sm text-shade-pencil-black">
+      <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
         <Toaster
           toastOptions={{
             style: {

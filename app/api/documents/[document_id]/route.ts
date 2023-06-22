@@ -31,6 +31,8 @@ export async function POST(
     .eq("document_id", document_id)
     .maybeSingle();
 
+    console.error(error);
+
   if (error) return NextResponse.error();
 
   const { data: document_id_data, error: document_id_error } = await supabase
@@ -38,6 +40,7 @@ export async function POST(
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
+    console.error(document_id_error);
     return NextResponse.error();
   }
   return NextResponse.json(document_id_data[0], { status: 200 });

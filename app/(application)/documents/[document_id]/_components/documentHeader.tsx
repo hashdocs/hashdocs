@@ -13,7 +13,7 @@ import Link from "next/link";
 import { createContext, useState } from "react";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
-import EditLinkModal from "./newLinkModal";
+import EditLinkModal from "./editLinkModal";
 import { DocumentContextType, DocumentType } from "@/types/documents.types";
 import DocumentTabs from "./documentTabs";
 

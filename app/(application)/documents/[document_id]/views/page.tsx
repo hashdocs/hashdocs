@@ -107,11 +107,16 @@ export default function ViewsPage() {
       <div className="flex flex-row items-center space-x-4">
         <Combobox value={selectedLink} onChange={handleComboboxChange} nullable>
           <div className="relative">
-            <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-inner focus:outline-none">
+            <div
+              className={classNames(
+                "relative w-full cursor-default overflow-hidden rounded-lg border bg-white text-left shadow-inner focus:outline-none",
+                selectedLink ? " border-stratos-default" : "border-transparent"
+              )}
+            >
               <div className="flex flex-row items-center">
                 {selectedLink ? (
                   <XMarkIcon
-                    className=" ml-2 h-4 w-4 cursor-pointer"
+                    className=" ml-2 h-4 w-4 cursor-pointer text-stratos-default"
                     onClick={() => handleComboboxChange(null)}
                   />
                 ) : (
@@ -191,11 +196,19 @@ export default function ViewsPage() {
         </Combobox>
 
         <div className="flex w-80 flex-none flex-row items-center rounded-md border border-shade-line bg-white px-2 shadow-inner ">
-          <MagnifyingGlassIcon className="h-4 w-4 text-shade-pencil-light" />
+          {searchValue ? (
+            <XMarkIcon
+              className="h-4 w-4 cursor-pointer text-stratos-default"
+              onClick={() => setSearchValue("")}
+            />
+          ) : (
+            <MagnifyingGlassIcon className="h-4 w-4 text-shade-pencil-light" />
+          )}
           <input
             className=" flex-1 border-none text-sm placeholder:text-shade-disabled focus:ring-0"
             placeholder="Filter by link name or email"
             type="text"
+            value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
           />
         </div>
@@ -203,25 +216,26 @@ export default function ViewsPage() {
 
       <div className="flex flex-col rounded-md border bg-white">
         <div className="grid grid-cols-12 border-b bg-shade-overlay px-6 py-4 text-xs uppercase text-shade-pencil-light shadow-sm ">
-          <div className="col-span-2 grid">{"Name"}</div>
-          <div className="col-span-3 grid justify-center">{"Link"}</div>
+          <div className="col-span-3 grid">{"Name"}</div>
+          <div className="col-span-2 grid">{"Link"}</div>
           <div className="col-span-2 grid justify-center">{"Date"}</div>
           <div className="col-span-2 grid justify-center">
             {"Duration (min)"}
           </div>
+          <div className="col-span-1 grid justify-center">{"Version"}</div>
           <div className="col-span-2 grid justify-center">{"Completion %"}</div>
         </div>
         {views && views.length > 0 ? (
           views.map((view, idx) => (
             <div
               key={`${view.view_id}`}
-              className="mx-2 grid grid-cols-12 items-center border-t p-4 "
+              className="mx-2 grid grid-cols-12 items-center gap-x-2 border-t p-3 "
             >
-              <div className="col-span-2 flex items-center space-x-4">
-                <div className="h-6 w-6 rounded-full border border-shade-line"></div>
-                <p className={`font-semibold`}>{view.viewer}</p>
+              <div className="col-span-3 flex items-center space-x-4">
+                <div className="h-6 w-6 rounded-full border bg-shade-overlay border-shade-line uppercase font-mono flex text-shade-disabled items-center justify-center font-extrabold">{view.viewer.charAt(0)}</div>
+                <p className={`font-semibold truncate`}>{view.viewer}</p>
               </div>
-              <div className="col-span-3 grid justify-center">
+              <div className="col-span-2 grid truncate">
                 {view.link_name}
               </div>
               <div className="col-span-2 grid justify-center">
@@ -230,10 +244,11 @@ export default function ViewsPage() {
               <div className="col-span-2 grid justify-center">
                 {formatTime(view.duration)}
               </div>
-              <div className="col-span-2 justify-center">
-                <PercentageCircle percentage={view.completion} />
+              <div className="col-span-1 grid justify-center">
+                {view.document_version}
               </div>
-              <div className="col-span-1 grid justify-end">
+              <div className="col-span-2 flex items-center justify-end gap-x-10">
+                <PercentageCircle percentage={view.completion} />
                 <IconButton
                   ButtonId={`${view.view_id}-analytics`}
                   ButtonText={"Analytics (coming soon)"}

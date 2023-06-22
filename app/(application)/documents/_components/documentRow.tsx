@@ -13,7 +13,7 @@ import IconButton from "@/app/_components/shared/buttons/iconButton";
 import { useState } from "react";
 import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
-import EditLinkModal from "../[document_id]/_components/newLinkModal";
+import EditLinkModal from "../[document_id]/_components/editLinkModal";
 
 /*=========================================== CONSTANTS ===========================================*/
 

@@ -149,6 +149,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               //   width={thumbnailWidth}
               height={thumbnailHeight}
               onItemClick={handleThumbnailClick}
+              loading={<Loader />}
               className={classNames(
                 "rounded-sm ring-2 ring-offset-2",
                 activePage == index + 1

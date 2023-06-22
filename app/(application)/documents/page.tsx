@@ -16,7 +16,7 @@ export default async function DocumentsPage() {
 
   return (
     <section className="flex flex-1 flex-col">
-      <div className="mb-2 flex flex-row items-center justify-between">
+      <div className="mb-2 flex flex-row flex-1 items-center justify-between">
         <div className="flex flex-col space-y-1">
           <h3 className="text-lg font-semibold text-shade-pencil-black">
             {pageProps.name}
