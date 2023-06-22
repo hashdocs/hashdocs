@@ -4,26 +4,23 @@ import { classNames } from "@/app/_utils/classNames";
 import {
   ArrowDownCircleIcon,
   ArrowUpCircleIcon,
-  MagnifyingGlassCircleIcon,
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
 import {
-  DOMAttributes,
-  WheelEventHandler,
-  useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { FiZoomIn, FiZoomOut } from "react-icons/fi";
 import { Document, Page, Thumbnail } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import { OnItemClickArgs, PageCallback } from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-export default function PDFViewer() {
-  const [file, setFile] = useState("http://localhost:54321/storage/v1/object/sign/documents/zpgh-cabc/1.pdf?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkb2N1bWVudHMvenBnaC1jYWJjLzEucGRmIiwiaWF0IjoxNjg3NDA2OTYwLCJleHAiOjE2ODc0MTA1NjB9.eOZQiY3mIE3W8zQJtq31PAN7DcPezzqG8lQNhtWGdeE");
+export default function PDFViewer({signedURL}:{signedURL:string}) {
+
+    console.log('pageurl',signedURL);
+
   const [numPages, setNumPages] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
   const [scrollY, setScrollY] = useState<number>(0);
@@ -129,7 +126,7 @@ export default function PDFViewer() {
 
   return (
     <Document
-      file={file}
+      file={signedURL}
       onLoadSuccess={onDocumentLoadSuccess}
       loading={<Loader />}
       onContextMenu={(e) => e.preventDefault()}

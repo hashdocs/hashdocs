@@ -1,18 +1,17 @@
 "use client";
 import Loader from "@/app/_components/navigation/loader";
 import {
-  ChevronDoubleRightIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/solid";
-import { set } from "date-fns";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 
 export default function ViewerAuth() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [emailError, setEmailError] = useState<boolean>(true);
+  const router = useRouter();
   // const [password, setPassword] = useState("");
 
   const { link_id } = useParams();
@@ -20,6 +19,7 @@ export default function ViewerAuth() {
   const handleAuthorizeViewer = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
+
     // const authorizePromise = new Promise(async (resolve, reject) => {
     const res = await fetch(`/api/viewer/${link_id}`, {
       method: "POST",
@@ -28,8 +28,6 @@ export default function ViewerAuth() {
 
     if (res.ok) {
       toast.success("Authorization successful");
-
-      setIsLoading(false);
     } else {
       toast.error("Authorization failed! Please try again");
     }
@@ -41,6 +39,7 @@ export default function ViewerAuth() {
     //   error: "Authorization failed! Please try again",
     // });
     setIsLoading(false);
+    router.refresh();
   };
 
   const validateEmail = (email: string) => {
@@ -64,11 +63,11 @@ export default function ViewerAuth() {
   };
 
   return (
-    <section className="flex flex-1 flex-col justify-center ">
+    <section className="flex flex-1 flex-col items-center justify-center ">
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="flex min-h-[400px] flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
+        <div className="flex min-h-[400px] w-1/3 flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-stratos-default text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-stratos-default ring-offset-1">
             <LockClosedIcon className="w-5 h-5" />
           </div>
