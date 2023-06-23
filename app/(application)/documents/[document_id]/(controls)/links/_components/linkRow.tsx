@@ -16,8 +16,8 @@ import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import { LinkType, DocumentType } from "@/types/documents.types";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
-import EditLinkModal from "@/app/(application)/documents/[document_id]/_components/editLinkModal";
-import { DocumentContext } from "../../_components/documentHeader";
+import EditLinkModal from "@/app/(application)/documents/[document_id]/(controls)/_components/editLinkModal";
+import { DocumentContext } from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
 
 /*=========================================== COMPONENT ===========================================*/
@@ -220,7 +220,6 @@ const LinkRow: React.FC<LinkType> = (props) => {
                       </div>
                       <div className="col-span-2 flex items-center justify-center gap-x-2">
                         <PercentageCircle percentage={view.completion} />
-                        {`${view.completion}%`}
                       </div>
                       <div className="col-span-1 grid justify-end">
                         <IconButton

@@ -12,13 +12,22 @@ interface LargeButtonProps extends BaseButtonProps {
 }
 
 const LargeButton: React.FC<LargeButtonProps> = (props) => {
-  const { ButtonId, ButtonText, ButtonIcon, ButtonClassName = "", ...restProps } = props;
+  const {
+    ButtonId,
+    ButtonText,
+    ButtonIcon,
+    ButtonClassName = "",
+    ...restProps
+  } = props;
 
   return (
     <button
       type="button"
       key={ButtonId}
-      className={classNames("flex items-center rounded-md bg-stratos-default px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stratos-default/80",ButtonClassName)}
+      className={classNames(
+        "flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm",
+        ButtonClassName
+      )}
       // data-tooltip-id="button-tooltip"
       // data-tooltip-content="test tooltip"
       {...restProps}

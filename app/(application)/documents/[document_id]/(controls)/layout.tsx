@@ -3,7 +3,7 @@ import { Database } from "@/types/supabase.types";
 import { DocumentType } from "@/types/documents.types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import DocumentHeader from "./_components/documentHeader";
+import DocumentHeader from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 
 /*=========================================== COMPONENT ===========================================*/
 

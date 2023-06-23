@@ -24,7 +24,7 @@ export async function POST(
   if (error || !data) return NextResponse.json(null, { status: 401 });
 
   cookies().set({
-    name: `hashdocs-token`,
+    name: link_id,
     value: data.view_token,
     maxAge: 60 * 60,
   });
@@ -40,7 +40,7 @@ export async function PUT(
 ) {
   const cookieJar = cookies();
 
-  const hashdocs_token = cookieJar.get("hashdocs-token")?.value;
+  const hashdocs_token = cookieJar.get(link_id)?.value;
 
   if (!hashdocs_token) return null;
 

@@ -1,7 +1,7 @@
 import { Database } from "./supabase.types";
 
 export type ViewType = Database["public"]["Tables"]["tbl_views"]["Row"] & {
-  duration: string;
+  duration: number;
   completion: number;
 };
 
@@ -31,4 +31,6 @@ export interface documentTabType {
 export type DocumentContextType = {
   document: DocumentType;
   setDocument: (prevDocument: DocumentType) => void;
+  showNewLinkModal: boolean;
+  setShowNewLinkModal: (prevShowNewLinkModal: boolean) => void;
 };

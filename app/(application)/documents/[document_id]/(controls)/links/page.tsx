@@ -1,5 +1,5 @@
 "use client";
-import { DocumentContext } from "../_components/documentHeader";
+import { DocumentContext } from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 import EmptyLinks from "./_components/emptyLinks";
 import LinkRow from "./_components/linkRow";
 

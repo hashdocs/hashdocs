@@ -4,19 +4,20 @@ import { Database } from "@/types/supabase.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cache } from "react";
 
-export const revalidate = 60;
-
-export const getLinkProps = cache(async (link_id: string) => {
+export const getLinkProps = async (link_id: string) => {
   const supabase = createClientComponentClient<Database>();
 
   const { data, error } = await supabase
     .rpc("get_link_props", { link_id_input: link_id })
     .returns<GetLinkProps | null>();
 
-  if (error || !data) return null;
+  if (error || !data) {
+    console.error(error);
+    return null;
+  }
 
   return data;
-});
+};
 
 export default async function ViewerLayout({
   children,
@@ -26,6 +27,8 @@ export default async function ViewerLayout({
   params: { link_id: string };
 }) {
   const link_props = await getLinkProps(link_id);
+
+  console.log(link_props);
 
   return (
     <main className="flex h-screen w-full flex-1 flex-col">

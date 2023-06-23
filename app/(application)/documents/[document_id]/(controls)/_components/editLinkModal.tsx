@@ -11,6 +11,7 @@ import { CopyLinkToClipboard } from "@/app/_utils/common";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Database } from "@/types/supabase.types";
+import { useRouter } from "next/navigation";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -35,6 +36,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     setDocument = () => {},
   } = props;
 
+  const router = useRouter();
   /*-------------------------------- SET DEFAULT VALUES ------------------------------*/
 
   const {
@@ -156,6 +158,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       if (res.ok) {
         setIsSaved(true);
         setDocument(document);
+        router.push(`/documents/${props.document_id}`);
         resolve(document.links[0].link_id);
         setIsOpen(false);
       }

@@ -63,7 +63,7 @@ export default function DocumentHeader({
   };
 
   return (
-    <DocumentContext.Provider value={{ document, setDocument }}>
+    <DocumentContext.Provider value={{ document, setDocument, showNewLinkModal, setShowNewLinkModal }}>
       <div className="flex flex-col">
         <div className="mb-4 flex flex-row items-center justify-between">
           <div className="flex flex-row items-center space-x-2 text-shade-pencil-black">
@@ -131,7 +131,11 @@ export default function DocumentHeader({
               ButtonText={"New Link"}
               ButtonIcon={LinkIcon}
               ButtonId={`${document_id}-newlink`}
-              ButtonClassName=""
+              ButtonClassName={
+                isEnabled
+                  ? `bg-stratos-default hover:bg-stratos-default/80 text-white`
+                  : `bg-shade-disabled cursor-not-allowed`
+              }
               onClick={() => setShowNewLinkModal(true)}
             />
           </div>

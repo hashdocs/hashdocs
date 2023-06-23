@@ -7,10 +7,10 @@ import { decode } from "jsonwebtoken";
 import PDFViewerPage from "./_components/pdf_viewer_page";
 import { getLinkProps } from "./layout";
 
-export async function getSignedURL() {
+export async function getSignedURL(link_id:string) {
   const cookieJar = cookies();
 
-  const hashdocs_token = cookieJar.get("hashdocs-token")?.value;
+  const hashdocs_token = cookieJar.get(link_id)?.value;
 
   if (!hashdocs_token) return null;
 
@@ -45,7 +45,7 @@ export default async function DocumentViewerPage({
 
   if (!link_props) return <InvalidLink />;
 
-  const signedUrl = await getSignedURL();
+  const signedUrl = await getSignedURL(link_id);
 
   return !signedUrl ? <ViewerAuth /> : <PDFViewerPage signedURL={signedUrl} />;
 }

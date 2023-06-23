@@ -17,14 +17,17 @@ export function formatDate(
   return returnval;
 }
 
-export function formatTime(duration: string) {
-  const [hoursStr, minutesStr, secondsStr] = duration.split(":");
-  const hours = parseInt(hoursStr, 10);
-  const minutes = parseInt(minutesStr, 10);
-  const seconds = parseInt(secondsStr, 10);
+export function formatTime(duration: number) {
+  // convert milliseconds to seconds
+  const totalSeconds = Math.floor(duration / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds - hours * 3600) / 60);
+  const seconds = totalSeconds - hours * 3600 - minutes * 60;
 
   if (hours > 0) {
-    return duration;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   } else {
     return `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()
