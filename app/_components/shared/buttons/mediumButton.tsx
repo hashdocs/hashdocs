@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ButtonHTMLAttributes } from "react";
 import { Url } from "next/dist/shared/lib/router/router";
+import { classNames } from "@/app/_utils/classNames";
 
 type BaseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -10,6 +11,7 @@ interface MediumButtonProps extends BaseButtonProps {
   ButtonIcon: React.ForwardRefExoticComponent<any>;
   ButtonSize?: number;
   ButtonHref?: Url;
+  ButtonClassName?: string;
 }
 
 const MediumButton: React.FC<MediumButtonProps> = (props) => {
@@ -19,6 +21,7 @@ const MediumButton: React.FC<MediumButtonProps> = (props) => {
     ButtonIcon,
     ButtonSize,
     ButtonHref = "",
+    ButtonClassName = "",
     ...restProps
   } = props;
 
@@ -27,12 +30,14 @@ const MediumButton: React.FC<MediumButtonProps> = (props) => {
       <button
         type="button"
         key={ButtonId}
-        className="flex items-center space-x-2 rounded-md border border-shade-line bg-white px-2  py-1 text-xs font-semibold text-shade-pencil-dark  hover:bg-shade-overlay hover:text-stratos-default hover:border-stratos-50"
+        className={classNames(
+          "flex shrink-0 items-center space-x-2 rounded-md border border-shade-line bg-white px-2  py-1 text-xs font-semibold text-shade-pencil-dark  hover:border-stratos-50 hover:bg-shade-overlay hover:text-stratos-default",
+          ButtonClassName
+        )}
         data-tooltip-id={ButtonId}
         data-tooltip-content={ButtonText}
         {...restProps}
       >
-        
         <ButtonIcon
           className={`h-${ButtonSize ?? 5} w-${ButtonSize ?? 5}`}
           aria-hidden="true"

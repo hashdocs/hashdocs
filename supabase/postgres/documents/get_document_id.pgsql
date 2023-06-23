@@ -15,7 +15,7 @@ BEGIN
 			tbl_views.viewed_at,
 			tbl_views.viewer,
 			tbl_views.document_version,
-			coalesce(max(tbl_view_logs.view_end_at) - min(tbl_view_logs.view_start_at), interval '0') AS duration,
+			coalesce(max(tbl_view_logs.end_time) - min(tbl_view_logs.start_time),0) AS duration,
 			round(count(page_num) / tbl_document_versions.page_count::numeric * 100, 0)::numeric AS completion
 		FROM
 			tbl_views
@@ -50,7 +50,7 @@ links AS (
 		tbl_links.is_watermarked,
 		tbl_links.restricted_domains,
 		tbl_links.link_password,
-		count(DISTINCT views.view_id) AS view_count,
+		COALESCE(count(DISTINCT views.view_id),0) AS view_count,
 		CASE WHEN count(DISTINCT views.view_id) = 0 THEN
 			ARRAY[]::json[]
 		ELSE
@@ -92,8 +92,8 @@ FROM (
 		tbl_documents.org_id,
 		tbl_documents.is_enabled,
 		tbl_documents.image,
-		count(links.link_id) AS total_links_count,
-		sum(links.view_count) AS total_view_Count,
+		COALESCE(count(links.link_id),0) AS total_links_count,
+		COALESCE(sum(links.view_count),0) AS total_view_Count,
 		CASE WHEN count(DISTINCT links.link_id) = 0 THEN
 			ARRAY[]::json[]
 		ELSE

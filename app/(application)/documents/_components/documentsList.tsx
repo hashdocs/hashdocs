@@ -15,14 +15,18 @@ const DocumentsList: React.FC = () => {
     setIsLoading(true);
 
     async function fetchDocuments() {
+      try {
       const res = await fetch("/api/documents", {
         method: "GET",
         next: { revalidate: 0 },
       });
 
       const documents = await res.json();
-
       setDocuments(documents);
+    } catch(e) {
+
+      setDocuments(null);
+    }
       setIsLoading(false);
     }
 

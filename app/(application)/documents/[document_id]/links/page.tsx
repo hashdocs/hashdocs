@@ -1,5 +1,6 @@
 "use client";
 import { DocumentContext } from "../_components/documentHeader";
+import EmptyLinks from "./_components/emptyLinks";
 import LinkRow from "./_components/linkRow";
 
 import { useContext } from "react";
@@ -19,6 +20,6 @@ export default function LinksPage() {
         document.links.map((link) => <LinkRow key={link.link_id} {...link} />)}
     </ul>
   ) : (
-    <div>No links found</div>
+    <EmptyLinks/>
   );
 }

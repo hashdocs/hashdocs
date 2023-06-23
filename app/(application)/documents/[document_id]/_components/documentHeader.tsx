@@ -131,6 +131,7 @@ export default function DocumentHeader({
               ButtonText={"New Link"}
               ButtonIcon={LinkIcon}
               ButtonId={`${document_id}-newlink`}
+              ButtonClassName=""
               onClick={() => setShowNewLinkModal(true)}
             />
           </div>

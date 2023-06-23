@@ -6,6 +6,7 @@ import {
   EyeIcon,
   PresentationChartBarIcon,
   CloudArrowUpIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
@@ -19,7 +20,7 @@ import EditLinkModal from "../[document_id]/_components/editLinkModal";
 
 const rowButtons = [
   { id: "View", name: "View document", icon: PresentationChartBarIcon },
-  { id: "Refresh", name: "Refresh document", icon: CloudArrowUpIcon },
+  { id: "Refresh", name: "Refresh document", icon: ArrowPathIcon },
   { id: "Options", name: "More options", icon: EllipsisHorizontalIcon },
 ];
 
