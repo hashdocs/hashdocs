@@ -7,6 +7,7 @@ import {
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
+import { useParams } from "next/navigation";
 import { RefObject, createRef, useEffect, useRef, useState } from "react";
 import { Document, Page, Thumbnail } from "react-pdf";
 import { pdfjs } from "react-pdf";
@@ -25,6 +26,11 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     (RefObject<HTMLDivElement> | null)[]
   >([]);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
+  const [pageTimes, setPageTimes] = useState<
+    { pageNumber: number; entryTime: number }[]
+  >([]);
+
+  const { link_id } = useParams();
 
   /* -------------------------------- FUNCTIONS ------------------------------- */
 
@@ -92,6 +98,33 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
       );
     };
   }, [pageRefs, activePage]);
+
+  useEffect(() => {
+    setPageTimes((oldTimes) => {
+      return [...oldTimes, { pageNumber: activePage, entryTime: Date.now() }];
+    });
+  }, [activePage]);
+
+  useEffect(() => {
+    const flatPageTimes = pageTimes.map((pageTime, index) => {
+      if (pageTimes[index + 1]?.entryTime || Date.now() - pageTime.entryTime < 300) return;
+      return {
+        ...pageTime,
+        exitTime: pageTimes[index + 1]?.entryTime || Date.now(),
+      };
+    });
+    const interval = setInterval(async () => {
+      await fetch(`/api/viewer/${link_id}`, {
+        method: "PUT",
+        body: JSON.stringify(flatPageTimes),
+      });
+    }, 3000);
+
+    // Cleanup: remove event listeners and clear interval
+    return () => {
+      clearInterval(interval);
+    };
+  }, [pageTimes]);
 
   //   /* ---------------------------------- SCROLL HANDLER ---------------------------------- */
   //   useEffect(() => {

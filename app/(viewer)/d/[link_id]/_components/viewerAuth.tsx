@@ -28,7 +28,7 @@ export default function ViewerAuth() {
         // toast.success("Authorization successful");
         resolve("success");
         router.refresh();
-        setIsLoading(false);
+        // setIsLoading(false);
       } else {
         toast.error("Authorization failed! Please try again");
         reject("error");
