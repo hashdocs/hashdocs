@@ -7,6 +7,9 @@ import type { DocumentType } from "@/types/documents.types";
 import { LinkType } from "@/types/documents.types";
 import { redirect } from "next/navigation";
 
+
+/* ------------------------ GET DOCUMENT ----------------------- */
+
 export async function GET(request: Request) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
@@ -20,7 +23,7 @@ export async function GET(request: Request) {
   }
 
   const { data: document_id_data, error: document_id_error } = await supabase
-    .rpc("get_document_id")
+    .rpc("get_documents")
     .returns<DocumentType[]>();
 
   if (document_id_error) {

@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 
 /*================================ UPDATE LINK ==============================*/
 
-export async function POST(
+export async function PUT(
   request: Request,
   {
     params: { document_id, link_id },
@@ -35,7 +35,7 @@ export async function POST(
   if (error) return NextResponse.error();
 
   const { data: document_id_data, error: document_id_error } = await supabase
-    .rpc("get_document_id", { document_id_input: document_id })
+    .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
@@ -72,7 +72,7 @@ export async function DELETE(
   if (error) return NextResponse.error();
 
   const { data: document_id_data, error: document_id_error } = await supabase
-    .rpc("get_document_id", { document_id_input: document_id })
+    .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
@@ -83,37 +83,37 @@ export async function DELETE(
 
 /*================================ UPDATE LINK ==============================*/
 
-export async function PATCH(
-  request: Request,
-  {
-    params: { document_id, link_id },
-  }: { params: { document_id: string; link_id: string } }
-) {
-  const supabase = createRouteHandlerClient<Database>({ cookies });
+// export async function PATCH(
+//   request: Request,
+//   {
+//     params: { document_id, link_id },
+//   }: { params: { document_id: string; link_id: string } }
+// ) {
+//   const supabase = createRouteHandlerClient<Database>({ cookies });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
-  }
+//   if (!user) {
+//     return NextResponse.json(null, { status: 401 });
+//     redirect("/");
+//   }
 
-  const { is_active } = await request.json();
+//   const { is_active } = await request.json();
 
-  const { data, error } = await supabase
-    .from("tbl_links")
-    .update({ is_active })
-    .eq("link_id", link_id)
-    .select("*")
-    .maybeSingle();
+//   const { data, error } = await supabase
+//     .from("tbl_links")
+//     .update({ is_active })
+//     .eq("link_id", link_id)
+//     .select("*")
+//     .maybeSingle();
 
-  if (error) console.error(error);
-  if (!data || error) return NextResponse.error();
+//   if (error) console.error(error);
+//   if (!data || error) return NextResponse.error();
 
-  return NextResponse.json(
-    { message: `Successfully updated ${data.link_id}` },
-    { status: 200 }
-  );
-}
+//   return NextResponse.json(
+//     { message: `Successfully updated ${data.link_id}` },
+//     { status: 200 }
+//   );
+// }

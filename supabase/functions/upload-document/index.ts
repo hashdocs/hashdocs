@@ -7,7 +7,7 @@ serve(async (req) => {
   const { document_id } = await req.json();
 
   const { data: document_data, error: document_error } = await supabaseAdmin
-    .rpc("get_document_id", { document_id_input: document_id })
+    .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_error || !document_data || !document_data[0]) {

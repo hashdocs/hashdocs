@@ -146,7 +146,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       };
 
       const res = await fetch(_url, {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(saveProps),
       });
 

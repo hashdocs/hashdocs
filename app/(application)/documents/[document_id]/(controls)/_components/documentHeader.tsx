@@ -65,7 +65,7 @@ export default function DocumentHeader({
     setDocument({ ...document, document_name: name });
     const updatePromise = new Promise(async (resolve, reject) => {
       const res = await fetch(`/api/documents/${props.document_id}`, {
-        method: "PATCH",
+        method: "PUT",
         body: JSON.stringify({
           document_name: name,
         }),
@@ -93,7 +93,7 @@ export default function DocumentHeader({
     setDocument({ ...document, is_enabled: checked });
     return new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${props.document_id}`, {
-        method: "PATCH",
+        method: "PUT",
         body: JSON.stringify({
           is_enabled: checked,
         }),

@@ -36,7 +36,7 @@ export async function POST(
   if (error) return NextResponse.error();
 
   const { data: document_id_data, error: document_id_error } = await supabase
-    .rpc("get_document_id", { document_id_input: document_id })
+    .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
@@ -48,7 +48,7 @@ export async function POST(
 
 /*================================ UPDATE DOCUMENT ==============================*/
 
-export async function PATCH(
+export async function PUT(
   request: Request,
   { params: { document_id } }: { params: { document_id: string } }
 ) {

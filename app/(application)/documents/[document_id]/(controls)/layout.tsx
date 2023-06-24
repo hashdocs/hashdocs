@@ -17,7 +17,7 @@ export default async function DocumentIdLayout({
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const { data: document, error } = await supabase
-    .rpc("get_document_id", { document_id_input: document_id })
+    .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (error || !document || !document[0]) {

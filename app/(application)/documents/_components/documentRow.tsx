@@ -43,7 +43,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
   const handleToggle = async (checked: boolean) => {
     return new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${props.document_id}`, {
-        method: "PATCH",
+        method: "PUT",
         body: JSON.stringify({
           is_enabled: checked,
         }),

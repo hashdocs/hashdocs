@@ -45,7 +45,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
       const res = await fetch(
         `/api/documents/${props.document_id}/${link_id}`,
         {
-          method: "POST",
+          method: "PUT",
           body: JSON.stringify({
             is_active: checked,
           }),
