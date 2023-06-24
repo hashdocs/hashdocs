@@ -81,7 +81,7 @@ export async function DELETE(
   return NextResponse.json(document_id_data[0], { status: 200 });
 }
 
-/*================================ TOGGLE LINK ==============================*/
+/*================================ UPDATE LINK ==============================*/
 
 export async function PATCH(
   request: Request,

@@ -31,6 +31,8 @@ export async function GET(request: Request) {
   return NextResponse.json(document_id_data, { status: 200 });
 }
 
+/* ------------------------ UPLOAD OR UPDATE DOCUMENT ----------------------- */
+
 export async function POST(request: Request) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
@@ -43,8 +45,12 @@ export async function POST(request: Request) {
     redirect("/");
   }
 
-  const filedata = await request.formData();
+  //STEP 1 - Get document_id from search params
+  const { searchParams } = new URL(request.url);
+  let document_id = searchParams.get("document_id");
 
+  //STEP 2 - Parse file body from formdata
+  const filedata = await request.formData();
   const name = filedata.get("name") as string;
   const type = filedata.get("type") as string;
   const filebody = filedata.get("file") as File;
@@ -53,26 +59,29 @@ export async function POST(request: Request) {
   const name_without_extension =
     lastDot === -1 ? name : name.substring(0, lastDot);
 
+  //STEP 3 - Insert document into db
   const { data: new_document_data, error: new_document_error } = await supabase
-    .from("tbl_documents")
-    .insert({
-      document_name: name_without_extension,
-      source_path: name,
-      source_type: "LOCAL",
-      created_by: user.id,
+    .rpc("upsert_document", {
+      document_id_input: document_id ?? undefined,
+      document_name_input: name_without_extension,
+      source_path_input: name,
+      source_type_input: "LOCAL",
     })
-    .select(`document_id`)
-    .single();
+    .returns<{ document_id: string; document_version: string }>();
 
   if (new_document_error || !new_document_data) {
     console.error(new_document_error);
     return NextResponse.json(null, { status: 500 });
   }
 
+  document_id = new_document_data.document_id;
+  const document_version = new_document_data.document_version;
+
+  //STEP 4 - Store document in supabase storage
   const { data: _document_upload_path, error: document_upload_error } =
     await supabase.storage
       .from("documents")
-      .upload(`${new_document_data.document_id}/1.pdf`, filebody, {
+      .upload(`${document_id}/${document_version}.pdf`, filebody, {
         contentType: type,
         upsert: true,
       });
@@ -81,6 +90,11 @@ export async function POST(request: Request) {
     console.error(document_upload_error);
     return NextResponse.json(null, { status: 500 });
   }
+
+  supabase.functions.invoke("upload-document",{body: JSON.stringify({document_id})}).then((res) => {
+  }).catch((err) => {
+    console.error(err)
+  });
 
   return NextResponse.json(
     { document_id: new_document_data.document_id },

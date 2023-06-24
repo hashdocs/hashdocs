@@ -28,8 +28,6 @@ export default async function ViewerLayout({
 }) {
   const link_props = await getLinkProps(link_id);
 
-  console.log(link_props);
-
   return (
     <main className="flex h-screen w-full flex-1 flex-col">
       <div className="sticky top-0 z-10 w-full">

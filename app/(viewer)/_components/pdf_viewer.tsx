@@ -100,7 +100,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.7 }
     );
 
     pageRefs.forEach((ref) => ref?.current && observer.observe(ref.current));
@@ -135,7 +135,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
       };
     }).filter((item) => item !== undefined);
     const interval = setInterval(async () => {
-        await fetch(`/api/viewer/${link_id}`, {
+        link_id && await fetch(`/api/viewer/${link_id}`, {
           method: "PUT",
           body: JSON.stringify(flatPageTimes),
         });
@@ -262,8 +262,8 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               renderAnnotationLayer={false}
               renderTextLayer={false}
               className="my-4"
-              // height={pageHeight}
-              // width={pageWidth}
+              height={pageHeight}
+              width={pageWidth}
               scale={zoom}
               inputRef={pageRefs[index]}
             />

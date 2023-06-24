@@ -17,14 +17,7 @@ import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "../[document_id]/(controls)/_components/editLinkModal";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
-
-/*=========================================== CONSTANTS ===========================================*/
-
-const rowButtons = [
-  { id: "View", name: "View document", icon: PresentationChartBarIcon },
-  { id: "Refresh", name: "Refresh document", icon: ArrowPathIcon },
-  { id: "Options", name: "More options", icon: EllipsisHorizontalIcon },
-];
+import UploadDocumentModal from "./uploadDocument";
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
@@ -42,6 +35,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
   const [document, setDocument] = useState<DocumentType>(props);
   const [isEnabled, setIsEnabled] = useState<boolean>(is_enabled);
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
+  const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
 
   const active_links_count =
     links.filter((link) => link.is_active === true).length ?? 0;
@@ -73,7 +67,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
       className="my-2 flex items-center justify-between space-x-4 rounded-md bg-white p-4 text-shade-pencil-black shadow-sm"
     >
       <div className="flex w-1/2 items-center space-x-4">
-          <ThumbnailImage src={image} document_id={document_id} />
+        <ThumbnailImage src={image} document_id={document_id} />
         <div className="flex flex-col space-y-2">
           <Link href={`/documents/${document_id}/links`}>
             <h4 className="w-full overflow-hidden text-base font-semibold hover:text-stratos-default hover:underline">
@@ -138,14 +132,28 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           }
         />
         <div className="space-x-1">
-          {rowButtons.map((button) => (
+          <Link href={`/preview/${document_id}`} target="_blank">
             <IconButton
-              key={`${document_id}-${button.id}`}
-              ButtonId={`${document_id}-${button.id}`}
-              ButtonText={button.name}
-              ButtonIcon={button.icon}
+              key={`${document_id}-preview`}
+              ButtonId={`${document_id}-preview`}
+              ButtonText={"Preview document"}
+              ButtonIcon={PresentationChartBarIcon}
             />
-          ))}
+          </Link>
+          <IconButton
+            key={`${document_id}-update`}
+            ButtonId={`${document_id}-update`}
+            ButtonText={"Refresh document"}
+            ButtonIcon={ArrowPathIcon}
+            onClick={() => setShowUpdateDocumentModal(true)}
+          />
+          <IconButton
+            key={`${document_id}-options`}
+            ButtonId={`${document_id}-options`}
+            ButtonText={"More options"}
+            ButtonIcon={EllipsisHorizontalIcon}
+            // onClick={() => setShowUpdateDocumentModal(true)}
+          />
         </div>
       </div>
       <EditLinkModal
@@ -154,6 +162,11 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         link_id={null}
         setDocument={setDocument}
         {...document}
+      />
+      <UploadDocumentModal
+        isOpen={showUpdateDocumentModal}
+        setIsOpen={setShowUpdateDocumentModal}
+        document_id={document_id}
       />
     </li>
   );

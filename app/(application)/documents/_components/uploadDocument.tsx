@@ -15,11 +15,13 @@ import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 interface UploadDocumentModalProps {
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
+  document_id?:string | null;
 }
 
 const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   isOpen,
   setIsOpen,
+  document_id = null,
 }) => {
   const router = useRouter();
 
@@ -50,21 +52,21 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     onBeforeUpload: (files) => handleBeforeUpload(files),
     allowMultipleUploads: false,
   }).use(XHR, {
-    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents`,
+    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${document_id ? `?document_id=${document_id}` : ""}`,
   });
 
   uppy.on("upload-success", (file, response) => {
     toast.success(
       <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
-        <div className="flex flex-col gap-y-2">
-          <p className="font-normal text-base">
+        <div className="flex flex-col gap-y-1">
+          <p className="text-sm font-normal">
             <span className="font-semibold text-stratos-default">
               {file?.name}
             </span>{" "}
-            uploaded successfully.`
+            {document_id ? "updated" : "uploaded"} successfully
           </p>
-          <p className="font-normal text-base">
-            `You can now create secure links for sharing`
+          <p className="text-sm font-normal">
+            You can now create secure links for sharing
           </p>
         </div>
         <Link
@@ -75,10 +77,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/documents/${response.body.document_id}/preview`}
           target="_blank"
           rel="noreferrer"
-          className="flex flex-col items-center gap-y-2"
+          className="flex flex-col items-center gap-y-2 border-l pl-2 hover:text-stratos-default hover:underline"
         >
-          <PresentationChartBarIcon className="h-4 w-4" />
-          <span className="text-xs text-stratos-default underline">{`Preview`}</span>
+          <PresentationChartBarIcon className="h-6 w-6 " />
+          <span className="font-normal">{`Preview`}</span>
         </Link>
       </div>,
       { duration: 10000, id: `${response.body.document_id}-toast` }
@@ -123,7 +125,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                       as="h3"
                       className="text-left font-semibold uppercase leading-6"
                     >
-                      {"Upload new document"}
+                      {document_id ? "Update document" : "Upload new document"}
                     </Dialog.Title>
                     <Dialog.Description
                       as="h3"

@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import ViewerAuth from "./_components/viewerAuth";
 import InvalidLink from "./_components/invalid_link";
 import { decode } from "jsonwebtoken";
-import PDFViewerPage from "./_components/pdf_viewer_page";
+import PDFViewerPage from "../../_components/pdf_viewer_page";
 import { getLinkProps } from "./layout";
 
 export const revalidate=0;

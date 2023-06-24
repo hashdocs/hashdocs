@@ -21,7 +21,11 @@ export function ThumbnailImage({
   }, [src]);
 
   return (
-    <Link className="relative flex h-[72px] w-[128px] shrink-0 rounded-md border object-cover" href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/documents/${document_id}/preview`} target="_blank">
+    <Link
+      className="relative flex h-[72px] w-[128px] shrink-0 rounded-md border object-cover"
+      href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/preview/${document_id}`}
+      target="_blank"
+    >
       <Image
         alt={document_id}
         onError={setError}
@@ -31,7 +35,7 @@ export function ThumbnailImage({
         width={128}
         // style={{ objectFit: "contain" }}
       />
-      <div className="absolute inset-0 flex rounded-md cursor-pointer items-center justify-center bg-shade-disabled opacity-0 transition-opacity duration-200 hover:opacity-50">
+      <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-shade-disabled opacity-0 transition-opacity duration-200 hover:opacity-50">
         <EyeIcon className="h-6 w-6 text-shade-pencil-black" />
       </div>
     </Link>

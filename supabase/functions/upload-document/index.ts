@@ -28,6 +28,8 @@ serve(async (req) => {
     return errorHandler(error);
   }
 
+  console.info(`Created a signed url - ${data.signedUrl}`)
+
   const arrayBuffer = await fetch(data.signedUrl).then((res) =>
     res.arrayBuffer()
   );
@@ -63,8 +65,6 @@ serve(async (req) => {
 
   const return_body = await res.json();
 
-  console.log(return_body);
-
   if (!return_body.Files || !return_body.Files[0])
     return errorHandler("No file returned");
 
@@ -90,7 +90,7 @@ serve(async (req) => {
   const { error: page_update_error } = await supabaseAdmin
     .from("tbl_document_versions")
     .update({ page_count: numPages })
-    .eq("document_id", doc.document_id);
+    .eq("document_id", doc.document_id).eq("document_version", doc.document_version);
 
   if (update_error || page_update_error) {
     return errorHandler({ update_error, page_update_error });

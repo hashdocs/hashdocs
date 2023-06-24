@@ -112,6 +112,10 @@ export default function DocumentHeader({
     });
   };
 
+  const handleUploadClick = () => { 
+
+  }
+
   return (
     <DocumentContext.Provider
       value={{ document, setDocument, showNewLinkModal, setShowNewLinkModal }}
@@ -203,6 +207,7 @@ export default function DocumentHeader({
                 ButtonId={`${document_id}-${button.id}`}
                 ButtonText={button.name}
                 ButtonIcon={button.icon}
+                onClick={handleUploadClick}
               />
             ))}
             <div className="pr-1"></div>
