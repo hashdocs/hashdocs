@@ -1,7 +1,6 @@
 {
     "imports": {
-      "supabase": "https://esm.sh/@supabase/supabase-js@2",
-      "pdf-to-img":"https://esm.sh/pdf-to-img",
+      "supabase": "https://esm.sh/@supabase/supabase-js@2.26.0",
       "crypto-js":"https://esm.sh/crypto-js"
     }
   }

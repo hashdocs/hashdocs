@@ -25,14 +25,14 @@ export default async function ApplicationLayout({
   }
 
   return (
-    <div className="flex max-h-screen w-full flex-1 justify-center overflow-x-auto">
+    <div className="flex max-h-screen w-full flex-1 overflow-hidden">
       <Sidebar />
-      <main className="h-screen w-full flex flex-1 flex-col items-center">
+      <main className="h-screen w-full flex flex-1 flex-col items-center overflow-x-auto">
         <div className="sticky top-0 z-10 w-full">
           <TopBar />
         </div>
-        <div className=" flex flex-1 hashdocs-scrollbar justify-center h-full w-full ">
-          <div className="min-w-[800px] max-w-screen-xl flex-1 flex-col p-8 ">{children}</div>
+        <div className=" flex flex-1 hashdocs-scrollbar justify-center h-full w-full overflow-y-visible ">
+          <div className="min-w-[800px] max-w-screen-xl flex-1 flex-col py-4 px-8 ">{children}</div>
         </div>
       </main>
     </div>

@@ -15,6 +15,7 @@ export type DocumentType =
     total_view_count: number;
     total_links_count: number;
     links: LinkType[];
+    document_version: number;
   };
 
 export type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &

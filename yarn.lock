@@ -2803,6 +2803,14 @@ pdfjs-dist@3.6.172:
   optionalDependencies:
     canvas "^2.11.2"
 
+pdfjs-dist@^3.7.107:
+  version "3.7.107"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-3.7.107.tgz#011ca8a6753966f1670458e87d15f32f00ae1357"
+  integrity sha512-D0pZgz4u8VNjCCXfNCjzeFcenxKFGh2RnGlLIvDHgpT+ZvOlsBlHugpOfmcLQyKk7csHBhPalf+mCM6thiclSQ==
+  optionalDependencies:
+    canvas "^2.11.2"
+    path2d-polyfill "^2.0.1"
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz"

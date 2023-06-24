@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import {
   LinkIcon,
   EllipsisHorizontalIcon,
@@ -11,10 +12,11 @@ import {
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "../[document_id]/(controls)/_components/editLinkModal";
+import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 
 /*=========================================== CONSTANTS ===========================================*/
 
@@ -70,19 +72,11 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
       key={document_id}
       className="my-2 flex items-center justify-between space-x-4 rounded-md bg-white p-4 text-shade-pencil-black shadow-sm"
     >
-      <div className="flex items-center space-x-4">
-        <div className="container relative block h-[72px] w-[128px] rounded-md border">
-          {
-            <Image
-              src={image ?? "/images/no_document_fallback.png"}
-              alt={document_id}
-              fill={true}
-            />
-          }
-        </div>
+      <div className="flex w-1/2 items-center space-x-4">
+          <ThumbnailImage src={image} document_id={document_id} />
         <div className="flex flex-col space-y-2">
           <Link href={`/documents/${document_id}/links`}>
-            <h4 className="text-base font-semibold hover:text-stratos-default hover:underline">
+            <h4 className="w-full overflow-hidden text-base font-semibold hover:text-stratos-default hover:underline">
               {document_name}
             </h4>
           </Link>
@@ -111,7 +105,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           ButtonText={"New Link"}
           ButtonIcon={LinkIcon}
           ButtonSize={4}
-          onClick={() => setShowNewLinkModal(true)}
+          // onClick={() => setShowNewLinkModal(true)}
         />
         <Toggle
           toggleId={`${document_id}-toggle`}

@@ -7,6 +7,8 @@ import { decode } from "jsonwebtoken";
 import PDFViewerPage from "./_components/pdf_viewer_page";
 import { getLinkProps } from "./layout";
 
+export const revalidate=0;
+
 export async function getSignedURL(link_id:string) {
   const cookieJar = cookies();
 

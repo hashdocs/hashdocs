@@ -92,6 +92,7 @@ FROM (
 		tbl_documents.org_id,
 		tbl_documents.is_enabled,
 		tbl_documents.image,
+		tbl_document_versions.document_version,
 		COALESCE(count(links.link_id),0) AS total_links_count,
 		COALESCE(sum(links.view_count),0) AS total_view_Count,
 		CASE WHEN count(DISTINCT links.link_id) = 0 THEN
@@ -102,7 +103,9 @@ FROM (
 	FROM
 		tbl_documents
 	LEFT JOIN links ON tbl_documents.document_id = links.document_id
+	LEFT JOIN tbl_document_versions ON tbl_documents.document_id = tbl_document_versions.document_id
 WHERE
+	tbl_document_versions.is_enabled = true AND
 	CASE WHEN document_id_input IS NULL THEN
 		tbl_documents.org_id = list_org_from_user()
 	ELSE
@@ -118,7 +121,8 @@ GROUP BY
 	tbl_documents.created_by,
 	tbl_documents.org_id,
 	tbl_documents.is_enabled,
-	tbl_documents.image
+	tbl_documents.image,
+	tbl_document_versions.document_version
 ORDER BY
 	tbl_documents.document_seq DESC) t INTO return_data;
 	RETURN return_data;

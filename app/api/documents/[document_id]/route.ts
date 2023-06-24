@@ -31,7 +31,7 @@ export async function POST(
     .eq("document_id", document_id)
     .maybeSingle();
 
-    console.error(error);
+  console.error(error);
 
   if (error) return NextResponse.error();
 
@@ -46,7 +46,7 @@ export async function POST(
   return NextResponse.json(document_id_data[0], { status: 200 });
 }
 
-/*================================ TOGGLE DOCUMENT ==============================*/
+/*================================ UPDATE DOCUMENT ==============================*/
 
 export async function PATCH(
   request: Request,
@@ -63,11 +63,11 @@ export async function PATCH(
     redirect("/");
   }
 
-  const { is_enabled } = await request.json();
+  const props = await request.json();
 
   const { data, error } = await supabase
     .from("tbl_documents")
-    .update({ is_enabled })
+    .update(props)
     .eq("document_id", document_id)
     .select("*")
     .maybeSingle();

@@ -40,7 +40,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="z-50 flex w-60 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6"
+      className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6"
       style={{ height: "100vh" }}
     >
       <div className="flex flex-col gap-y-6  ">

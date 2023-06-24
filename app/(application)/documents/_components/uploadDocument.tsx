@@ -9,6 +9,8 @@ import "@uppy/dashboard/dist/style.min.css";
 import { useRouter } from "next/navigation";
 import Loader from "@/app/_components/navigation/loader";
 import toast from "react-hot-toast";
+import Link from "next/link";
+import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 
 interface UploadDocumentModalProps {
   isOpen: boolean;
@@ -53,8 +55,33 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 
   uppy.on("upload-success", (file, response) => {
     toast.success(
-      `${file?.name} uploaded successfully. Create your first link`,
-      { duration: 5000 }
+      <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
+        <div className="flex flex-col gap-y-2">
+          <p className="font-normal text-base">
+            <span className="font-semibold text-stratos-default">
+              {file?.name}
+            </span>{" "}
+            uploaded successfully.`
+          </p>
+          <p className="font-normal text-base">
+            `You can now create secure links for sharing`
+          </p>
+        </div>
+        <Link
+          onClick={(e) => {
+            e.stopPropagation();
+            toast.dismiss(`${response.body.document_id}-toast`);
+          }}
+          href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/documents/${response.body.document_id}/preview`}
+          target="_blank"
+          rel="noreferrer"
+          className="flex flex-col items-center gap-y-2"
+        >
+          <PresentationChartBarIcon className="h-4 w-4" />
+          <span className="text-xs text-stratos-default underline">{`Preview`}</span>
+        </Link>
+      </div>,
+      { duration: 10000, id: `${response.body.document_id}-toast` }
     );
     router.push(`/documents/${response.body.document_id}`);
   });

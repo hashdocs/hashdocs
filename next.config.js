@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
+    images: {
+      domains: ['localhost'],
+      // loader: 'custom',
+      // loaderFile: './app/_utils/imageLoader.ts'
+    },
     async redirects() {
       return [
         {
