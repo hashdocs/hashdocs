@@ -167,6 +167,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         isOpen={showUpdateDocumentModal}
         setIsOpen={setShowUpdateDocumentModal}
         document_id={document_id}
+        document_name={document_name}
       />
     </li>
   );

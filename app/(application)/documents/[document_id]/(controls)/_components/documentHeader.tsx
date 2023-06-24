@@ -8,6 +8,7 @@ import {
   ArrowPathIcon,
   CalendarDaysIcon,
   ChevronLeftIcon,
+  EllipsisHorizontalIcon,
   LinkIcon,
   PresentationChartBarIcon,
   TrashIcon,
@@ -25,6 +26,7 @@ import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
+import UploadDocumentModal from "../../../_components/uploadDocument";
 
 const rowButtons = [
   { id: "View", name: "View document", icon: PresentationChartBarIcon },
@@ -55,6 +57,7 @@ export default function DocumentHeader({
   const [document, setDocument] = useState<DocumentType>(props);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(document_name ?? ".");
+  const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
 
   const handleNameChange = (event: any) => {
     setName(event.target.value);
@@ -112,9 +115,7 @@ export default function DocumentHeader({
     });
   };
 
-  const handleUploadClick = () => { 
-
-  }
+  const handleUploadClick = () => {};
 
   return (
     <DocumentContext.Provider
@@ -201,16 +202,28 @@ export default function DocumentHeader({
                   : "All links are disabled"
               }
             />
-            {rowButtons.map((button) => (
+            <Link href={`/preview/${document_id}`} target="_blank">
               <IconButton
-                key={`${document_id}-${button.id}`}
-                ButtonId={`${document_id}-${button.id}`}
-                ButtonText={button.name}
-                ButtonIcon={button.icon}
-                onClick={handleUploadClick}
+                key={`${document_id}-preview`}
+                ButtonId={`${document_id}-preview`}
+                ButtonText={"Preview document"}
+                ButtonIcon={PresentationChartBarIcon}
               />
-            ))}
-            <div className="pr-1"></div>
+            </Link>
+            <IconButton
+              key={`${document_id}-update`}
+              ButtonId={`${document_id}-update`}
+              ButtonText={"Refresh document"}
+              ButtonIcon={ArrowPathIcon}
+              onClick={() => setShowUpdateDocumentModal(true)}
+            />
+            <IconButton
+              key={`${document_id}-options`}
+              ButtonId={`${document_id}-options`}
+              ButtonText={"More options"}
+              ButtonIcon={EllipsisHorizontalIcon}
+              // onClick={() => setShowUpdateDocumentModal(true)}
+            />
             <LargeButton
               ButtonText={"New Link"}
               ButtonIcon={LinkIcon}
@@ -229,6 +242,12 @@ export default function DocumentHeader({
             link_id={null}
             setDocument={setDocument}
             {...document}
+          />
+          <UploadDocumentModal
+            isOpen={showUpdateDocumentModal}
+            setIsOpen={setShowUpdateDocumentModal}
+            document_id={document_id}
+            document_name={document_name}
           />
         </div>
         <DocumentTabs {...document} />

@@ -178,7 +178,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
               e.stopPropagation();
               toast.dismiss(`${link_id}-toast`);
             }}
-            href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}
+            href={`/d/${link_id}`}
             target="_blank"
             rel="noreferrer"
             className="flex flex-row space-x-2"
@@ -309,7 +309,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                           onClick={(e) => {
                             e.stopPropagation();
                           }}
-                          href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}
+                          href={`/d/${link_id}`}
                           target="_blank"
                           rel="noreferrer"
                           className="px-1"

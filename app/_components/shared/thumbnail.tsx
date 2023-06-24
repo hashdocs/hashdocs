@@ -23,7 +23,7 @@ export function ThumbnailImage({
   return (
     <Link
       className="relative flex h-[72px] w-[128px] shrink-0 rounded-md border object-cover"
-      href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/preview/${document_id}`}
+      href={`/preview/${document_id}`}
       target="_blank"
     >
       <Image

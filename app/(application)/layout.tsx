@@ -32,7 +32,7 @@ export default async function ApplicationLayout({
           <TopBar />
         </div>
         <div className=" flex flex-1 hashdocs-scrollbar justify-center h-full w-full overflow-y-visible ">
-          <div className="min-w-[800px] max-w-screen-xl flex-1 flex-col py-4 px-8 ">{children}</div>
+          <div className="min-w-[800px] flex max-w-screen-xl flex-1 flex-col py-4 px-8 ">{children}</div>
         </div>
       </main>
     </div>

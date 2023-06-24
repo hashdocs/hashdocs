@@ -103,7 +103,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
               onClick={(e) => {
                 e.stopPropagation();
               }}
-              href={`https://${path}`}
+              href={`/d/${link_id}`}
               target="_blank"
               rel="noreferrer"
               className="px-1"

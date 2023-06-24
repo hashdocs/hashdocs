@@ -15,13 +15,15 @@ import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 interface UploadDocumentModalProps {
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
-  document_id?:string | null;
+  document_id?: string | null;
+  document_name?: string | null;
 }
 
 const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   isOpen,
   setIsOpen,
   document_id = null,
+  document_name = null,
 }) => {
   const router = useRouter();
 
@@ -52,7 +54,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     onBeforeUpload: (files) => handleBeforeUpload(files),
     allowMultipleUploads: false,
   }).use(XHR, {
-    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${document_id ? `?document_id=${document_id}` : ""}`,
+    //TODO:Update to https
+    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${
+      document_id ? `?document_id=${document_id}` : ""
+    }`,
   });
 
   uppy.on("upload-success", (file, response) => {
@@ -74,7 +79,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             e.stopPropagation();
             toast.dismiss(`${response.body.document_id}-toast`);
           }}
-          href={`https://${process.env.NEXT_PUBLIC_BASE_URL}/documents/${response.body.document_id}/preview`}
+          href={`/documents/${response.body.document_id}/preview`}
           target="_blank"
           rel="noreferrer"
           className="flex flex-col items-center gap-y-2 border-l pl-2 hover:text-stratos-default hover:underline"
@@ -120,21 +125,32 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                 <Loader />
               ) : (
                 <Dialog.Panel className="relative flex w-full max-w-xl transform flex-col space-y-6 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
-                  <div className="flex flex-col justify-between">
-                    <Dialog.Title
-                      as="h3"
-                      className="text-left font-semibold uppercase leading-6"
+                  <div className="flex items-start justify-between">
+                    <div className="flex flex-col justify-between">
+                      <Dialog.Title
+                        as="h3"
+                        className="text-left font-semibold uppercase leading-6"
+                      >
+                        {document_id
+                          ? "Update document"
+                          : "Upload new document"}
+                      </Dialog.Title>
+                      <Dialog.Description
+                        as="h3"
+                        className="text-left text-xs leading-6 text-shade-pencil-light"
+                      >
+                        {
+                          "Your documents are securely stored with AES-256 encryption"
+                        }
+                      </Dialog.Description>
+                    </div>
+                    <Link
+                      href={`/preview/${document_id}`}
+                      target="_blank"
+                      className="max-w-1/3 truncate text-xs text-stratos-default underline"
                     >
-                      {document_id ? "Update document" : "Upload new document"}
-                    </Dialog.Title>
-                    <Dialog.Description
-                      as="h3"
-                      className="text-left text-xs leading-6 text-shade-pencil-light"
-                    >
-                      {
-                        "Your documents are securely stored with AES-256 encryption"
-                      }
-                    </Dialog.Description>
+                      {document_name}
+                    </Link>
                   </div>
                   <Dashboard
                     uppy={uppy}

@@ -19,7 +19,7 @@ export default function PreviewTopBar({
   return (
     <div className="flex h-12 w-full items-center justify-between border-b border-shade-line bg-shade-overlay px-4">
       <Link
-        href={`http://${process.env.NEXT_PUBLIC_BASE_URL}`}
+        href={`/`}
         className="flex w-1/6 flex-row items-center"
       >
         <div className="relative -ml-1 h-10 w-8 scale-75 overflow-hidden rounded-md">
