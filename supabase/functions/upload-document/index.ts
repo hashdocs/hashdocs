@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { errorHandler } from "../_shared/errorHandler.ts";
 import { DocumentType, supabaseAdmin } from "../_shared/supabaseClient.ts";
+import { PDFDocument } from "https://esm.sh/pdf-lib@1.17.1";
 
 serve(async (req) => {
   const { document_id } = await req.json();
@@ -27,6 +28,13 @@ serve(async (req) => {
     return errorHandler(error);
   }
 
+  const arrayBuffer = await fetch(data.signedUrl).then((res) =>
+    res.arrayBuffer()
+  );
+  const pdfDoc = await PDFDocument.load(arrayBuffer);
+
+  const numPages = pdfDoc.getPages().length;
+
   const res = await fetch(
     `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=eXGjMP9OLZfun7mv`,
     {
@@ -37,8 +45,7 @@ serve(async (req) => {
           {
             Name: "File",
             FileValue: {
-              // Url: data.signedUrl,
-              Url: "https://www.orimi.com/pdf-test.pdf",
+              Url: data.signedUrl,
             },
           },
           {
@@ -73,6 +80,20 @@ serve(async (req) => {
 
   if (upload_error || !upload_data) {
     return errorHandler(upload_error);
+  }
+
+  const { error: update_error } = await supabaseAdmin
+    .from("tbl_documents")
+    .update({ image: upload_data.path })
+    .eq("document_id", doc.document_id);
+
+  const { error: page_update_error } = await supabaseAdmin
+    .from("tbl_document_versions")
+    .update({ page_count: numPages })
+    .eq("document_id", doc.document_id);
+
+  if (update_error || page_update_error) {
+    return errorHandler({ update_error, page_update_error });
   }
 
   return new Response(JSON.stringify(upload_data), {

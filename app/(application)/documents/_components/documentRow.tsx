@@ -105,7 +105,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           ButtonText={"New Link"}
           ButtonIcon={LinkIcon}
           ButtonSize={4}
-          // onClick={() => setShowNewLinkModal(true)}
+          onClick={() => setShowNewLinkModal(true)}
         />
         <Toggle
           toggleId={`${document_id}-toggle`}

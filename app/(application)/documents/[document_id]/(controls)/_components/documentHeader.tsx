@@ -24,6 +24,7 @@ import { EyeIcon } from "@heroicons/react/24/solid";
 import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
 
 const rowButtons = [
   { id: "View", name: "View document", icon: PresentationChartBarIcon },
