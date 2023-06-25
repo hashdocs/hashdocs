@@ -12,7 +12,9 @@ export default function Login() {
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (e:any) => {
+    e.preventDefault();
+
     const {
       data: { user },
     } = await supabase.auth.signInWithPassword({
@@ -27,7 +29,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-1 justify-center max-w-lg flex-col space-y-4">
+    <form
+      onSubmit={handleSignIn}
+      className="flex max-w-lg flex-1 flex-col justify-center space-y-4"
+    >
       <input
         name="email"
         onChange={(e) => setEmail(e.target.value)}
@@ -44,11 +49,11 @@ export default function Login() {
         placeholder="Password"
       />
       <button
-        onClick={handleSignIn}
+        type="submit"
         className="rounded-md border border-stratos-default bg-stratos-default px-2 py-3 text-white"
       >
         Sign in
       </button>
-    </div>
+    </form>
   );
 }

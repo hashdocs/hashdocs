@@ -16,23 +16,22 @@ export function ThumbnailImage({
   > | null>(null);
 
   useEffect(() => {
-    console.log("fired");
     setError(null);
   }, [src]);
 
   return (
     <Link
-      className="relative flex h-[72px] w-[128px] shrink-0 rounded-md border object-cover"
+      className="relative flex h-[72px] w-[137px] shrink-0 rounded-md border object-cover"
       href={`/preview/${document_id}`}
       target="_blank"
     >
       <Image
         alt={document_id}
         onError={setError}
-        src={error || !src ? "/images/no_document_fallback.png" : src}
+        src={error || !src ? "/images/default_thumbnail.png" : src}
         // fill={true}
         height={72}
-        width={128}
+        width={137}
         // style={{ objectFit: "contain" }}
       />
       <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-shade-disabled opacity-0 transition-opacity duration-200 hover:opacity-50">

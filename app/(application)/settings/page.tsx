@@ -1,17 +1,32 @@
+'use client'
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import Empty from "@/app/_components/navigation/empty";
+import { classNames } from "@/app/_utils/classNames";
+import { Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  ChartBarSquareIcon,
+  Cog6ToothIcon,
+  FolderIcon,
+  GlobeAltIcon,
+  ServerIcon,
+  SignalIcon,
+  XMarkIcon,
+  Bars3Icon,
+  MagnifyingGlassIcon,
+  EllipsisHorizontalIcon,
+} from "@heroicons/react/24/outline";
+import PopOver from "@/app/_components/shared/popover";
 
-async function getData() {
-  const a = await fetch("https://hub.dummyapis.com/delay?seconds=5", {
-    next: { revalidate: 0 },
-  });
-
-  return await a.text();
-}
+const secondaryNavigation = [
+  { name: "Account", href: "#", current: true },
+  { name: "Notifications", href: "#", current: false },
+  { name: "Billing", href: "#", current: false },
+  { name: "Teams", href: "#", current: false },
+  { name: "Integrations", href: "#", current: false },
+];
 
 export default async function SettingsPage() {
-  const str = await getData();
-
   const pageProps = primaryNavigation.find((page) => page.path === "/settings");
 
   return (
@@ -26,7 +41,25 @@ export default async function SettingsPage() {
           </p>
         </div>
       </div>
-      <Empty />
+      <PopOver
+        options={[
+          {
+            name: "Insights",
+            icon: EllipsisHorizontalIcon,
+            optionClick: () => {},
+          },
+          {
+            name: "Automations",
+            icon: EllipsisHorizontalIcon,
+            optionClick: () => {},
+          },
+          {
+            name: "Reports",
+            icon: EllipsisHorizontalIcon,
+            optionClick: () => {},
+          },
+        ]}
+      />
     </section>
   );
 }

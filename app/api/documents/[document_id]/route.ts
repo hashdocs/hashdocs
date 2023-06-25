@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import type { Database } from "@/types/supabase.types";
-import { LinkType } from "@/types/documents.types";
+import { LinkType, DocumentType } from "@/types/documents.types";
 import { redirect } from "next/navigation";
 
 /*================================ CREATE NEW LINK ==============================*/
@@ -110,6 +110,52 @@ export async function DELETE(
 
   return NextResponse.json(
     { message: `Successfully deleted ${data.document_id}` },
+    { status: 200 }
+  );
+}
+
+/*================================ CREATE DOWNLOAD LINK ==============================*/
+
+export async function GET(
+  request: Request,
+  { params: { document_id } }: { params: { document_id: string } }
+) {
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(null, { status: 401 });
+    redirect("/");
+  }
+
+  const { data: document_data, error: document_error } = await supabase
+    .rpc("get_documents", { document_id_input: document_id })
+    .returns<DocumentType[]>();
+
+  if (document_error || !document_data || !document_data[0]) {
+    redirect("/documents");
+  }
+
+  const { data, error } = await supabase.storage
+    .from("documents")
+    .createSignedUrl(
+      `${document_data[0].document_id}/${document_data[0].document_version}.pdf`,
+      60,
+      {
+        download: document_data[0].document_name,
+      }
+    );
+
+  if (!data || error) {
+    console.error(error);
+    return NextResponse.json(null, { status: 500 });
+  }
+
+  return NextResponse.json(
+    { document_data, signedUrl: data.signedUrl },
     { status: 200 }
   );
 }

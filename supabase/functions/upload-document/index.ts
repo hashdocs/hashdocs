@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { errorHandler } from "../_shared/errorHandler.ts";
 import { DocumentType, supabaseAdmin } from "../_shared/supabaseClient.ts";
 import { PDFDocument } from "https://esm.sh/pdf-lib@1.17.1";
+import { randomInt } from "https://deno.land/x/collections@0.12.1/mod.ts";
 
 serve(async (req) => {
   const { document_id } = await req.json();
@@ -28,7 +29,7 @@ serve(async (req) => {
     return errorHandler(error);
   }
 
-  console.info(`Created a signed url - ${data.signedUrl}`)
+  console.info(`Created a signed url - ${data.signedUrl}`);
 
   const arrayBuffer = await fetch(data.signedUrl).then((res) =>
     res.arrayBuffer()
@@ -73,10 +74,14 @@ serve(async (req) => {
 
   const { data: upload_data, error: upload_error } = await supabaseAdmin.storage
     .from("thumbnails")
-    .upload(`${doc.document_id}.jpg`, thumbnail_arrayBuffer, {
-      contentType: "image/jpeg",
-      upsert: true,
-    });
+    .upload(
+      `${doc.document_id}/${randomInt(100000, 999999)}.jpg`,
+      thumbnail_arrayBuffer,
+      {
+        contentType: "image/jpeg",
+        upsert: true,
+      }
+    );
 
   if (upload_error || !upload_data) {
     return errorHandler(upload_error);
@@ -90,7 +95,8 @@ serve(async (req) => {
   const { error: page_update_error } = await supabaseAdmin
     .from("tbl_document_versions")
     .update({ page_count: numPages })
-    .eq("document_id", doc.document_id).eq("document_version", doc.document_version);
+    .eq("document_id", doc.document_id)
+    .eq("document_version", doc.document_version);
 
   if (update_error || page_update_error) {
     return errorHandler({ update_error, page_update_error });

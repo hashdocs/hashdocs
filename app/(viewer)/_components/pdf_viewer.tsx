@@ -11,14 +11,18 @@ import { useParams } from "next/navigation";
 import { RefObject, createRef, useEffect, useRef, useState } from "react";
 import { Document, Page, Thumbnail } from "react-pdf";
 import { pdfjs } from "react-pdf";
-import { OnItemClickArgs, PageCallback } from "react-pdf/dist/cjs/shared/types";
+import {
+  DocumentCallback,
+  OnItemClickArgs,
+  PageCallback,
+} from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function PDFViewer({ signedURL }: { signedURL: string }) {
   const [numPages, setNumPages] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
   const pageHeight = window.innerHeight * 0.8;
-  const pageWidth = window.innerWidth * 0.65;
+  // const pageWidth = window.innerWidth * 0.3;
   const thumbnailWidth = window.innerWidth * 0.12;
   const thumbnailHeight = window.innerHeight * 0.2;
   const [zoom, setZoom] = useState(1);
@@ -31,6 +35,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   >([]);
   const [hasScrolled, setHasScrolled] = useState(false);
   const scrollableElementRef = useRef<HTMLDivElement>(null);
+  const [threshold, setThreshold] = useState(0.5);
 
   const { link_id } = useParams();
 
@@ -39,23 +44,19 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   // Handle thumbnail click
   function handleThumbnailClick(args: OnItemClickArgs) {
     // setActivePage(args.pageNumber);
-    scrollableElementRef.current?.scrollTo({ 
-        top: pageRefs[args.pageNumber-1]?.current?.offsetTop!  - 136,
-        behavior: 'instant' 
+    scrollableElementRef.current?.scrollTo({
+      top: pageRefs[args.pageNumber - 1]?.current?.offsetTop! - 136,
+      behavior: "instant",
     });
   }
 
   // First call when the document loads to set the page count
-  function onDocumentLoadSuccess({
-    numPages: nextNumPages,
-  }: {
-    numPages: number;
-  }) {
-    setNumPages(nextNumPages);
+  function onDocumentLoadSuccess(document: DocumentCallback) {
+    setNumPages(document.numPages);
 
     // Initialize an array of refs
     setPageRefs((oldRefs) =>
-      Array(nextNumPages)
+      Array(document.numPages)
         .fill(null)
         .map((_, i) => oldRefs[i] || createRef())
     );
@@ -73,15 +74,33 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   /* ------------------------------- USE EFFECTS ------------------------------ */
 
   useEffect(() => {
+    const calcPageHeight = pageHeight * zoom;
+
+    if (window.innerHeight / calcPageHeight < 1) {
+      setThreshold(0.5);
+    } else if (window.innerHeight / calcPageHeight < 2) {
+      setThreshold(0.75);
+    } else {
+      setThreshold(1);
+    }
+  }, [zoom, pageHeight]);
+
+  useEffect(() => {
     const scrollHandler = () => {
       setHasScrolled(true);
-      scrollableElementRef.current?.removeEventListener('scroll', scrollHandler);
+      scrollableElementRef.current?.removeEventListener(
+        "scroll",
+        scrollHandler
+      );
     };
-    
-    scrollableElementRef.current?.addEventListener('scroll', scrollHandler);
-    
+
+    scrollableElementRef.current?.addEventListener("scroll", scrollHandler);
+
     return () => {
-      scrollableElementRef.current?.removeEventListener('scroll', scrollHandler);
+      scrollableElementRef.current?.removeEventListener(
+        "scroll",
+        scrollHandler
+      );
     };
   }, [scrollableElementRef.current]);
 
@@ -89,18 +108,25 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (hasScrolled && entry.isIntersecting && entry.intersectionRect.height > 0) {
+          if (
+            hasScrolled &&
+            entry.isIntersecting &&
+            entry.intersectionRect.height > 0
+          ) {
             const pageIndex = pageRefs.findIndex(
               (ref) => ref?.current === entry.target
             );
             setPageTimes((oldTimes) => {
-              return [...oldTimes, { pageNumber: activePage, entryTime: Date.now() }];
+              return [
+                ...oldTimes,
+                { pageNumber: activePage, entryTime: Date.now() },
+              ];
             });
             setActivePage(pageIndex + 1); // pages are 1-indexed
           }
         });
       },
-      { threshold: 0.7 }
+      { threshold: threshold }
     );
 
     pageRefs.forEach((ref) => ref?.current && observer.observe(ref.current));
@@ -119,26 +145,28 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
         (ref) => ref?.current && observer.unobserve(ref.current)
       );
     };
-  }, [pageRefs, activePage, hasScrolled]);
-
+  }, [pageRefs, activePage, hasScrolled, threshold]);
 
   useEffect(() => {
-    const flatPageTimes = pageTimes.map((pageTime, index) => {
-      if (
-        ((pageTimes[index + 1]?.entryTime ?? Date.now()) - pageTime.entryTime) <
-        300
-      )
-        return;
-      return {
-        ...pageTime,
-        exitTime: pageTimes[index + 1]?.entryTime || Date.now(),
-      };
-    }).filter((item) => item !== undefined);
+    const flatPageTimes = pageTimes
+      .map((pageTime, index) => {
+        if (
+          (pageTimes[index + 1]?.entryTime ?? Date.now()) - pageTime.entryTime <
+          300
+        )
+          return;
+        return {
+          ...pageTime,
+          exitTime: pageTimes[index + 1]?.entryTime || Date.now(),
+        };
+      })
+      .filter((item) => item !== undefined);
     const interval = setInterval(async () => {
-        link_id && await fetch(`/api/viewer/${link_id}`, {
+      link_id &&
+        (await fetch(`/api/viewer/${link_id}`, {
           method: "PUT",
           body: JSON.stringify(flatPageTimes),
-        });
+        }));
     }, 3000);
 
     // Cleanup: remove event listeners and clear interval
@@ -177,7 +205,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
       onLoadSuccess={onDocumentLoadSuccess}
       loading={<Loader />}
       onContextMenu={(e) => e.preventDefault()}
-      className="no-print flex w-full flex-1 flex-row justify-center bg-shade-overlay"
+      className="no-print -mx-1 flex w-full flex-1 flex-row justify-center bg-shade-overlay"
       externalLinkTarget="_blank"
     >
       <div
@@ -214,7 +242,10 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           </div>
         ))}
       </div>
-      <div ref={scrollableElementRef} className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex">
+      <div
+        ref={scrollableElementRef}
+        className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex"
+      >
         <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
           <div className="flex flex-row gap-x-2">
             <div
@@ -262,8 +293,8 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               renderAnnotationLayer={false}
               renderTextLayer={false}
               className="my-4"
-              height={pageHeight}
-              width={pageWidth}
+              // height={pageHeight}
+              // width={pageWidth}
               scale={zoom}
               inputRef={pageRefs[index]}
             />

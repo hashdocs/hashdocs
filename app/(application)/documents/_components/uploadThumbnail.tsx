@@ -11,25 +11,32 @@ import Loader from "@/app/_components/navigation/loader";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import Toggle from "@/app/_components/shared/buttons/toggle";
+import Image from "next/image";
 
-interface UploadDocumentModalProps {
+interface UploadThumbnailProps {
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
-  document_id?: string | null;
+  document_id: string;
   document_name?: string | null;
+  image?: string | null;
 }
 
-const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
+const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
   isOpen,
   setIsOpen,
-  document_id = null,
+  document_id,
   document_name = null,
+  image = null,
 }) => {
   const router = useRouter();
 
   /*-------------------------------- SET STATE VARIABLES  ------------------------------*/
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCustomImage, setIsCustomImage] = useState<boolean>(
+    image ? true : false
+  );
 
   /*-------------------------------- FUNCTIONS ------------------------------*/
 
@@ -38,59 +45,51 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   }) => {
     if (Object.keys(files).length > 1) return false;
 
-    let file = files[Object.keys(files)[0]];
-
-    if (file.type !== "application/pdf") return false;
-
     return true;
+  };
+
+  const handleToggle = (checked: boolean) => {
+    return new Promise((resolve) => {
+      setIsCustomImage(!isCustomImage);
+      fetch(
+        `/api/documents/${document_id}/thumbnail?image=${false}`,
+        { method: "POST" }
+      );
+      resolve(true);
+    });
   };
 
   const uppy = new Uppy({
     id: "uppy",
     restrictions: {
-      allowedFileTypes: [".pdf"],
+      allowedFileTypes: [".jpg", ".jpeg", ".png"],
       maxFileSize: 100000000, // 1MB
     },
     onBeforeUpload: (files) => handleBeforeUpload(files),
     allowMultipleUploads: false,
+
   }).use(XHR, {
     //TODO:Update to https
-    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${
-      document_id ? `?document_id=${document_id}` : ""
-    }`,
+    endpoint: `/api/documents/${document_id}/thumbnail`,
   });
 
   uppy.on("upload-success", (file, response) => {
     toast.success(
-      <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
-        <div className="flex flex-col gap-y-1">
-          <p className="">
-            <span className="font-semibold text-stratos-default">
-              {file?.name}
-            </span>{" "}
-            {document_id ? "updated" : "uploaded"} successfully
-          </p>
-          <p className="font-normal">
-            You can now create secure links for sharing
-          </p>
-        </div>
-        <Link
-          onClick={(e) => {
-            e.stopPropagation();
-            toast.dismiss(`${response.body.document_id}-toast`);
-          }}
-          href={`/preview/${response.body.document_id}`}
-          target="_blank"
-          rel="noreferrer"
-          className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
-        >
-          <PresentationChartBarIcon className="h-5 w-5 " />
-          <span className="font-normal">{`Preview`}</span>
-        </Link>
-      </div>,
-      { duration: 10000, id: `${response.body.document_id}-toast` }
+      <div className="flex flex-col gap-y-1">
+        <p className="">
+          <span className="font-semibold text-stratos-default">
+            {file?.name}
+          </span>
+          {" - "}
+          Thumbnail updated successfully
+        </p>
+        <p className="font-normal">
+          It may take a few minutes to propagate across our CDN
+        </p>
+      </div>
     );
-    router.push(`/documents/${response.body.document_id}`);
+    setIsOpen(false);
+    router.refresh();
   });
 
   /*-------------------------------- RENDER ------------------------------*/
@@ -124,43 +123,50 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
               {isLoading ? (
                 <Loader />
               ) : (
-                <Dialog.Panel className="relative flex w-full max-w-xl transform flex-col space-y-6 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
+                <Dialog.Panel className="relative flex transform flex-col space-y-6 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
                   <div className="flex items-start justify-between">
                     <div className="flex flex-col justify-between">
                       <Dialog.Title
                         as="h3"
                         className="text-left font-semibold uppercase leading-6"
                       >
-                        {document_id
-                          ? "Update document"
-                          : "Upload new document"}
+                        Update thumbnail
                       </Dialog.Title>
                       <Dialog.Description
                         as="h3"
                         className="text-left text-xs leading-6 text-shade-pencil-light"
                       >
-                        {
-                          "Your documents are securely stored with AES-256 encryption"
-                        }
+                        {"Resolution: 1200x630 px"}
                       </Dialog.Description>
                     </div>
-                    <Link
-                      href={`/preview/${document_id}`}
-                      target="_blank"
-                      className="max-w-1/3 truncate text-xs text-stratos-default underline"
-                    >
-                      {document_name}
-                    </Link>
+                    <Toggle
+                      toggleId={`${document_id}-thumbnail-toggle`}
+                      isChecked={isCustomImage}
+                      setIsChecked={setIsCustomImage}
+                      onToggle={handleToggle}
+                      Label={"Custom thumbnail"}
+                    />
                   </div>
-                  <Dashboard
-                    uppy={uppy}
-                    plugins={[]}
-                    proudlyDisplayPoweredByUppy={false}
-                    showProgressDetails={true}
-                    hideUploadButton={false}
-                    target="uppy-upload-area"
-                    height={200}
-                  />
+                  {/* {isCustomImage ? ( */}
+                    <Dashboard
+                      uppy={uppy}
+                      plugins={[]}
+                      proudlyDisplayPoweredByUppy={false}
+                      showProgressDetails={true}
+                      hideUploadButton={false}
+                      target="uppy-upload-area"
+                      height={200}
+                      width={380}
+                    />
+                  {/* // ) : ( */}
+                  {/* //   <Image */}
+                  {/* //     height={200}
+                  //     width={380}
+                  //     src={"/images/default_thumbnail.png"}
+                  //     alt={"Thumbnail"}
+                  //     className="rounded-lg bg-shade-overlay p-2"
+                  //   />
+                  // )} */}
                 </Dialog.Panel>
               )}
             </Transition.Child>
@@ -171,4 +177,4 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   );
 };
 
-export default UploadDocumentModal;
+export default UploadThumbnailModal;

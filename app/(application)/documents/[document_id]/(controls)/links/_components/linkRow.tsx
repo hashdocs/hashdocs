@@ -59,6 +59,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
         reject("error");
       if (res.ok) {
         resolve("done");
+        setDocument(document);
       }
     });
   };
@@ -90,7 +91,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
           data-tooltip-content={`🚫 Disabled`}
         >
           <div
-            onClick={() => CopyLinkToClipboard(path,true, `${link_id}-url`)}
+            onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)}
             className={`flex items-center space-x-2 rounded-xl bg-shade-overlay px-4 py-2 ${
               isActive && document?.is_enabled
                 ? "cursor-pointer text-stratos-default "
@@ -240,9 +241,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
                   }}
                   className="col-span-12 flex justify-end"
                 >
-                  {`see all ${
-                    views.length
-                  } views`}
+                  {`see all ${views.length} views`}
                 </Link>
               </div>
             </div>

@@ -24,9 +24,11 @@ export default async function ApplicationLayout({
     redirect("/");
   }
 
+  const user = session.user;
+
   return (
     <div className="flex max-h-screen w-full flex-1 overflow-hidden">
-      <Sidebar />
+      <Sidebar {...user} />
       <main className="h-screen w-full flex flex-1 flex-col items-center overflow-x-auto">
         <div className="sticky top-0 z-10 w-full">
           <TopBar />

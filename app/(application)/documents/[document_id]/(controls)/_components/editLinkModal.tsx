@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useContext, useEffect, useState } from "react";
+import { Combobox, Dialog, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { classNames } from "@/app/_utils/classNames";
@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Database } from "@/types/supabase.types";
 import { useRouter } from "next/navigation";
+import { DocumentContext } from "./documentHeader";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -33,10 +34,15 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     isActive = true,
     setIsActive = () => {},
     handleToggle,
-    setDocument = () => {},
   } = props;
 
   const router = useRouter();
+
+  const _documentcontext = useContext(DocumentContext);
+
+  if (!_documentcontext) return null;
+
+  const { document, setDocument } = _documentcontext;
   /*-------------------------------- SET DEFAULT VALUES ------------------------------*/
 
   const {

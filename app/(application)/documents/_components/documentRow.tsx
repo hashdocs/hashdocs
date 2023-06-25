@@ -8,6 +8,9 @@ import {
   PresentationChartBarIcon,
   CloudArrowUpIcon,
   ArrowPathIcon,
+  PencilIcon,
+  PhotoIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
@@ -18,6 +21,10 @@ import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "../[document_id]/(controls)/_components/editLinkModal";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import UploadDocumentModal from "./uploadDocument";
+import PopOver from "@/app/_components/shared/popover";
+import { ChartBarIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
@@ -37,8 +44,12 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
 
+  const router = useRouter();
+
   const active_links_count =
     links.filter((link) => link.is_active === true).length ?? 0;
+
+  /* -------------------------------- FUNCTIONS ------------------------------- */
 
   const handleToggle = async (checked: boolean) => {
     return new Promise(async (resolve, reject) => {
@@ -60,6 +71,33 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         });
     });
   };
+
+  const handleDelete = async () => {
+    const deletePromise = new Promise(async (resolve, reject) => {
+      const res = fetch(`/api/documents/${props.document_id}`, {
+        method: "DELETE",
+      });
+
+      res
+        .then((res) => {
+          if (res.ok) {
+            resolve(res.status);
+          }
+        })
+        .catch((err) => {
+          reject(Error("Error updating doc status"));
+        });
+    });
+
+    toast.promise(deletePromise, {
+      loading: "Deleting document...",
+      success: "Successfully deleted document",
+      error: "Error in deleting document. Please try again",
+    });
+    router.refresh();
+  };
+
+  /* --------------------------------- RENDER --------------------------------- */
 
   return (
     <li
@@ -131,7 +169,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
               : "All links are disabled"
           }
         />
-        <div className="space-x-1">
+        <div className="flex space-x-1">
           <Link href={`/preview/${document_id}`} target="_blank">
             <IconButton
               key={`${document_id}-preview`}
@@ -147,12 +185,29 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
             ButtonIcon={ArrowPathIcon}
             onClick={() => setShowUpdateDocumentModal(true)}
           />
-          <IconButton
-            key={`${document_id}-options`}
-            ButtonId={`${document_id}-options`}
-            ButtonText={"More options"}
-            ButtonIcon={EllipsisHorizontalIcon}
-            // onClick={() => setShowUpdateDocumentModal(true)}
+          <PopOver
+            options={[
+              {
+                name: "Edit document",
+                icon: PencilIcon,
+                optionClick: () => {
+                  router.push(`/documents/${document_id}`)
+                },
+              },
+              {
+                name: "Analytics",
+                icon: ChartBarIcon,
+                optionClick: () => {
+                  router.push(`/documents/${document_id}/analytics`);
+                },
+              },
+              {
+                name: "Delete",
+                icon: TrashIcon,
+                optionClick: handleDelete,
+                optionClassName: "text-red-500",
+              },
+            ]}
           />
         </div>
       </div>

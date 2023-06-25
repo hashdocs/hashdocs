@@ -3,15 +3,22 @@ import IconButton from "@/app/_components/shared/buttons/iconButton";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import {
+  ArrowDownIcon,
+  ArrowDownTrayIcon,
   ArrowLeftIcon,
   ArrowLongLeftIcon,
   ArrowPathIcon,
+  BackwardIcon,
   CalendarDaysIcon,
+  ChartBarIcon,
   ChevronLeftIcon,
   EllipsisHorizontalIcon,
   LinkIcon,
+  PencilIcon,
+  PhotoIcon,
   PresentationChartBarIcon,
   TrashIcon,
+  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { createContext, useState } from "react";
@@ -25,14 +32,11 @@ import { EyeIcon } from "@heroicons/react/24/solid";
 import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import toast from "react-hot-toast";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import UploadDocumentModal from "../../../_components/uploadDocument";
-
-const rowButtons = [
-  { id: "View", name: "View document", icon: PresentationChartBarIcon },
-  { id: "Refresh", name: "Refresh document", icon: ArrowPathIcon },
-  { id: "Trash", name: "Delete document", icon: TrashIcon },
-];
+import PopOver from "@/app/_components/shared/popover";
+import router from "next/router";
+import UploadThumbnailModal from "../../../_components/uploadThumbnail";
 
 export const DocumentContext = createContext<DocumentContextType | null>(null);
 
@@ -50,7 +54,10 @@ export default function DocumentHeader({
     source_type,
     is_enabled,
     created_at,
+    image,
   } = props;
+
+  const router = useRouter();
 
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(is_enabled);
@@ -58,6 +65,10 @@ export default function DocumentHeader({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(document_name ?? ".");
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
+  const [showUpdateThumbnailModal, setShowUpdateThumbnailModal] =
+    useState(false);
+
+  /* -------------------------------- FUNCTIONS ------------------------------- */
 
   const handleNameChange = (event: any) => {
     setName(event.target.value);
@@ -81,11 +92,11 @@ export default function DocumentHeader({
       }
     });
 
-    toast.promise(updatePromise, {
-      loading: "Updating document name...",
-      success: "Successfully updated",
-      error: "Failed to update! Please try again",
-    });
+    // toast.promise(updatePromise, {
+    //   loading: "Updating document name...",
+    //   success: "Successfully updated",
+    //   error: "Failed to update! Please try again",
+    // });
   };
 
   const handleClick = () => {
@@ -115,7 +126,70 @@ export default function DocumentHeader({
     });
   };
 
-  const handleUploadClick = () => {};
+  const handleDelete = async () => {
+    const deletePromise = new Promise(async (resolve, reject) => {
+      const res = fetch(`/api/documents/${props.document_id}`, {
+        method: "DELETE",
+      });
+
+      res
+        .then((res) => {
+          if (res.ok) {
+            resolve(res.status);
+          }
+        })
+        .catch((err) => {
+          reject(Error("Error updating doc status"));
+        });
+    });
+
+    toast.promise(deletePromise, {
+      loading: "Deleting document...",
+      success: "Successfully deleted document",
+      error: "Error in deleting document. Please try again",
+    });
+    router.push("/documents");
+  };
+
+  const handleDownload = async () => {
+    const getPromise = new Promise(async (resolve, reject) => {
+      const res = await fetch(`/api/documents/${props.document_id}`, {
+        method: "GET",
+      });
+
+      if (res.status !== 200) reject(res.statusText);
+
+      const data = await res.json();
+
+      if (!data.signedUrl) reject("error");
+
+      resolve(data.signedUrl);
+    });
+
+    toast.promise(
+      getPromise,
+      {
+        loading: "Generating download link...",
+        success: (url: any) => (
+          <p>
+            Your document is fetched.{" "}
+            <Link
+              href={url}
+              target="_blank"
+              className="text-stratos-default underline"
+            >
+              Click here
+            </Link>{" "}
+            to download
+          </p>
+        ),
+        error: "Error in downloading the document",
+      },
+      { duration: 6000 }
+    );
+  };
+
+  /* --------------------------------- RENDER --------------------------------- */
 
   return (
     <DocumentContext.Provider
@@ -134,7 +208,7 @@ export default function DocumentHeader({
             <div className="flex flex-col space-y-1 overflow-hidden">
               {isEditing ? (
                 <input
-                  className="truncate rounded-sm px-1 py-0 text-lg font-semibold text-shade-pencil-black"
+                  className="truncate rounded-sm px-1 py-0 text-lg font-semibold text-shade-pencil-black focus:ring-2 focus:ring-stratos-default"
                   type="text"
                   value={name}
                   onChange={handleNameChange}
@@ -162,10 +236,9 @@ export default function DocumentHeader({
               </div>
               <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
                 <CalendarDaysIcon className="h-4 w-4" />
-                <p className="flex-nowrap truncate text-xs ">{`Last refreshed on ${formatDate(
-                  created_at,
-                  "MMM D YYYY"
-                )}`}</p>
+                <p className="flex-nowrap truncate text-xs ">{`Version ${
+                  document.document_version
+                } | Updated on ${formatDate(created_at, "MMM D YYYY")}`}</p>
               </div>
             </div>
           </div>
@@ -198,7 +271,10 @@ export default function DocumentHeader({
               }
               Label={
                 isEnabled
-                  ? `${document?.links.length} links are enabled`
+                  ? `${
+                      document?.links.filter((link) => link.is_active === true)
+                        .length ?? 0
+                    } links are enabled`
                   : "All links are disabled"
               }
             />
@@ -217,12 +293,43 @@ export default function DocumentHeader({
               ButtonIcon={ArrowPathIcon}
               onClick={() => setShowUpdateDocumentModal(true)}
             />
-            <IconButton
-              key={`${document_id}-options`}
-              ButtonId={`${document_id}-options`}
-              ButtonText={"More options"}
-              ButtonIcon={EllipsisHorizontalIcon}
-              // onClick={() => setShowUpdateDocumentModal(true)}
+            <PopOver
+              options={[
+                {
+                  name: "Edit name",
+                  icon: PencilIcon,
+                  optionClick: () => {
+                    setIsEditing(true);
+                  },
+                },
+                {
+                  name: "Change thumbnail",
+                  icon: PhotoIcon,
+                  optionClick: () => {
+                    setShowUpdateThumbnailModal(true);
+                  },
+                },
+                {
+                  name: "Download",
+                  icon: ArrowDownTrayIcon,
+                  optionClick: handleDownload,
+                },
+                {
+                  name: "Version history",
+                  icon: BackwardIcon,
+                  optionClick: () => {
+                    toast.success("Version history is coming soon", {
+                      icon: <WrenchScrewdriverIcon className="h-4 w-4" />,
+                    });
+                  },
+                },
+                {
+                  name: "Delete",
+                  icon: TrashIcon,
+                  optionClick: handleDelete,
+                  optionClassName: "text-red-500",
+                },
+              ]}
             />
             <LargeButton
               ButtonText={"New Link"}
@@ -248,6 +355,13 @@ export default function DocumentHeader({
             setIsOpen={setShowUpdateDocumentModal}
             document_id={document_id}
             document_name={document_name}
+          />
+          <UploadThumbnailModal
+            isOpen={showUpdateThumbnailModal}
+            setIsOpen={setShowUpdateThumbnailModal}
+            document_id={document_id}
+            document_name={document_name}
+            image={image}
           />
         </div>
         <DocumentTabs {...document} />

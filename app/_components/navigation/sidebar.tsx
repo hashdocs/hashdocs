@@ -1,27 +1,27 @@
-'use client'
-import { Fragment, useCallback, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+"use client";
+import { useCallback, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { primaryNavigation } from "./routes.constants";
 import Image from "next/image";
-
-const teams = [
-  { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { classNames } from "@/app/_utils/classNames";
+import { User } from "@supabase/supabase-js";
+import {
+  ArrowLeftOnRectangleIcon,
+  BuildingOfficeIcon,
+  PlusIcon,
+  UserCircleIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/outline";
+import PopOver from "../shared/popover";
+import toast from "react-hot-toast";
+import { Popover } from "@headlessui/react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Database } from "@/types/supabase.types";
 
 type primaryNavigationType = (typeof primaryNavigation)[0];
 
-export default function Sidebar() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
+export default function Sidebar(user: User) {
   const path = usePathname();
 
   const defaultNav =
@@ -30,6 +30,8 @@ export default function Sidebar() {
     }) ?? primaryNavigation[0];
 
   const [activeNav, setActiveNav] = useState(defaultNav);
+  const supabase = createClientComponentClient<Database>();
+  const router = useRouter();
 
   const changeSelectedNav = useCallback(
     (newNav: primaryNavigationType) => {
@@ -38,6 +40,34 @@ export default function Sidebar() {
     [activeNav]
   );
 
+  const options = [
+    {
+      name: "Invite team",
+      icon: PlusIcon,
+      optionClick: () => {
+        toast.success("Team management is coming soon", {
+          icon: <WrenchScrewdriverIcon className="h-4 w-4" />,
+        });
+      },
+    },
+    {
+      name: "Manage account",
+      icon: BuildingOfficeIcon,
+      optionClick: () => {
+        router.push(`/settings`);
+      },
+    },
+    {
+      name: "Logout",
+      icon: ArrowLeftOnRectangleIcon,
+      optionClick: () => {
+        supabase.auth.signOut().then(() => {
+          router.push(`/`);
+        });
+      },
+    },
+  ];
+
   return (
     <aside
       className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6"
@@ -45,10 +75,12 @@ export default function Sidebar() {
     >
       <div className="flex flex-col gap-y-6  ">
         <div className="flex flex-row items-center">
-          <div className="overflow-hidden w-9 h-12 scale-75 -ml-1 relative">
-            <Image src={"/hashdocs.svg"} fill={true} alt={"hashdocs"}/>
+          <div className="relative -ml-1 h-12 w-9 scale-75 overflow-hidden">
+            <Image src={"/hashdocs.svg"} fill={true} alt={"hashdocs"} />
           </div>
-          <h1 className="font-bold text-2xl mt-1 leading-6 ml-1 tracking-wide">hashdocs</h1>
+          <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
+            hashdocs
+          </h1>
         </div>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
@@ -76,22 +108,61 @@ export default function Sidebar() {
             </ul>
           </li>
         </ul>
-        </div>
-        <div className="">
-            <a
-              href="#"
-              className="text-pencil-dark flex items-center gap-x-4 py-3 text-sm font-semibold leading-6 "
+      </div>
+      <Popover className="">
+        {({ open }) => (
+          <>
+            <Popover.Button className="flex items-center gap-x-3 focus:outline-none focus:ring-0">
+              {user.user_metadata?.avatar_url ? (
+                <Image
+                  className="h-6 w-6 shrink-0 rounded-full "
+                  src={user.user_metadata?.avatar_url ?? ""}
+                  alt=""
+                  height={32}
+                  width={32}
+                />
+              ) : (
+                <UserCircleIcon
+                  className="h-6 w-6 text-shade-pencil-light"
+                  aria-hidden="true"
+                />
+              )}
+              <span
+                aria-hidden="true"
+                className="truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+              >
+                {user.email}
+              </span>
+            </Popover.Button>
+            <Popover.Panel
+              className={classNames(
+                "absolute z-10 flex max-w-sm shrink -translate-y-full translate-x-40 transform"
+              )}
             >
-              <img
-                className="h-8 w-8 rounded-full "
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt=""
-              />
-              <span className="sr-only">Your profile</span>
-              <span aria-hidden="true">Tom Cook</span>
-            </a>
-          </div>
-      
+              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                <div className="relative grid bg-white">
+                  {options.map((item) => (
+                    <button
+                      key={item.name}
+                      onClick={item.optionClick}
+                      className={classNames(
+                        "focus:ring-none flex items-center rounded-lg px-2 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
+                      )}
+                    >
+                      <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
+                        <item.icon aria-hidden="true" />
+                      </div>
+                      <div className="ml-3 text-xs">
+                        <p className="">{item.name}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Popover.Panel>
+          </>
+        )}
+      </Popover>
     </aside>
   );
 }
