@@ -10,9 +10,10 @@ import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
   PlusIcon,
-  UserCircleIcon,
+  UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 import PopOver from "../shared/popover";
 import toast from "react-hot-toast";
 import { Popover } from "@headlessui/react";
@@ -51,10 +52,10 @@ export default function Sidebar(user: User) {
       },
     },
     {
-      name: "Manage account",
-      icon: BuildingOfficeIcon,
+      name: "Edit profile",
+      icon: UserIcon,
       optionClick: () => {
-        router.push(`/settings`);
+        router.push(`/settings/profile`);
       },
     },
     {

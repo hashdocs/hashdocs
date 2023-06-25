@@ -27,15 +27,15 @@ export const primaryNavigation = [
     description: "Collect and manage e-signatures",
   },
   {
-    name: "Users",
-    path: "/users",
+    name: "Accounts",
+    path: "/accounts",
     icon: UsersIcon,
-    description: "View users and shared history",
+    description: "Manage accounts and viewers",
   },
   {
     name: "Settings",
     path: "/settings",
     icon: Cog8ToothIcon,
-    description: "Manage your account settings",
+    description: "Edit your preferences and settings",
   },
 ];

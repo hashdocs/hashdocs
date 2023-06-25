@@ -92,7 +92,7 @@ function validateViewer(
 
   if (
     link_props.is_domain_restricted &&
-    !validateDomain(input_props.email_input)
+    !validateDomain(input_props.email_input, link_props.restricted_domains)
   ) {
     return false;
   }

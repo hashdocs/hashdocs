@@ -13,6 +13,11 @@ const nextConfig = {
           destination: '/documents/:slug/links', // Matched parameters can be used in the destination
           permanent: true,
         },
+        {
+          source: '/settings',
+          destination: '/settings/profile', // Matched parameters can be used in the destination
+          permanent: true,
+        },
       ]
     },
   }

@@ -92,6 +92,9 @@ export default function DocumentHeader({
       }
     });
 
+    updatePromise.then((_res) => {
+    });
+
     // toast.promise(updatePromise, {
     //   loading: "Updating document name...",
     //   success: "Successfully updated",

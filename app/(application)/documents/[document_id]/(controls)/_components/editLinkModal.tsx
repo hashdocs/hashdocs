@@ -20,13 +20,19 @@ interface EditLinkModalProps extends DocumentType {
   isActive?: boolean;
   setIsActive?: (state: boolean) => void;
   handleToggle?: (checked: boolean) => Promise<unknown>;
-  setDocument?: (prevDocument: DocumentType) => void;
+  setDocument: (prevDocument: DocumentType) => void;
   link_id: string | null;
 }
 
 const EditLinkModal: React.FC<EditLinkModalProps> = (
   props: EditLinkModalProps
 ) => {
+  // const _documentcontext = useContext(DocumentContext);
+
+  // if (!_documentcontext) return null;
+
+  // const { document, setDocument } = _documentcontext;
+
   const {
     isOpen,
     setIsOpen,
@@ -34,15 +40,10 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     isActive = true,
     setIsActive = () => {},
     handleToggle,
+    setDocument,
   } = props;
 
   const router = useRouter();
-
-  const _documentcontext = useContext(DocumentContext);
-
-  if (!_documentcontext) return null;
-
-  const { document, setDocument } = _documentcontext;
   /*-------------------------------- SET DEFAULT VALUES ------------------------------*/
 
   const {
@@ -133,7 +134,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const handleSave = async () => {
     const toastPromise = new Promise(async (resolve, reject) => {
       const _url = link_id
-        ? `/api/documents/${props.document_id}/${link_id}`
+        ? `/api/documents/${props.document_id}?link_id=${link_id}`
         : `/api/documents/${props.document_id}`;
 
       const saveProps: Database["public"]["Tables"]["tbl_links"]["Update"] = {
@@ -152,7 +153,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       };
 
       const res = await fetch(_url, {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify(saveProps),
       });
 

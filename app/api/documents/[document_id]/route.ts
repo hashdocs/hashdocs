@@ -25,23 +25,36 @@ export async function POST(
     redirect("/");
   }
 
-  const { error } = await supabase
-    .from("tbl_links")
-    .insert(props)
-    .eq("document_id", document_id)
-    .maybeSingle();
+  const { searchParams } = new URL(request.url);
+  let link_id = searchParams.get("link_id");
 
-  console.error(error);
+  const { error } = link_id
+    ? await supabase
+        .from("tbl_links")
+        .update(props)
+        .eq("document_id", document_id)
+        .eq("link_id", link_id)
+        .maybeSingle()
+    : await supabase
+        .from("tbl_links")
+        .insert(props)
+        .eq("document_id", document_id)
+        .maybeSingle();
 
-  if (error) return NextResponse.error();
+  console.error("Error in inserting or updating link", error);
+
+  if (error) {
+    console.error("Error in inserting or updating link", error);
+    return NextResponse.json(null, { status: 500 });
+  }
 
   const { data: document_id_data, error: document_id_error } = await supabase
     .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
-    console.error(document_id_error);
-    return NextResponse.error();
+    console.error("Error in fetching document", document_id_error);
+    return NextResponse.json(null, { status: 500 });
   }
   return NextResponse.json(document_id_data[0], { status: 200 });
 }

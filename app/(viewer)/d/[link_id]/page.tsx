@@ -9,7 +9,7 @@ import { getLinkProps } from "../../_components/functions";
 
 export const revalidate = 0;
 
-export async function getSignedURL(link_id: string) {
+async function getSignedURL(link_id: string) {
   const cookieJar = cookies();
 
   const hashdocs_token = cookieJar.get(link_id)?.value;

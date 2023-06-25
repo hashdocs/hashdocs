@@ -2,7 +2,7 @@ import { primaryNavigation } from "@/app/_components/navigation/routes.constants
 import Empty from "@/app/_components/navigation/empty";
 
 export default function UsersPage() {
-  const pageProps = primaryNavigation.find((page) => page.path === "/users");
+  const pageProps = primaryNavigation.find((page) => page.path === "/accounts");
 
   return (
     <section className="flex flex-1 flex-col">

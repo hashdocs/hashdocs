@@ -12,7 +12,7 @@ import InvalidLink from "../../d/[link_id]/_components/invalid_link";
 
 export const revalidate = 0;
 
-export async function getSignedURL(document_id: string) {
+async function getSignedURL(document_id: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const { data: document_data, error: document_error } = await supabase
