@@ -548,7 +548,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md bg-stratos-default px-3 py-2 font-semibold text-white shadow-sm hover:bg-stratos-default/80 disabled:bg-stratos-default/50"
+                      className="inline-flex justify-center rounded-md bg-stratos-gradient px-3 py-2 font-semibold text-white shadow-sm hover:bg-stratos-gradient/80 disabled:bg-stratos-gradient/50"
                       onClick={handleSave}
                       disabled={linkName ? false : true}
                     >

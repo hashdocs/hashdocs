@@ -66,7 +66,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         <div className="flex flex-col gap-y-1">
           <p className="">
             <span className="font-semibold text-stratos-default">
-              {file?.name}
+              {document_name || file?.name}
             </span>{" "}
             {document_id ? "updated" : "uploaded"} successfully
           </p>
@@ -90,7 +90,12 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       </div>,
       { duration: 10000, id: `${response.body.document_id}-toast` }
     );
-    router.push(`/documents/${response.body.document_id}`);
+    setIsOpen(false);
+    {
+      document_id
+        ? router.refresh()
+        : router.push(`/documents/${response.body.document_id}`);
+    }
   });
 
   /*-------------------------------- RENDER ------------------------------*/

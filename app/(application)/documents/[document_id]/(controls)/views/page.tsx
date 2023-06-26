@@ -159,7 +159,7 @@ export default function ViewsPage() {
                       key={link.link_id}
                       className={({ active }) =>
                         `relative cursor-pointer select-none py-2 pl-9 pr-4 ${
-                          active ? "bg-stratos-default text-white" : ""
+                          active ? "bg-stratos-gradient text-white" : ""
                         }`
                       }
                       value={link.link_name}

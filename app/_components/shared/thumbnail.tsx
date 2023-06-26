@@ -28,7 +28,7 @@ export function ThumbnailImage({
       <Image
         alt={document_id}
         onError={setError}
-        src={error || !src ? "/images/default_thumbnail.png" : src}
+        src={error || !src ? "/images/noimage_thumbnail.png" : src}
         // fill={true}
         height={72}
         width={137}

@@ -36,7 +36,7 @@ export default function DocumentsPage() {
             ButtonText={"Upload Document"}
             ButtonIcon={DocumentPlusIcon}
             ButtonId={"upload-document"}
-            ButtonClassName="bg-stratos-default hover:bg-stratos-default/80 text-white"
+            ButtonClassName="bg-stratos-gradient hover:bg-stratos-gradient/80 text-white"
             onClick={() => setShowUploadModal(true)}
           />
         }

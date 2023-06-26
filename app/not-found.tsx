@@ -12,7 +12,7 @@ export default function NotFound() {
 
         <Link href={`/`}
           type="button"
-          className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-stratos-default rounded hover:bg-stratos-default/80 focus:outline-none focus:ring"
+          className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-stratos-gradient rounded hover:bg-stratos-gradient/80 focus:outline-none focus:ring"
         >
           Go to home
         </Link>

@@ -69,13 +69,17 @@ export async function DELETE(
     .eq("link_id", link_id)
     .maybeSingle();
 
-  if (error) return NextResponse.error();
+  if (error) {
+    console.error(error);
+    return NextResponse.error();
+  }
 
   const { data: document_id_data, error: document_id_error } = await supabase
     .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
+    console.error(document_id_error);
     return NextResponse.error();
   }
   return NextResponse.json(document_id_data[0], { status: 200 });

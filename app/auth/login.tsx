@@ -50,7 +50,7 @@ export default function Login() {
       />
       <button
         type="submit"
-        className="rounded-md border border-stratos-default bg-stratos-default px-2 py-3 text-white"
+        className="rounded-md border border-stratos-default bg-stratos-gradient px-2 py-3 text-white"
       >
         Sign in
       </button>

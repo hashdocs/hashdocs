@@ -27,7 +27,7 @@ export default function EmptyLinks() {
         ButtonText={"New Link"}
         ButtonIcon={LinkIcon}
         ButtonClassName={document.is_enabled
-          ? `w-28 bg-stratos-default hover:bg-stratos-default/80 text-white`
+          ? `w-28 bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
           : `w-28 bg-shade-disabled cursor-not-allowed`}
         onClick={() => setShowNewLinkModal(true)} ButtonId={""}            />
     </div>

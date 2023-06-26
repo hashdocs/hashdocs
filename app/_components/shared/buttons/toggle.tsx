@@ -82,7 +82,7 @@ const Toggle: React.FC<ToggleProps> = ({
           className={classNames(
             isChecked
               ? !isDisabled
-                ? "bg-stratos-default"
+                ? "bg-stratos-gradient"
                 : "bg-shade-disabled"
               : "bg-shade-line",
             isDisabled ? "cursor-not-allowed" : "cursor-pointer",

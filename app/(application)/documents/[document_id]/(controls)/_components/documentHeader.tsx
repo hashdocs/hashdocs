@@ -12,6 +12,7 @@ import {
   CalendarDaysIcon,
   ChartBarIcon,
   ChevronLeftIcon,
+  CloudArrowUpIcon,
   EllipsisHorizontalIcon,
   LinkIcon,
   PencilIcon,
@@ -92,8 +93,7 @@ export default function DocumentHeader({
       }
     });
 
-    updatePromise.then((_res) => {
-    });
+    updatePromise.then((_res) => {});
 
     // toast.promise(updatePromise, {
     //   loading: "Updating document name...",
@@ -293,7 +293,7 @@ export default function DocumentHeader({
               key={`${document_id}-update`}
               ButtonId={`${document_id}-update`}
               ButtonText={"Refresh document"}
-              ButtonIcon={ArrowPathIcon}
+              ButtonIcon={CloudArrowUpIcon}
               onClick={() => setShowUpdateDocumentModal(true)}
             />
             <PopOver
@@ -340,7 +340,7 @@ export default function DocumentHeader({
               ButtonId={`${document_id}-newlink`}
               ButtonClassName={
                 isEnabled
-                  ? `bg-stratos-default hover:bg-stratos-default/80 text-white`
+                  ? `bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
                   : `bg-shade-disabled cursor-not-allowed`
               }
               onClick={() => setShowNewLinkModal(true)}

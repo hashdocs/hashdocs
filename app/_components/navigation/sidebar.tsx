@@ -77,7 +77,7 @@ export default function Sidebar(user: User) {
       <div className="flex flex-col gap-y-6  ">
         <div className="flex flex-row items-center">
           <div className="relative -ml-1 h-12 w-9 scale-75 overflow-hidden">
-            <Image src={"/hashdocs.svg"} fill={true} alt={"hashdocs"} />
+            <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"hashdocs"} />
           </div>
           <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
             hashdocs
@@ -113,7 +113,7 @@ export default function Sidebar(user: User) {
       <Popover className="">
         {({ open }) => (
           <>
-            <Popover.Button className="flex items-center gap-x-3 focus:outline-none focus:ring-0">
+            <Popover.Button className="flex items-center py-2 gap-x-3 focus:outline-none focus:ring-0">
               {user.user_metadata?.avatar_url ? (
                 <Image
                   className="h-6 w-6 shrink-0 rounded-full "
@@ -137,7 +137,7 @@ export default function Sidebar(user: User) {
             </Popover.Button>
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex max-w-sm shrink -translate-y-full translate-x-40 transform"
+                "absolute z-10 flex  -translate-y-full translate-x-40 transform"
               )}
             >
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
@@ -153,7 +153,7 @@ export default function Sidebar(user: User) {
                       <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
                         <item.icon aria-hidden="true" />
                       </div>
-                      <div className="ml-3 text-xs">
+                      <div className="mx-3 text-xs">
                         <p className="">{item.name}</p>
                       </div>
                     </button>

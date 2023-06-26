@@ -182,7 +182,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
             key={`${document_id}-update`}
             ButtonId={`${document_id}-update`}
             ButtonText={"Refresh document"}
-            ButtonIcon={ArrowPathIcon}
+            ButtonIcon={CloudArrowUpIcon}
             onClick={() => setShowUpdateDocumentModal(true)}
           />
           <PopOver
@@ -191,7 +191,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
                 name: "Edit document",
                 icon: PencilIcon,
                 optionClick: () => {
-                  router.push(`/documents/${document_id}`)
+                  router.push(`/documents/${document_id}`);
                 },
               },
               {

@@ -68,7 +68,7 @@ export default function ViewerAuth() {
   return (
     <section className="flex flex-1 flex-col items-center justify-center ">
       <div className="flex min-h-[400px] w-1/3 flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-stratos-default text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-stratos-default ring-offset-1">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-stratos-gradient text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-stratos-default ring-offset-1">
           <LockClosedIcon className="h-5 w-5" />
         </div>
         <p className="text-base ">
@@ -100,7 +100,7 @@ export default function ViewerAuth() {
             </div>
           ) : (
             <button
-              className="w-40 rounded-lg bg-stratos-default px-3 py-3 font-semibold text-white hover:bg-stratos-default/80 disabled:bg-stratos-line"
+              className="w-40 rounded-lg bg-stratos-gradient px-3 py-3 font-semibold text-white hover:bg-stratos-gradient/80 disabled:bg-stratos-line"
               disabled={isLoading || emailError}
             >
               Continue

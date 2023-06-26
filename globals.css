@@ -34,3 +34,15 @@
 .hashdocs-scrollbar {
   @apply overflow-y-scroll scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled;
 }
+
+.bg-stratos-gradient {
+  @apply bg-gradient-to-r from-stratos-400 via-stratos-default to-stratos-600 ;
+}
+
+.text-stratos-gradient {
+  background: linear-gradient(to right, rgb(62, 97, 255), rgb(0, 16, 255), rgb(0, 16, 255));
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
