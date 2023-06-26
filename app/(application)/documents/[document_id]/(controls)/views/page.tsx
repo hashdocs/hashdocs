@@ -150,7 +150,7 @@ export default function ViewsPage() {
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled focus:outline-none">
                 {filteredLinks.length === 0 && linkQuery !== "" ? (
-                  <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
+                  <div className="relative cursor-default select-none px-4 py-2 text-shade-pencil-light">
                     Nothing found.
                   </div>
                 ) : (

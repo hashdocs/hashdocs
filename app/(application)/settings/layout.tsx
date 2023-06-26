@@ -43,7 +43,7 @@ export default function SettingsLayout({
           </p>
         </div>
       </div>
-      <div className="mb-4 border-b border-gray-200">
+      <div className="mb-4 border-b border-shade-line">
         <nav className="-mb-px flex space-x-8" aria-label="Tabs">
           {tabs.map((tab) => (
             <Link
@@ -52,7 +52,7 @@ export default function SettingsLayout({
               className={classNames(
                 tab.href == activeTab
                   ? "border-stratos-default text-stratos-default"
-                  : "border-transparent text-shade-pencil-light hover:border-gray-300 hover:text-shade-pencil-black",
+                  : "border-transparent text-shade-pencil-light hover:border-shade-line hover:text-shade-pencil-black",
                 "group inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium"
               )}
             >

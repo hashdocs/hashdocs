@@ -39,8 +39,20 @@
   @apply bg-gradient-to-r from-stratos-400 via-stratos-default to-stratos-600 ;
 }
 
+.bg-shade-gradient {
+@apply bg-gradient-to-r from-shade-pencil-light via-shade-pencil-dark to-shade-pencil-dark 
+}
+
 .text-stratos-gradient {
   background: linear-gradient(to right, rgb(62, 97, 255), rgb(0, 16, 255), rgb(0, 16, 255));
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-shade-gradient {
+  background: linear-gradient(to right, rgb(107, 114, 128), rgb(55, 65, 81), rgb(55, 65, 81));
   background-clip: text;
   color: transparent;
   -webkit-background-clip: text;

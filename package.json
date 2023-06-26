@@ -28,6 +28,7 @@
     "@uppy/react": "^3.1.2",
     "@uppy/status-bar": "^3.2.0",
     "@uppy/xhr-upload": "^3.3.0",
+    "@vercel/analytics": "^1.0.1",
     "autoprefixer": "^10.4.14",
     "csstype": "^3.0.10",
     "date-fns": "^2.30.0",

@@ -1,45 +1,48 @@
+import { ArrowRightCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { FaArrowAltCircleRight, FaGithub, FaTwitter } from "react-icons/fa";
 
 const Hero = () => {
   return (
-    <div className="mx-auto my-10 px-2.5 text-center sm:px-0 max-w-screen-xl items-center flex flex-col">
+    <div className="mx-auto flex max-w-screen-xl flex-col items-center p-4 text-center">
       <Link
-        href="/changelog/team-invites"
-        className="group mx-auto flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.1)] backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50"
+        href="/"
+        className="group mx-auto flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-shade-line bg-white px-7 py-2 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.1)] backdrop-blur transition-all hover:border-shade-line hover:bg-white/50"
       >
-        <p className="text-sm font-semibold text-gray-700">
+        <p className="text-sm font-semibold text-shade-pencil-light">
           Introducing hashdocs
         </p>
-        {/* <ExpandingArrow className="-ml-1 h-3.5 w-3.5" /> */}
+        <FaTwitter className="-ml-1 h-3.5 w-3.5" />
       </Link>
 
-      <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.15] text-black sm:text-6xl sm:leading-[1.15]">
+      <h1 className="font-display mt-5 text-3xl font-extrabold leading-9 text-shade-gradient sm:text-6xl">
         Securely share docs with
         <br />
-        <span className="text-stratos-gradient">
-          trackable links
-        </span>
+        <span className="text-stratos-gradient">trackable links</span>
       </h1>
-      <h2 className="mt-5 sm:text-xl max-w-xl">
-        hashdocs is an open-source Docsend alternative <br/> with powerful link controls and realtime tracking
+      <h2 className="mt-5 max-w-xl sm:text-xl">
+        hashdocs is an open-source Docsend alternative <br /> with powerful link
+        controls and tracking
       </h2>
 
       <div className="mx-auto mt-10 flex max-w-fit space-x-4">
-        <a
-          href="https://app.dub.sh/register"
-          className="rounded-full bg-stratos-gradient px-5 py-2 text-sm text-white shadow-lg transition-all"
+        <Link
+          className="bg-stratos-default hover:bg-stratos-default/80 flex items-center justify-center space-x-2 rounded-md border px-5 py-2 shadow-lg transition-all text-white"
+          href="/login"
+          target="_blank"
         >
-          Start For Free
-        </a>
-        <a
-          className="flex items-center justify-center space-x-2 rounded-full border bg-white px-5 py-2 shadow-lg transition-all hover:border-gray-800"
-          href="https://dub.sh/github"
+          <p className="text-sm">Start for free</p>
+          <ArrowRightCircleIcon className="h-5 w-5 text-white" />
+        </Link>
+        <Link
+          className="flex items-center justify-center space-x-2 rounded-md border bg-white px-5 py-2 shadow-lg transition-all hover:border-shade-pencil-dark"
+          href="https://github.com/rbkayz/hashdocs"
           target="_blank"
           rel="noreferrer"
         >
-          {/* <Github className="h-5 w-5 text-black" /> */}
           <p className="text-sm">Star on GitHub</p>
-        </a>
+          <FaGithub className="h-5 w-5 text-black" />
+        </Link>
       </div>
     </div>
   );
