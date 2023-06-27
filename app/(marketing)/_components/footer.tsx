@@ -37,7 +37,7 @@ export default function Footer() {
               <Image
                 src={"/hashdocs_gradient.svg"}
                 fill={true}
-                alt={"hashdocs"}
+                alt={"Hashdocs"}
               />
             </div>
             <p className="max-w-xs text-sm text-shade-pencil-light">

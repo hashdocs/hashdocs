@@ -21,10 +21,10 @@ export default function ViewerTopBar({
         className="flex w-1/6 flex-row items-center"
       >
         <div className="relative -ml-1 h-10 w-8 scale-75 rounded-md">
-          <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"hashdocs"} />
+          <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"Hashdocs"} />
         </div>
         <header className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
-          hashdocs
+          Hashdocs
         </header>
       </Link>
       <div className="mr-4 flex flex-row items-center justify-center gap-x-4">

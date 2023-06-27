@@ -98,11 +98,11 @@ export default function Sidebar(user: User) {
             <Image
               src={"/hashdocs_gradient.svg"}
               fill={true}
-              alt={"hashdocs"}
+              alt={"Hashdocs"}
             />
           </div>
           <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
-            hashdocs
+            Hashdocs
           </h1>
         </div>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">

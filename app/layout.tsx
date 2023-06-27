@@ -1,6 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
+import Script from "next/script";
 
 export const metadata = {
   title: "Create Next App",

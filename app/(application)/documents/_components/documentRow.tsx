@@ -11,6 +11,7 @@ import {
   PencilIcon,
   PhotoIcon,
   TrashIcon,
+  DocumentArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
@@ -23,6 +24,7 @@ import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import UploadDocumentModal from "./uploadDocument";
 import PopOver from "@/app/_components/shared/popover";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
+import { GrDocumentUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -181,8 +183,8 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           <IconButton
             key={`${document_id}-update`}
             ButtonId={`${document_id}-update`}
-            ButtonText={"Refresh document"}
-            ButtonIcon={CloudArrowUpIcon}
+            ButtonText={"Update document"}
+            ButtonIcon={DocumentArrowUpIcon}
             onClick={() => setShowUpdateDocumentModal(true)}
           />
           <PopOver

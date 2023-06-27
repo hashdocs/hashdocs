@@ -6,7 +6,7 @@ export default function OSS() {
   return (
     <div className="w-full p-4 backdrop-blur">
       <div className="mx-auto max-w-md text-center sm:max-w-xl">
-        <h2 className="text-3xl text-shade-gradient font-extrabold leading-tight text-transparent sm:text-5xl sm:leading-tight">
+        <h2 className="text-3xl text-shade-gradient font-extrabold leading-tight text-transparent sm:text-4xl sm:leading-tight">
           Proudly <span className="text-stratos-gradient">open-source</span>
         </h2>
         <p className="mt-5 text-shade-pencil-light sm:text-lg">

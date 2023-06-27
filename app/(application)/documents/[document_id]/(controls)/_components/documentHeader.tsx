@@ -13,6 +13,7 @@ import {
   ChartBarIcon,
   ChevronLeftIcon,
   CloudArrowUpIcon,
+  DocumentArrowUpIcon,
   EllipsisHorizontalIcon,
   LinkIcon,
   PencilIcon,
@@ -292,8 +293,8 @@ export default function DocumentHeader({
             <IconButton
               key={`${document_id}-update`}
               ButtonId={`${document_id}-update`}
-              ButtonText={"Refresh document"}
-              ButtonIcon={CloudArrowUpIcon}
+              ButtonText={"Update document"}
+              ButtonIcon={DocumentArrowUpIcon}
               onClick={() => setShowUpdateDocumentModal(true)}
             />
             <PopOver

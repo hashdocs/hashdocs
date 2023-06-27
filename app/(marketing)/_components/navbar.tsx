@@ -20,11 +20,11 @@ export default function Navbar() {
             <Image
               src={"/hashdocs_gradient.svg"}
               fill={true}
-              alt={"hashdocs"}
+              alt={"Hashdocs"}
             />
           </div>
           <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
-            hashdocs
+            Hashdocs
           </h1>
         </Link>
 
@@ -39,8 +39,8 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href={`/login`}
-            className="rounded-md bg-stratos-default px-4 py-1.5 text-sm text-white transition-all hover:bg-stratos-default/80"
+            href={`/login?new_user=true`}
+            className="rounded-md bg-stratos-default px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-stratos-default/80"
           >
             Sign Up
           </Link>
