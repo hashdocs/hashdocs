@@ -153,15 +153,15 @@ export default function Sidebar(user: User) {
               )}
               <span
                 aria-hidden="true"
-                className="w-36 truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                className="w-36 text-left truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
               >
                 {user.email}
               </span>
-              <EllipsisVerticalIcon className="hover:text-shade-pencil-dars h-5 w-5 text-shade-pencil-dark" />
+              <EllipsisVerticalIcon className="hover:text-shade-pencil-dark h-5 w-5 text-shade-pencil-dark" />
             </Popover.Button>
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex  -translate-y-full translate-x-56 transform"
+                "absolute z-10 flex  -translate-y-full translate-x-52 transform"
               )}
             >
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">

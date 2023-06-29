@@ -1,4 +1,4 @@
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
 import Script from "next/script";
@@ -13,6 +13,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+
   return (
     <html lang="en" className="h-full w-full bg-shade-overlay">
       <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">

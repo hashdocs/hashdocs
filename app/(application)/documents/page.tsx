@@ -1,10 +1,12 @@
-'use client'
+"use client";
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import DocumentsList from "./_components/documentsList";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadDocumentModal from "./_components/uploadDocument";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -18,7 +20,20 @@ export default function DocumentsPage() {
   }
 
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const params = useSearchParams();
+  const router = useRouter();
 
+  useEffect(() => {
+    const login = params.get("login") ? true : false;
+
+    if (login) {
+      toast.success("Authorization successful! Welcome to hashdocs", {
+        id: "login-success",
+      });
+
+      router.push("/documents");
+    }
+  }, []);
 
   return (
     <section className="flex flex-1 flex-col">
@@ -42,7 +57,10 @@ export default function DocumentsPage() {
         }
       </div>
       <DocumentsList />
-      <UploadDocumentModal isOpen={showUploadModal} setIsOpen={setShowUploadModal}/>
+      <UploadDocumentModal
+        isOpen={showUploadModal}
+        setIsOpen={setShowUploadModal}
+      />
     </section>
   );
 }

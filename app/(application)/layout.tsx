@@ -3,8 +3,7 @@ import Sidebar from "@/app/_components/navigation/sidebar";
 import TopBar from "@/app/_components/navigation/topbar";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase.types";
-import { redirect } from "next/navigation";
-import Loader from "@/app/_components/navigation/loader";
+import { redirect, useSearchParams } from "next/navigation";
 
 export default async function ApplicationLayout({
   children,

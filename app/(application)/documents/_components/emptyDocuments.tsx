@@ -9,11 +9,11 @@ export default function EmptyDocuments() {
 
   return (
     <div className="flex flex-col items-center border-2 border-dashed border-shade-line p-24 text-center">
-      <h3 className="mt-2 text-sm font-semibold text-shade-pencil-black">
-        No documents
+      <h3 className="mt-2 text-lg font-semibold text-shade-pencil-black">
+        Welcome to hashdocs
       </h3>
       <p className="mt-1 text-sm text-shade-pencil-light">
-        Get started by uploading a document.
+        Please upload a document to create shareable links
       </p>
       <div className="mt-6">
         <LargeButton

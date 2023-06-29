@@ -31,7 +31,7 @@ export default function LoginPage() {
         email,
         options: {
           shouldCreateUser: true,
-          emailRedirectTo: `http://${process.env.NEXT_PUBLIC_BASE_URL}/login/callback`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/login/callback`,
         },
       });
 

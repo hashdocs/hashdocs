@@ -98,7 +98,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
                 : "pointer-events-none text-shade-pencil-light"
             } shadow-inner`}
           >
-            <span className="px-1 font-mono">{path}</span>
+            <span className="px-1 font-mono">{path.replace(/^https?:\/\//, '')}</span>
             <BiCopy className="h-4 w-4 " />
             <Link
               onClick={(e) => {
