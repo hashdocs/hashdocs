@@ -1,66 +1,89 @@
-drop policy "SELECT if viewer" on "public"."tbl_links";
+DROP POLICY "SELECT if viewer" ON "public"."tbl_links";
 
-drop policy "SELECT if viewer" on "public"."tbl_views";
+DROP POLICY "SELECT if viewer" ON "public"."tbl_views";
 
-drop function if exists "public"."authorize_viewer"(link_id_input text, email_input text, password_input text);
+DROP FUNCTION IF EXISTS "public"."authorize_viewer"(link_id_input text, email_input text, password_input text);
 
-drop function if exists "public"."get_document_id"(document_id_input text);
+DROP FUNCTION IF EXISTS "public"."get_document_id"(document_id_input text);
 
-alter table "public"."tbl_documents" alter column "created_by" set default auth.uid();
+ALTER TABLE "public"."tbl_documents"
+	ALTER COLUMN "created_by" SET DEFAULT auth.uid();
 
-alter table "public"."tbl_documents" alter column "org_id" set default list_org_from_user();
+ALTER TABLE "public"."tbl_documents"
+	ALTER COLUMN "org_id" SET DEFAULT list_org_from_user();
 
-alter table "public"."tbl_links" drop column "domain_restricted";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "domain_restricted";
 
-alter table "public"."tbl_links" drop column "download_allowed";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "download_allowed";
 
-alter table "public"."tbl_links" drop column "email_required";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "email_required";
 
-alter table "public"."tbl_links" drop column "password_required";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "password_required";
 
-alter table "public"."tbl_links" drop column "verify_email";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "verify_email";
 
-alter table "public"."tbl_links" drop column "watermarked";
+ALTER TABLE "public"."tbl_links"
+	DROP COLUMN "watermarked";
 
-alter table "public"."tbl_links" add column "is_domain_restricted" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_domain_restricted" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_download_allowed" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_download_allowed" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_email_required" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_email_required" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_expiration_enabled" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_expiration_enabled" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_password_required" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_password_required" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_verification_required" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_verification_required" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" add column "is_watermarked" boolean not null default false;
+ALTER TABLE "public"."tbl_links"
+	ADD COLUMN "is_watermarked" boolean NOT NULL DEFAULT FALSE;
 
-alter table "public"."tbl_links" alter column "created_by" set default auth.uid();
+ALTER TABLE "public"."tbl_links"
+	ALTER COLUMN "created_by" SET DEFAULT auth.uid();
 
-alter table "public"."tbl_view_logs" drop column "view_end_at";
+ALTER TABLE "public"."tbl_view_logs"
+	DROP COLUMN "view_end_at";
 
-alter table "public"."tbl_view_logs" drop column "view_start_at";
+ALTER TABLE "public"."tbl_view_logs"
+	DROP COLUMN "view_start_at";
 
-alter table "public"."tbl_view_logs" add column "end_time" bigint;
+ALTER TABLE "public"."tbl_view_logs"
+	ADD COLUMN "end_time" bigint;
 
-alter table "public"."tbl_view_logs" add column "start_time" bigint;
+ALTER TABLE "public"."tbl_view_logs"
+	ADD COLUMN "start_time" bigint;
 
-alter table "public"."tbl_view_logs" alter column "view_id" set default (auth.jwt() ->> 'view_id'::text);
+ALTER TABLE "public"."tbl_view_logs"
+	ALTER COLUMN "view_id" SET DEFAULT (auth.jwt() ->> 'view_id'::text);
 
-alter table "public"."tbl_views" alter column "link_id" drop not null;
+ALTER TABLE "public"."tbl_views"
+	ALTER COLUMN "link_id" DROP NOT NULL;
 
-CREATE UNIQUE INDEX unique_view_id ON public.tbl_view_logs USING btree (view_id, page_num, start_time);
+CREATE UNIQUE INDEX unique_view_id ON public.tbl_view_logs USING btree(view_id, page_num, start_time);
 
-alter table "public"."tbl_view_logs" add constraint "unique_view_id" UNIQUE using index "unique_view_id";
+ALTER TABLE "public"."tbl_view_logs"
+	ADD CONSTRAINT "unique_view_id" UNIQUE USING INDEX "unique_view_id";
 
-set check_function_bodies = off;
+SET check_function_bodies = OFF;
 
 CREATE OR REPLACE FUNCTION public.authorize_viewer(link_id_input text, email_input text DEFAULT NULL::text)
- RETURNS json
- LANGUAGE plpgsql
- SECURITY DEFINER
-AS $function$
+	RETURNS json
+	LANGUAGE plpgsql
+	SECURITY DEFINER
+	AS $function$
 DECLARE
 	return_data json;
 	link_props RECORD;
@@ -134,15 +157,14 @@ RETURNING
 	return_data = json_build_object('view_token', new_token, 'view', view_row);
 	RETURN return_data;
 END
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.func_after_insert_auth_users()
- RETURNS trigger
- LANGUAGE plpgsql
- SECURITY DEFINER
- SET search_path TO 'public', 'auth'
-AS $function$
+	RETURNS TRIGGER
+	LANGUAGE plpgsql
+	SECURITY DEFINER
+	SET search_path TO 'public', 'auth'
+	AS $function$
 BEGIN
 	INSERT INTO public.tbl_org(
 		user_id,
@@ -154,13 +176,12 @@ BEGIN
 		'My org');
 	RETURN NEW;
 END
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.get_documents(document_id_input text DEFAULT NULL::text)
- RETURNS json
- LANGUAGE plpgsql
-AS $function$
+	RETURNS json
+	LANGUAGE plpgsql
+	AS $function$
 DECLARE
 	return_data json;
 BEGIN
@@ -289,14 +310,13 @@ ORDER BY
 	tbl_documents.document_seq DESC) t INTO return_data;
 	RETURN return_data;
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.get_link_props(link_id_input text)
- RETURNS json
- LANGUAGE plpgsql
- SECURITY DEFINER
-AS $function$
+	RETURNS json
+	LANGUAGE plpgsql
+	SECURITY DEFINER
+	AS $function$
 DECLARE
 	return_data json;
 BEGIN
@@ -325,16 +345,15 @@ BEGIN
 	--
 	RETURN return_data;
 END
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.upsert_document(document_id_input text DEFAULT NULL::text, document_name_input text DEFAULT NULL::text, source_path_input text DEFAULT NULL::text, source_type_input text DEFAULT NULL::text)
- RETURNS json
- LANGUAGE plpgsql
-AS $function$
+	RETURNS json
+	LANGUAGE plpgsql
+	AS $function$
 DECLARE
 	found_document_id text;
-    insert_data tbl_document_versions;
+	insert_data tbl_document_versions;
 	return_data json;
 BEGIN
 	IF document_id_input IS NULL THEN
@@ -381,45 +400,39 @@ BEGIN
 			FROM
 				tbl_document_versions
 			WHERE
-				document_id = found_document_id), TRUE) RETURNING * INTO insert_data;
+				document_id = found_document_id), TRUE)
+RETURNING
+	* INTO insert_data;
 	--
 	--
 	RETURN json_build_object('document_id', insert_data.document_id, 'document_version', insert_data.document_version);
 END;
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.func_before_insert_tbl_links()
- RETURNS trigger
- LANGUAGE plpgsql
- SECURITY DEFINER
-AS $function$
+	RETURNS TRIGGER
+	LANGUAGE plpgsql
+	SECURITY DEFINER
+	AS $function$
 BEGIN
-    NEW.link_id := gen_links_id();
-    RETURN NEW; 
+	NEW.link_id := gen_links_id();
+	RETURN NEW;
 END
-$function$
-;
+$function$;
 
 CREATE OR REPLACE FUNCTION public.func_before_insert_tbl_views()
- RETURNS trigger
- LANGUAGE plpgsql
- SECURITY DEFINER
-AS $function$
+	RETURNS TRIGGER
+	LANGUAGE plpgsql
+	SECURITY DEFINER
+	AS $function$
 BEGIN
-    NEW.view_id := gen_view_id(NEW.link_id);
-    RETURN NEW; 
+	NEW.view_id := gen_view_id(NEW.link_id);
+	RETURN NEW;
 END
-$function$
-;
+$function$;
 
-create policy "ALL if viewer"
-on "public"."tbl_view_logs"
-as permissive
-for all
-to authenticated
-using ((view_id = (auth.jwt() ->> 'view_id'::text)))
-with check ((view_id = (auth.jwt() ->> 'view_id'::text)));
-
-
+CREATE POLICY "ALL if viewer" ON "public"."tbl_view_logs" AS permissive
+	FOR ALL TO authenticated
+		USING ((view_id =(auth.jwt() ->> 'view_id'::text)))
+		WITH CHECK ((view_id =(auth.jwt() ->> 'view_id'::text)));
 
