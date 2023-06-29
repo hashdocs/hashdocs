@@ -9,6 +9,7 @@ import { User } from "@supabase/supabase-js";
 import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
+  EllipsisVerticalIcon,
   PlusIcon,
   UserIcon,
   WrenchScrewdriverIcon,
@@ -89,7 +90,7 @@ export default function Sidebar(user: User) {
 
   return (
     <aside
-      className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6"
+      className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6 shadow-sm"
       style={{ height: "100vh" }}
     >
       <div className="flex flex-col gap-y-6  ">
@@ -135,7 +136,7 @@ export default function Sidebar(user: User) {
       <Popover className="">
         {({ open }) => (
           <>
-            <Popover.Button className="flex items-center gap-x-3 py-2 focus:outline-none focus:ring-0">
+            <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
               {user.user_metadata?.avatar_url ? (
                 <Image
                   className="h-6 w-6 shrink-0 rounded-full "
@@ -152,16 +153,15 @@ export default function Sidebar(user: User) {
               )}
               <span
                 aria-hidden="true"
-                className="truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                className="w-36 truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
               >
                 {user.email}
               </span>
-              <EllipsisHorizontalIcon
-                className="h-4 w-4 text-shade-pencil-light hover:text-shade-pencil-dars"/>
+              <EllipsisVerticalIcon className="hover:text-shade-pencil-dars h-5 w-5 text-shade-pencil-dark" />
             </Popover.Button>
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex  -translate-y-full translate-x-40 transform"
+                "absolute z-10 flex  -translate-y-full translate-x-56 transform"
               )}
             >
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">

@@ -6,6 +6,19 @@ const nextConfig = {
       // loader: 'custom',
       // loaderFile: './app/_utils/imageLoader.ts'
     },
+    // async headers() {
+    //   return [
+    //     {
+    //       source: '/login',
+    //       headers: [
+    //         {
+    //           key: 'Content-Security-Policy',
+    //           value: 'script-src https://accounts.google.com/gsi/client; frame-src https://accounts.google.com/gsi/; connect-src https://accounts.google.com/gsi/;',
+    //         },
+    //       ],
+    //     },
+    //   ]
+    // },
     async redirects() {
       return [
         {

@@ -30,6 +30,10 @@ export default function RootLayout({
         />
         {children}
         <Analytics />
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="beforeInteractive"
+        />
       </body>
     </html>
   );

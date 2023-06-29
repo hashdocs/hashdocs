@@ -98,6 +98,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     }
   });
 
+  uppy.on("upload-error", (file, error) => {
+    toast.error("Upload failed, please try again");
+  });
+
   /*-------------------------------- RENDER ------------------------------*/
 
   return (
