@@ -8,16 +8,17 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
+
+
+
 export default function LoginPage() {
+
   const [email, setEmail] = useState("");
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
 
   const [isSentMagicLink, setIsSentMagicLink] = useState(false);
 
-  const searchParams = useSearchParams();
-
-  const new_user = searchParams.get("new_user");
 
   const handleSignIn = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {
@@ -121,9 +122,7 @@ export default function LoginPage() {
           ) : (
             <>
               <p className="uppercase">
-                {new_user === "true"
-                  ? "Create your free account"
-                  : "Login to your account"}
+                {"Welcome to hashdocs"}
               </p>
 
               {/* <div className="relative h-12 w-80 rounded-lg bg-white cursor-pointer  border-shade-line border">
@@ -149,7 +148,7 @@ export default function LoginPage() {
                 type="submit"
                 className="bg-stratos-gradient h-10 rounded-md border border-stratos-default text-white hover:bg-stratos-default/80"
               >
-                {new_user === "true" ? "Sign up" : "Sign in"}
+                {"Sign in"}
               </button>
               <p className="px-2 text-center text-xs font-normal tracking-tight text-shade-pencil-light">
                 By continuing, you agree to Hashdocs&apos;{" "}

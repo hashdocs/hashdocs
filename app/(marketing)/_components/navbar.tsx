@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useParams, useSelectedLayoutSegment } from "next/navigation";
 import clsx from "clsx";
 
-const navItems = ["pricing", "roadmap", "login"];
+const navItems = ["pricing", "roadmap"];
 
 export default function Navbar() {
   return (
@@ -39,10 +38,10 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
-            href={`/login?new_user=true`}
+            href={`/login`}
             className="rounded-md bg-stratos-default px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-stratos-default/80"
           >
-            Sign Up
+            Dashboard
           </Link>
         </div>
       </div>
