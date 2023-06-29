@@ -153,7 +153,7 @@ const Comparison = () => {
           switched from Docsend
         </h1>
         <h2 className="max-w-xl py-4 text-lg">
-          Here's why - a comparison of Hashdocs vs Docsend
+          Here&apos;s why - a comparison of Hashdocs vs Docsend
         </h2>
       </div>
 
@@ -191,7 +191,7 @@ const Comparison = () => {
         </div>
         {comparisonList.map((item) => {
           return (
-            <div className="mx-4 flex border-t border-dotted border-shade-line py-6 ">
+            <div className="mx-4 flex border-t border-dotted border-shade-line py-6 " key={item.title}>
               <div className="basis-1/2 flex-col text-left xl:flex-row">
                 <h3 className="items-center gap-x-2 text-base font-semibold text-shade-pencil-dark xl:inline-flex">
                   <item.icon className="h-5 w-5" />

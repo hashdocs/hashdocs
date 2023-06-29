@@ -116,7 +116,7 @@ export default function LoginPage() {
               Thank you!
               <br />
               <br />
-              We've sent a magic link for verification to{" "}
+              We&apos;ve sent a magic link for verification to{" "}
               <span className="font-bold">
                 <br />
                 {email}
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 {new_user === "true" ? "Sign up" : "Sign in"}
               </button>
               <p className="px-2 text-center text-xs font-normal tracking-tight text-shade-pencil-light">
-                By continuing, you agree to Hashdocs'{" "}
+                By continuing, you agree to Hashdocs&apos;{" "}
                 <Link href={`/terms`} className="underline">
                   Terms of Service
                 </Link>{" "}
