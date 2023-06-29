@@ -33,11 +33,11 @@ const DocumentsList: React.FC = () => {
     fetchDocuments();
   }, []);
 
-  return isLoading || !documents ? (
+  return isLoading ? (
     <Loader />
   ) : (
     <ul role="list" className="flex w-full flex-1 flex-col">
-      {documents.length > 0 ? (
+      {documents && documents.length > 0 ? (
         documents.map((document) => (
           <DocumentRow key={document.document_id} {...document} />
         ))
