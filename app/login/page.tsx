@@ -2,17 +2,14 @@
 "use client";
 import Navbar from "@/app/(marketing)/_components/navbar";
 import { Database } from "@/types/supabase.types";
-import dynamic from "next/dynamic";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import Script from "next/script";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const router = useRouter();
   const supabase = createClientComponentClient<Database>();
 
@@ -23,7 +20,6 @@ export default function LoginPage() {
   const new_user = searchParams.get("new_user");
 
   const handleSignIn = async (e: any) => {
-    console.log(`email - ${email}`);
     const loginPromise = new Promise(async (resolve, reject) => {
       e.preventDefault();
 
@@ -78,7 +74,6 @@ export default function LoginPage() {
   }, []);
 
   async function handleSignInWithGoogle(response: any) {
-    console.log(response.credential);
     const loginPromise = new Promise(async (resolve, reject) => {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "google",

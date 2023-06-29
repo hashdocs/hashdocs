@@ -11,6 +11,7 @@ import {
   BuildingOfficeIcon,
   EllipsisVerticalIcon,
   PlusIcon,
+  QuestionMarkCircleIcon,
   UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
@@ -72,6 +73,27 @@ export default function Sidebar(user: User) {
         toast.success("Team management is coming soon", {
           icon: <WrenchScrewdriverIcon className="h-4 w-4" />,
         });
+      },
+    },
+    {
+      name: "Get help",
+      icon: QuestionMarkCircleIcon,
+      optionClick: () => {
+        toast.success(
+          <p>
+            Please email us at{" "}
+            <Link
+              target="_blank"
+              href={`mailto:bharat@hashlabs.dev?subject=Hashdocs%20-%20Help%20please`}
+              className="text-stratos-default underline"
+            >
+              bharat@hashlabs.dev
+            </Link>
+          </p>,
+          {
+            icon: <QuestionMarkCircleIcon className="h-4 w-4" />,
+          }
+        );
       },
     },
     {
@@ -153,11 +175,11 @@ export default function Sidebar(user: User) {
               )}
               <span
                 aria-hidden="true"
-                className="w-36 text-left truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
               >
                 {user.email}
               </span>
-              <EllipsisVerticalIcon className="hover:text-shade-pencil-dark h-5 w-5 text-shade-pencil-dark" />
+              <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
             </Popover.Button>
             <Popover.Panel
               className={classNames(
