@@ -159,10 +159,10 @@ export default function Sidebar(user: User) {
         {({ open }) => (
           <>
             <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
-              {user.user_metadata?.avatar_url ? (
+              {user.user_metadata?.picture ? (
                 <Image
                   className="h-6 w-6 shrink-0 rounded-full "
-                  src={user.user_metadata?.avatar_url ?? ""}
+                  src={user.user_metadata?.picture ?? ""}
                   alt=""
                   height={32}
                   width={32}

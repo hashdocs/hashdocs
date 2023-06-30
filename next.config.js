@@ -2,23 +2,24 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["localhost", "https://dblpeefwccpldqwuzwza.supabase.co"],
+    // domains: ["localhost", "https://dblpeefwccpldqwuzwza.supabase.co"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dblpeefwccpldqwuzwza.supabase.co",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+      }
+    ]
     // loader: 'custom',
     // loaderFile: './app/_utils/imageLoader.ts'
   },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: '/login',
-  //       headers: [
-  //         {
-  //           key: 'Content-Security-Policy',
-  //           value: 'script-src https://accounts.google.com/gsi/client; frame-src https://accounts.google.com/gsi/; connect-src https://accounts.google.com/gsi/;',
-  //         },
-  //       ],
-  //     },
-  //   ]
-  // },
   async redirects() {
     return [
       {
