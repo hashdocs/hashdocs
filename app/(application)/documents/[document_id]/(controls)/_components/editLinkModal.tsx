@@ -190,14 +190,14 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
             rel="noreferrer"
             className="flex flex-row space-x-2"
           >
-            <span className="text-stratos-default underline">{`${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}</span>
+            <span className="text-stratos-default underline">{`${(process.env.NEXT_PUBLIC_BASE_URL ?? "").replace(/^https?:\/\//, '')}/d/${link_id}`}</span>
             <BiLinkExternal className="h-4 w-4" />
           </Link>
           <BiCopy
             className="h-4 w-4 cursor-pointer"
             onClick={() =>
               CopyLinkToClipboard(
-                `https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
                 true,
                 `${link_id}-toast`
               )
@@ -301,7 +301,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                       <div
                         onClick={() =>
                           CopyLinkToClipboard(
-                            `https://${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`
                           )
                         }
                         className={`flex items-center space-x-2 rounded-xl py-1 ${
@@ -310,7 +310,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                             : "pointer-events-none text-shade-pencil-light"
                         } `}
                       >
-                        <span className="px-1 font-mono">{`${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`}</span>
+                        <span className="px-1 font-mono">{`${(process.env.NEXT_PUBLIC_BASE_URL ?? "").replace(/^https?:\/\//, '')}/d/${link_id}`}</span>
                         <BiCopy className="h-4 w-4 " />
                         <Link
                           onClick={(e) => {

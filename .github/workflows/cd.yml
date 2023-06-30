@@ -1,0 +1,47 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  cd:
+    runs-on: ubuntu-22.04
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+      PROJECT_ID: ${{ secrets.DEV_PROJECT_ID }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: |
+          supabase link --project-ref ${{ secrets.DEV_PROJECT_ID }}
+          supabase db push
+          supabase functions deploy authorize-viewer --legacy-bundle
+          supabase functions deploy upload-document --legacy-bundle
+
+  
+  slackNotification:
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    needs: [cd]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: general
+        SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+        SLACK_ICON: https://avatars.githubusercontent.com/u/62215539?size=48
+        SLACK_MESSAGE: ${{ github.event.pull_request.state }}
+        SLACK_TITLE: ${{ github.event.pull_request.title }}
+        SLACK_USERNAME: hashmail-github-bot
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_STATUS_MONITORS }}

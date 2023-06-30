@@ -42,7 +42,7 @@ export async function PUT(
 
   const hashdocs_token = cookieJar.get(link_id)?.value;
 
-  if (!hashdocs_token) return null;
+  if (!hashdocs_token) return NextResponse.json(null, { status: 500 });
 
   const rawBody = (await request.json()) as {
     pageNumber: number;

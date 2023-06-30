@@ -1,26 +1,33 @@
-import { DocumentPlusIcon } from "@heroicons/react/20/solid";
+"use client";
+import LargeButton from "@/app/_components/shared/buttons/largeButton";
+import { DocumentPlusIcon } from "@heroicons/react/24/solid";
+import { useState } from "react";
+import UploadDocumentModal from "./uploadDocument";
 
 export default function EmptyDocuments() {
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
   return (
-    <div className="text-center">
-      <h3 className="mt-2 text-sm font-semibold text-shade-pencil-black">
-        No documents
+    <div className="flex flex-col items-center border-2 border-dashed border-shade-line p-24 text-center">
+      <h3 className="mt-2 text-lg font-semibold text-shade-pencil-black">
+        Welcome to hashdocs
       </h3>
       <p className="mt-1 text-sm text-shade-pencil-light">
-        Get started by uploading a document.
+        Please upload a document to create shareable links
       </p>
       <div className="mt-6">
-        <button
-          type="button"
-          className="inline-flex items-center rounded-md bg-stratos-gradient px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stratos-default"
-        >
-          <DocumentPlusIcon
-            className="-ml-0.5 mr-1.5 h-5 w-5"
-            aria-hidden="true"
-          />
-          Upload
-        </button>
+        <LargeButton
+          ButtonText={"Upload Document"}
+          ButtonIcon={DocumentPlusIcon}
+          ButtonId={"upload-document"}
+          ButtonClassName="bg-stratos-gradient hover:bg-stratos-gradient/80 text-white"
+          onClick={() => setShowUploadModal(true)}
+        />
       </div>
+      <UploadDocumentModal
+        isOpen={showUploadModal}
+        setIsOpen={setShowUploadModal}
+      />
     </div>
   );
 }

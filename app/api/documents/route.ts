@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   if (!user) {
     // return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    NextResponse.redirect("/");
   }
 
   const { data: document_id_data, error: document_id_error } = await supabase
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
   if (!user) {
     // return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    NextResponse.redirect("/");
   }
 
   //STEP 1 - Get document_id from search params

@@ -21,27 +21,21 @@ const navigation = {
 };
 
 export default function Footer() {
-  const { domain = "dub.sh" } = useParams() as { domain: string };
-
-  const createHref = (href: string) =>
-    domain === "dub.sh"
-      ? href
-      : `https://dub.sh${href}?utm_source=${domain}&utm_medium=referral&utm_campaign=custom-domain`;
-
   return (
     <footer className="z-10 flex w-full flex-1 items-center justify-center border-t border-shade-line bg-white/50">
-      <div className="flex flex-col xl:flex-row gap-y-4 xl:gap-y-0 xl:flex max-w-screen-xl flex-1 xl:justify-between py-8 px-4">
+      <div className="flex max-w-screen-xl flex-1 flex-col gap-y-4 px-4 py-8 xl:flex xl:flex-row xl:justify-between xl:gap-y-0">
         <div className="w-full space-y-4 xl:flex xl:w-1/2 xl:flex-col">
           <div className="flex items-center gap-x-2">
             <div className="relative h-10 w-8 scale-75 rounded-md">
               <Image
                 src={"/hashdocs_gradient.svg"}
                 fill={true}
-                alt={"hashdocs"}
+                alt={"Hashdocs"}
               />
             </div>
             <p className="max-w-xs text-sm text-shade-pencil-light">
-              An open-source Docsend alternative with powerful link controls and realtime tracking
+              An open-source Docsend alternative with powerful link controls and
+              realtime tracking
             </p>
           </div>
           <div className="flex items-center space-x-2">
@@ -73,7 +67,8 @@ export default function Footer() {
             <h3 className="text-sm font-semibold">Product</h3>
             {navigation.product.map((item) => (
               <Link
-                href={createHref(item.href)}
+                href={item.href}
+                key={`footer-product-${item.href}`}
                 className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
               >
                 {item.name}
@@ -84,7 +79,8 @@ export default function Footer() {
             <h3 className="text-sm font-semibold">Company</h3>
             {navigation.company.map((item) => (
               <Link
-                href={createHref(item.href)}
+                href={item.href}
+                key={`footer-company-${item.href}`}
                 className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
               >
                 {item.name}
@@ -95,7 +91,8 @@ export default function Footer() {
             <h3 className="text-sm font-semibold">Legal</h3>
             {navigation.legal.map((item) => (
               <Link
-                href={createHref(item.href)}
+                href={item.href}
+                key={`footer-legal-${item.href}`}
                 className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
               >
                 {item.name}

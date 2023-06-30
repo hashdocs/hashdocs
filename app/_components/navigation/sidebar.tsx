@@ -9,7 +9,9 @@ import { User } from "@supabase/supabase-js";
 import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
+  EllipsisVerticalIcon,
   PlusIcon,
+  QuestionMarkCircleIcon,
   UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
@@ -74,6 +76,27 @@ export default function Sidebar(user: User) {
       },
     },
     {
+      name: "Get help",
+      icon: QuestionMarkCircleIcon,
+      optionClick: () => {
+        toast.success(
+          <p>
+            Please email us at{" "}
+            <Link
+              target="_blank"
+              href={`mailto:bharat@hashlabs.dev?subject=Hashdocs%20-%20Help%20please`}
+              className="text-stratos-default underline"
+            >
+              bharat@hashlabs.dev
+            </Link>
+          </p>,
+          {
+            icon: <QuestionMarkCircleIcon className="h-4 w-4" />,
+          }
+        );
+      },
+    },
+    {
       name: "Edit profile",
       icon: UserIcon,
       optionClick: () => {
@@ -89,7 +112,7 @@ export default function Sidebar(user: User) {
 
   return (
     <aside
-      className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6"
+      className="z-50 flex w-60 flex-shrink-0 flex-col justify-between overflow-y-hidden border-r border-shade-line p-2 px-6 shadow-sm"
       style={{ height: "100vh" }}
     >
       <div className="flex flex-col gap-y-6  ">
@@ -98,11 +121,11 @@ export default function Sidebar(user: User) {
             <Image
               src={"/hashdocs_gradient.svg"}
               fill={true}
-              alt={"hashdocs"}
+              alt={"Hashdocs"}
             />
           </div>
           <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
-            hashdocs
+            Hashdocs
           </h1>
         </div>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -135,11 +158,11 @@ export default function Sidebar(user: User) {
       <Popover className="">
         {({ open }) => (
           <>
-            <Popover.Button className="flex items-center gap-x-3 py-2 focus:outline-none focus:ring-0">
-              {user.user_metadata?.avatar_url ? (
+            <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
+              {user.user_metadata?.picture ? (
                 <Image
                   className="h-6 w-6 shrink-0 rounded-full "
-                  src={user.user_metadata?.avatar_url ?? ""}
+                  src={user.user_metadata?.picture ?? ""}
                   alt=""
                   height={32}
                   width={32}
@@ -152,16 +175,15 @@ export default function Sidebar(user: User) {
               )}
               <span
                 aria-hidden="true"
-                className="truncate text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
               >
                 {user.email}
               </span>
-              <EllipsisHorizontalIcon
-                className="h-4 w-4 text-shade-pencil-light hover:text-shade-pencil-dars"/>
+              <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
             </Popover.Button>
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex  -translate-y-full translate-x-40 transform"
+                "absolute z-10 flex  -translate-y-full translate-x-52 transform"
               )}
             >
               <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">

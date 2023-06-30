@@ -55,7 +55,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     allowMultipleUploads: false,
   }).use(XHR, {
     //TODO:Update to https
-    endpoint: `http://${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${
+    endpoint: `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${
       document_id ? `?document_id=${document_id}` : ""
     }`,
   });
@@ -96,6 +96,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         ? router.refresh()
         : router.push(`/documents/${response.body.document_id}`);
     }
+  });
+
+  uppy.on("upload-error", (file, error) => {
+    toast.error("Upload failed, please try again");
   });
 
   /*-------------------------------- RENDER ------------------------------*/

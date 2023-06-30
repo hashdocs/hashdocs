@@ -32,7 +32,7 @@ const comparisonList: ComparisonProps[] = [
     hashdocs: (
       <>
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"Available in all plans"}
         </p>
       </>
@@ -40,7 +40,7 @@ const comparisonList: ComparisonProps[] = [
     docsend: (
       <>
         <ExclamationCircleIcon className="h-5 w-5 text-amber-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"Only in advanced ($250/m)"}
         </p>
       </>
@@ -53,16 +53,16 @@ const comparisonList: ComparisonProps[] = [
     hashdocs: (
       <>
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
-          {"Experience our viewer"}
+        <p className="text-sm font-normal text-shade-pencil-dark">
+          {"No save as images or printing"}
         </p>
       </>
     ),
     docsend: (
       <>
         <XCircleIcon className="h-5 w-5 text-red-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
-          {"Allows save as images"}
+        <p className="text-sm font-normal text-shade-pencil-dark">
+          {"Allows saving as images"}
         </p>
       </>
     ),
@@ -75,7 +75,7 @@ const comparisonList: ComparisonProps[] = [
     hashdocs: (
       <>
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"In alpha. coming soon"}
         </p>
       </>
@@ -83,7 +83,7 @@ const comparisonList: ComparisonProps[] = [
     docsend: (
       <>
         <ExclamationCircleIcon className="h-5 w-5 text-amber-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"Only for enterprises"}
         </p>
       </>
@@ -99,7 +99,7 @@ const comparisonList: ComparisonProps[] = [
         <Link
           href={`https://github.com/rbkayz`}
           target="_blank"
-          className="text-sm font-light text-shade-pencil-dark"
+          className="text-sm font-normal text-shade-pencil-dark"
         >
           {"Star us on Github"}
         </Link>
@@ -108,7 +108,7 @@ const comparisonList: ComparisonProps[] = [
     docsend: (
       <>
         <XCircleIcon className="h-5 w-5 text-red-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"No self deployment"}
         </p>
       </>
@@ -124,7 +124,7 @@ const comparisonList: ComparisonProps[] = [
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
         <Link
           href={`https://github.com/rbkayz`}
-          className="text-sm font-light text-shade-pencil-dark"
+          className="text-sm font-normal text-shade-pencil-dark"
         >
           {"Free tier with all features"}
         </Link>
@@ -133,7 +133,7 @@ const comparisonList: ComparisonProps[] = [
     docsend: (
       <>
         <XCircleIcon className="h-5 w-5 text-red-600" />
-        <p className="text-sm font-light text-shade-pencil-dark">
+        <p className="text-sm font-normal text-shade-pencil-dark">
           {"No free tier; 4 complex tiers"}
         </p>
       </>
@@ -148,12 +148,12 @@ const Comparison = () => {
       className="flex w-full flex-col items-center border-t border-shade-line px-4 py-8"
     >
       <div className="mx-auto flex max-w-screen-xl flex-col items-center px-4 text-center">
-        <h1 className="text-3xl font-extrabold sm:text-5xl">
+        <h1 className="text-2xl font-extrabold sm:text-5xl">
           <span className="text-stratos-gradient">1000+ teams </span>
           switched from Docsend
         </h1>
-        <h2 className="max-w-xl py-4 text-xl">
-          Here's why - a comparison of Hashdocs vs Docsend
+        <h2 className="max-w-xl py-4 text-lg">
+          Here&apos;s why - a comparison of Hashdocs vs Docsend
         </h2>
       </div>
 
@@ -166,7 +166,7 @@ const Comparison = () => {
                 <Image
                   src={"/hashdocs_gradient.svg"}
                   fill={true}
-                  alt={"hashdocs"}
+                  alt={"Hashdocs"}
                 />
               </div>
               <header className="ml-1 mt-1 hidden text-2xl font-bold leading-6 tracking-wide xl:block">
@@ -180,7 +180,7 @@ const Comparison = () => {
                 <Image
                   src={"/images/docsend_logo.png"}
                   fill={true}
-                  alt={"hashdocs"}
+                  alt={"Hashdocs"}
                 />
               </div>
               <header className="ml-1 hidden text-2xl font-bold leading-6 tracking-wide xl:block">
@@ -191,13 +191,13 @@ const Comparison = () => {
         </div>
         {comparisonList.map((item) => {
           return (
-            <div className="mx-4 flex border-t border-dotted border-shade-line py-6 ">
+            <div className="mx-4 flex border-t border-dotted border-shade-line py-6 " key={item.title}>
               <div className="basis-1/2 flex-col text-left xl:flex-row">
                 <h3 className="items-center gap-x-2 text-base font-semibold text-shade-pencil-dark xl:inline-flex">
                   <item.icon className="h-5 w-5" />
                   {item.title}
                 </h3>
-                <p className="pr-2 text-sm font-light text-shade-pencil-dark">
+                <p className="pr-2 text-sm font-normal text-shade-pencil-dark">
                   {item.description}
                 </p>
               </div>

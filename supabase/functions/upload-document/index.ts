@@ -38,59 +38,68 @@ serve(async (req) => {
 
   const numPages = pdfDoc.getPages().length;
 
-  const res = await fetch(
-    `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=eXGjMP9OLZfun7mv`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        Parameters: [
-          {
-            Name: "File",
-            FileValue: {
-              Url: data.signedUrl,
-            },
-          },
-          {
-            Name: "PageRange",
-            Value: "1",
-          },
-          {
-            Name: "PreserveResolution",
-            Value: true,
-          },
-        ],
-      }),
-    }
-  );
-
-  const return_body = await res.json();
-
-  if (!return_body.Files || !return_body.Files[0])
-    return errorHandler("No file returned");
-
-  const thumbnail_file = return_body.Files[0];
-  const thumbnail_arrayBuffer = base64ToArrayBuffer(thumbnail_file.FileData);
-
-  const { data: upload_data, error: upload_error } = await supabaseAdmin.storage
-    .from("thumbnails")
-    .upload(
-      `${doc.document_id}/${randomInt(100000, 999999)}.jpg`,
-      thumbnail_arrayBuffer,
+  try {
+    const res = await fetch(
+      `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=eXGjMP9OLZfun7mv`,
       {
-        contentType: "image/jpeg",
-        upsert: true,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Parameters: [
+            {
+              Name: "File",
+              FileValue: {
+                Url: data.signedUrl,
+              },
+            },
+            {
+              Name: "PageRange",
+              Value: "1",
+            },
+            {
+              Name: "PreserveResolution",
+              Value: true,
+            },
+          ],
+        }),
       }
     );
 
-  if (upload_error || !upload_data) {
-    return errorHandler(upload_error);
-  }
+    const return_body = await res.json();
 
-  const { error: update_error } = await supabaseAdmin
-    .from("tbl_documents")
-    .update({ image: upload_data.path })
-    .eq("document_id", doc.document_id);
+    if (!return_body.Files || !return_body.Files[0])
+      throw Error("No file returned");
+
+    const thumbnail_file = return_body.Files[0];
+    const thumbnail_arrayBuffer = base64ToArrayBuffer(thumbnail_file.FileData);
+
+    const { data: upload_data, error: upload_error } =
+      await supabaseAdmin.storage
+        .from("thumbnails")
+        .upload(
+          `${doc.document_id}/${randomInt({ start: 100000, end: 999999 })}.jpg`,
+          thumbnail_arrayBuffer,
+          {
+            contentType: "image/jpeg",
+            upsert: true,
+          }
+        );
+
+    if (upload_error || !upload_data) {
+      throw Error(JSON.stringify(upload_error));
+    }
+
+    const { error: update_error } = await supabaseAdmin
+      .from("tbl_documents")
+      .update({ image: upload_data.path })
+      .eq("document_id", doc.document_id);
+
+    if (update_error) {
+      throw Error(JSON.stringify(update_error));
+    }
+  } catch (e) {
+    console.error(`Could not update image - ${e}`);
+  }
 
   const { error: page_update_error } = await supabaseAdmin
     .from("tbl_document_versions")
@@ -98,11 +107,11 @@ serve(async (req) => {
     .eq("document_id", doc.document_id)
     .eq("document_version", doc.document_version);
 
-  if (update_error || page_update_error) {
-    return errorHandler({ update_error, page_update_error });
+  if (page_update_error) {
+    return errorHandler(page_update_error);
   }
 
-  return new Response(JSON.stringify(upload_data), {
+  return new Response(JSON.stringify({ message: "success" }), {
     headers: { "Content-Type": "application/json" },
   });
 });

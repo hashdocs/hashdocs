@@ -4,6 +4,7 @@ import { DocumentType } from "@/types/documents.types";
 import DocumentRow from "./documentRow";
 import Loader from "@/app/_components/navigation/loader";
 import { useRouter } from "next/navigation";
+import EmptyDocuments from "./emptyDocuments";
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
@@ -16,17 +17,16 @@ const DocumentsList: React.FC = () => {
 
     async function fetchDocuments() {
       try {
-      const res = await fetch("/api/documents", {
-        method: "GET",
-        next: { revalidate: 0 },
-      });
+        const res = await fetch("/api/documents", {
+          method: "GET",
+          next: { revalidate: 0 },
+        });
 
-      const documents = await res.json();
-      setDocuments(documents);
-    } catch(e) {
-
-      setDocuments(null);
-    }
+        const documents = await res.json();
+        setDocuments(documents);
+      } catch (e) {
+        setDocuments(null);
+      }
       setIsLoading(false);
     }
 
@@ -36,11 +36,14 @@ const DocumentsList: React.FC = () => {
   return isLoading ? (
     <Loader />
   ) : (
-    <ul role="list" className="flex flex-col flex-1 w-full">
-      {documents &&
+    <ul role="list" className="flex w-full flex-1 flex-col">
+      {documents && documents.length > 0 ? (
         documents.map((document) => (
           <DocumentRow key={document.document_id} {...document} />
-        ))}
+        ))
+      ) : (
+        <EmptyDocuments />
+      )}
     </ul>
   );
 };

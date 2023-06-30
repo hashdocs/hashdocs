@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
@@ -18,7 +18,6 @@ export default function DocumentsPage() {
   }
 
   const [showUploadModal, setShowUploadModal] = useState(false);
-
 
   return (
     <section className="flex flex-1 flex-col">
@@ -42,7 +41,10 @@ export default function DocumentsPage() {
         }
       </div>
       <DocumentsList />
-      <UploadDocumentModal isOpen={showUploadModal} setIsOpen={setShowUploadModal}/>
+      <UploadDocumentModal
+        isOpen={showUploadModal}
+        setIsOpen={setShowUploadModal}
+      />
     </section>
   );
 }
