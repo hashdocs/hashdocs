@@ -2,9 +2,12 @@
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import { DocumentPlusIcon } from "@heroicons/react/24/solid";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
-import DocumentsList from "./_components/documentsList";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import UploadDocumentModal from "./_components/uploadDocument";
+import DocumentRow from "./_components/documentRow";
+import EmptyDocuments from "./_components/emptyDocuments";
+import { DocumentsContext } from "./_components/documentsProvider";
+import Loader from "@/app/_components/navigation/loader";
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -18,6 +21,12 @@ export default function DocumentsPage() {
   }
 
   const [showUploadModal, setShowUploadModal] = useState(false);
+
+  const _documents = useContext(DocumentsContext);
+
+  if (!_documents) throw Error("Error in fetching documents");
+
+  const { documents } = _documents;
 
   return (
     <section className="flex flex-1 flex-col">
@@ -40,7 +49,17 @@ export default function DocumentsPage() {
           />
         }
       </div>
-      <DocumentsList />
+      <ul role="list" className="flex w-full flex-1 flex-col">
+        {!documents ? (
+          <Loader />
+        ) : documents.length > 0 ? (
+          documents.map((document) => (
+            <DocumentRow key={document.document_id} {...document} />
+          ))
+        ) : (
+          <EmptyDocuments />
+        )}
+      </ul>
       <UploadDocumentModal
         isOpen={showUploadModal}
         setIsOpen={setShowUploadModal}

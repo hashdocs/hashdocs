@@ -12,7 +12,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Database } from "@/types/supabase.types";
 import { useRouter } from "next/navigation";
-import { DocumentContext } from "./documentHeader";
+import { DocumentsContext } from "../../../_components/documentsProvider";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -20,18 +20,17 @@ interface EditLinkModalProps extends DocumentType {
   isActive?: boolean;
   setIsActive?: (state: boolean) => void;
   handleToggle?: (checked: boolean) => Promise<unknown>;
-  setDocument: (prevDocument: DocumentType) => void;
   link_id: string | null;
 }
 
 const EditLinkModal: React.FC<EditLinkModalProps> = (
   props: EditLinkModalProps
 ) => {
-  // const _documentcontext = useContext(DocumentContext);
+  const _documentsContext = useContext(DocumentsContext);
 
-  // if (!_documentcontext) return null;
+  if (!_documentsContext) return null;
 
-  // const { document, setDocument } = _documentcontext;
+  const { setDocuments } = _documentsContext;
 
   const {
     isOpen,
@@ -40,7 +39,6 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     isActive = true,
     setIsActive = () => {},
     handleToggle,
-    setDocument,
   } = props;
 
   const router = useRouter();
@@ -164,7 +162,16 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
         reject("error");
       if (res.ok) {
         setIsSaved(true);
-        setDocument(document);
+
+        setDocuments((prevDocuments: DocumentType[] | null) => {
+          if (!prevDocuments) return null;
+          const newDocuments = prevDocuments;
+          const index = newDocuments.findIndex(
+            (document) => document.document_id === props.document_id
+          );
+          newDocuments[index] = document;
+          return newDocuments;
+        });
         router.push(`/documents/${props.document_id}`);
         resolve(document.links[0].link_id);
         setIsOpen(false);
@@ -190,7 +197,9 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
             rel="noreferrer"
             className="flex flex-row space-x-2"
           >
-            <span className="text-stratos-default underline">{`${(process.env.NEXT_PUBLIC_BASE_URL ?? "").replace(/^https?:\/\//, '')}/d/${link_id}`}</span>
+            <span className="text-stratos-default underline">{`${(
+              process.env.NEXT_PUBLIC_BASE_URL ?? ""
+            ).replace(/^https?:\/\//, "")}/d/${link_id}`}</span>
             <BiLinkExternal className="h-4 w-4" />
           </Link>
           <BiCopy
@@ -240,7 +249,15 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
         reject("error");
       if (res.ok) {
         setIsSaved(true);
-        setDocument(document);
+        setDocuments((prevDocuments: DocumentType[] | null) => {
+          if (!prevDocuments) return null;
+          const newDocuments = prevDocuments;
+          const index = newDocuments.findIndex(
+            (document) => document.document_id === props.document_id
+          );
+          newDocuments[index] = document;
+          return newDocuments;
+        });
         resolve("deleted");
         setIsOpen(false);
       }
@@ -299,9 +316,11 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                       data-tooltip-content={`🚫 Disabled`}
                     >
                       <div
-                        onClick={() =>
+                         onClick={() =>
                           CopyLinkToClipboard(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
+                            true,
+                            `${link_id}-modal`
                           )
                         }
                         className={`flex items-center space-x-2 rounded-xl py-1 ${
@@ -310,7 +329,9 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                             : "pointer-events-none text-shade-pencil-light"
                         } `}
                       >
-                        <span className="px-1 font-mono">{`${(process.env.NEXT_PUBLIC_BASE_URL ?? "").replace(/^https?:\/\//, '')}/d/${link_id}`}</span>
+                        <span className="px-1 font-mono">{`${(
+                          process.env.NEXT_PUBLIC_BASE_URL ?? ""
+                        ).replace(/^https?:\/\//, "")}/d/${link_id}`}</span>
                         <BiCopy className="h-4 w-4 " />
                         <Link
                           onClick={(e) => {
@@ -349,7 +370,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     autoFocus={link_id ? false : true}
                   />
                 </div>
-                <div className="flex items-center justify-between space-x-4">
+                {/* <div className="flex items-center justify-between space-x-4">
                   <div className="text-sm leading-6">
                     <label className="font-medium">Status</label>
                     <p className="text-xs text-shade-pencil-light/80">
@@ -364,7 +385,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     onToggle={handleToggle}
                     isDisabled={!link_id}
                   />
-                </div>
+                </div> */}
                 <div className="-my-2 flex items-center justify-between text-xs text-shade-disabled">
                   <p className="pr-3">LINK SETTINGS</p>
                   <div className=" h-[1px] flex-grow bg-shade-line"></div>
@@ -445,7 +466,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     setIsChecked={setIsExpirationEnabled}
                     id={"expiry-checkbox"}
                     name={"expiry-checkbox"}
-                    label={"Expiration settings"}
+                    label={"Expiration settings (coming soon)"}
                     disabled={true}
                     description={
                       "Set the link to automatically expire after a certain date"
@@ -548,7 +569,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     </button>
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md bg-stratos-gradient px-3 py-2 font-semibold text-white shadow-sm hover:bg-stratos-gradient/80 disabled:bg-stratos-gradient/50"
+                      className="bg-stratos-gradient hover:bg-stratos-gradient/80 disabled:bg-stratos-gradient/50 inline-flex justify-center rounded-md px-3 py-2 font-semibold text-white shadow-sm"
                       onClick={handleSave}
                       disabled={linkName ? false : true}
                     >

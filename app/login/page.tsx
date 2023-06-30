@@ -105,7 +105,7 @@ export default function LoginPage() {
       <div className="flex h-full w-full flex-1 flex-col items-center justify-center px-4">
         <form
           onSubmit={handleSignIn}
-          className="flex h-2/5 w-full max-w-sm flex-col justify-center gap-y-4 rounded-lg bg-white p-8 text-center font-semibold leading-6 tracking-wide text-shade-pencil-dark shadow-lg"
+          className="flex h-[400px] w-full max-w-sm flex-col justify-center gap-y-4 rounded-lg bg-white p-8 text-center font-semibold leading-6 tracking-wide text-shade-pencil-dark shadow-lg"
         >
           {isSentMagicLink ? (
             <p className="font-normal">

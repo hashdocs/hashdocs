@@ -130,7 +130,9 @@ GROUP BY
 	tbl_document_versions.document_version
 ORDER BY
 	tbl_documents.document_seq DESC) t INTO return_data;
-	RETURN return_data;
+	--
+	--
+	RETURN coalesce(return_data, '[]'::json);
 END;
 $$;
 

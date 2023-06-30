@@ -1,17 +1,9 @@
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import { DocumentPlusIcon } from "@heroicons/react/20/solid";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import { useContext } from "react";
-import { DocumentContext } from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 
 export default function EmptyLinks() {
 
-  
-  const _documentContext = useContext(DocumentContext);
-
-  if (!_documentContext) return null;
-
-  const { document, setDocument, setShowNewLinkModal } = _documentContext;
 
   return (
     <div className="text-center flex items-center flex-col gap-y-4 pt-12 pb-16 my-4 border-shade-line border-2 border-dashed">
@@ -23,13 +15,13 @@ export default function EmptyLinks() {
             Create a secure link for this document
           </p>
       </div>
-      <LargeButton
+      {/* <LargeButton
         ButtonText={"New Link"}
         ButtonIcon={LinkIcon}
         ButtonClassName={document.is_enabled
           ? `w-28 bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
           : `w-28 bg-shade-disabled cursor-not-allowed`}
-        onClick={() => setShowNewLinkModal(true)} ButtonId={""}            />
+        onClick={() => setShowNewLinkModal(true)} ButtonId={""}            /> */}
     </div>
   );
 }

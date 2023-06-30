@@ -27,6 +27,7 @@ import { ChartBarIcon } from "@heroicons/react/24/solid";
 import { GrDocumentUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { classNames } from "@/app/_utils/classNames";
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
@@ -41,7 +42,6 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
     links,
   } = props;
 
-  const [document, setDocument] = useState<DocumentType>(props);
   const [isEnabled, setIsEnabled] = useState<boolean>(is_enabled);
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
@@ -134,13 +134,17 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
       </div>
 
       <div className="flex flex-row items-center space-x-4">
-        <MediumButton
-          ButtonId={`${document_id}-newlink`}
-          ButtonText={"New Link"}
-          ButtonIcon={LinkIcon}
-          ButtonSize={4}
+        <button
+          type="button"
+          key={`${document_id}-newlink`}
+          className={classNames(
+            "flex shrink-0 items-center space-x-2 rounded-md border border-shade-line bg-white px-2  py-1 text-xs font-semibold text-shade-pencil-dark  hover:border-stratos-50 hover:bg-shade-overlay hover:text-stratos-default"
+          )}
           onClick={() => setShowNewLinkModal(true)}
-        />
+        >
+          <LinkIcon className={`h-4 w-4`} aria-hidden="true" />
+          <span className="">{"New Link"}</span>
+        </button>
         <Toggle
           toggleId={`${document_id}-toggle`}
           SuccessToastText={
@@ -217,8 +221,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         isOpen={showNewLinkModal}
         setIsOpen={setShowNewLinkModal}
         link_id={null}
-        setDocument={setDocument}
-        {...document}
+        {...props}
       />
       <UploadDocumentModal
         isOpen={showUpdateDocumentModal}

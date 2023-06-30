@@ -5,7 +5,6 @@ import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
-import { DocumentContext } from "../_components/documentHeader";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronUpDownIcon,
@@ -17,13 +16,25 @@ import {
 } from "@heroicons/react/24/outline";
 import { Combobox, Transition } from "@headlessui/react";
 import { classNames } from "@/app/_utils/classNames";
+import { DocumentsContext } from "../../../_components/documentsProvider";
 
 /*=========================================== COMPONENT ===========================================*/
 
-export default function ViewsPage() {
-  const _documentContext = useContext(DocumentContext);
-  if (!_documentContext) throw Error("Invalid document");
-  const { document } = _documentContext;
+export default function ViewsPage({
+  params: { document_id }, // will be a page or nested layout
+}: {
+  params: { document_id: string };
+}) {
+  const _documents = useContext(DocumentsContext);
+
+  if (!_documents) throw Error("Error in fetching documents");
+
+  const { documents } = _documents;
+
+  const document =
+    documents?.find((document) => document.document_id === document_id) ?? null;
+
+  if (!document) throw Error("Error in fetching document data");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -232,12 +243,12 @@ export default function ViewsPage() {
               className="mx-2 grid grid-cols-12 items-center gap-x-2 border-t p-3 "
             >
               <div className="col-span-3 flex items-center space-x-4">
-                <div className="h-6 w-6 rounded-full border bg-shade-overlay border-shade-line uppercase font-mono flex text-shade-disabled items-center justify-center font-extrabold">{view.viewer.charAt(0)}</div>
-                <p className={`font-semibold truncate`}>{view.viewer}</p>
+                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-shade-line bg-shade-overlay font-mono font-extrabold uppercase text-shade-disabled">
+                  {view.viewer.charAt(0)}
+                </div>
+                <p className={`truncate font-semibold`}>{view.viewer}</p>
               </div>
-              <div className="col-span-2 grid truncate">
-                {view.link_name}
-              </div>
+              <div className="col-span-2 grid truncate">{view.link_name}</div>
               <div className="col-span-2 grid justify-center">
                 {view.viewed_at && formatDate(view.viewed_at, "MMM D", true)}
               </div>

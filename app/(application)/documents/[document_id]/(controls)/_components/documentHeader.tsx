@@ -3,18 +3,11 @@ import IconButton from "@/app/_components/shared/buttons/iconButton";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import {
-  ArrowDownIcon,
   ArrowDownTrayIcon,
-  ArrowLeftIcon,
   ArrowLongLeftIcon,
-  ArrowPathIcon,
   BackwardIcon,
   CalendarDaysIcon,
-  ChartBarIcon,
-  ChevronLeftIcon,
-  CloudArrowUpIcon,
   DocumentArrowUpIcon,
-  EllipsisHorizontalIcon,
   LinkIcon,
   PencilIcon,
   PhotoIcon,
@@ -23,47 +16,52 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { createContext, useState } from "react";
+import { useContext, useState } from "react";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
 import EditLinkModal from "./editLinkModal";
-import { DocumentContextType, DocumentType } from "@/types/documents.types";
+import { DocumentType } from "@/types/documents.types";
 import DocumentTabs from "./documentTabs";
-import Image from "next/image";
-import { EyeIcon } from "@heroicons/react/24/solid";
 import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import toast from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import UploadDocumentModal from "../../../_components/uploadDocument";
 import PopOver from "@/app/_components/shared/popover";
-import router from "next/router";
 import UploadThumbnailModal from "../../../_components/uploadThumbnail";
-
-export const DocumentContext = createContext<DocumentContextType | null>(null);
+import { DocumentsContext } from "../../../_components/documentsProvider";
+import Loader from "@/app/_components/navigation/loader";
 
 export default function DocumentHeader({
   children,
-  props, // will be a page or nested layout
+  document, // will be a page or nested layout
 }: {
   children: React.ReactNode;
-  props: DocumentType;
+  document: DocumentType;
 }) {
+  const _documents = useContext(DocumentsContext);
+
+  if (!_documents) throw Error("Error in fetching documents");
+
+  const { setDocuments } = _documents;
+
   const {
     document_id,
+    image,
+    is_enabled,
     document_name,
     source_path,
     source_type,
-    is_enabled,
+    document_version,
+    links,
     created_at,
-    image,
-  } = props;
+    created_by,
+  } = document;
 
   const router = useRouter();
 
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(is_enabled);
-  const [document, setDocument] = useState<DocumentType>(props);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(document_name ?? ".");
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
@@ -78,9 +76,17 @@ export default function DocumentHeader({
 
   const handleBlur = () => {
     setIsEditing(false);
-    setDocument({ ...document, document_name: name });
+    setDocuments((prevDocuments: DocumentType[] | null) => {
+      if (!prevDocuments) return null;
+      const newDocuments = prevDocuments;
+      const index = newDocuments.findIndex(
+        (document) => document.document_id === document_id
+      );
+      newDocuments[index].document_name = name;
+      return newDocuments;
+    });
     const updatePromise = new Promise(async (resolve, reject) => {
-      const res = await fetch(`/api/documents/${props.document_id}`, {
+      const res = await fetch(`/api/documents/${document_id}`, {
         method: "PUT",
         body: JSON.stringify({
           document_name: name,
@@ -89,18 +95,20 @@ export default function DocumentHeader({
       if (res.ok) {
         resolve(res.status);
       } else {
-        setDocument({ ...document, document_name: document_name });
+        setDocuments((prevDocuments: DocumentType[] | null) => {
+          if (!prevDocuments) return null;
+          const newDocuments = prevDocuments;
+          const index = newDocuments.findIndex(
+            (document) => document.document_id === document_id
+          );
+          newDocuments[index].document_name = document_name;
+          return newDocuments;
+        });
         reject(Error("Error updating link status"));
       }
     });
 
     updatePromise.then((_res) => {});
-
-    // toast.promise(updatePromise, {
-    //   loading: "Updating document name...",
-    //   success: "Successfully updated",
-    //   error: "Failed to update! Please try again",
-    // });
   };
 
   const handleClick = () => {
@@ -108,9 +116,17 @@ export default function DocumentHeader({
   };
 
   const handleToggle = async (checked: boolean) => {
-    setDocument({ ...document, is_enabled: checked });
+    setDocuments((prevDocuments: DocumentType[] | null) => {
+      if (!prevDocuments) return null;
+      const newDocuments = prevDocuments;
+      const index = newDocuments.findIndex(
+        (document) => document.document_id === document_id
+      );
+      newDocuments[index].is_enabled = checked;
+      return newDocuments;
+    });
     return new Promise(async (resolve, reject) => {
-      const res = fetch(`/api/documents/${props.document_id}`, {
+      const res = fetch(`/api/documents/${document_id}`, {
         method: "PUT",
         body: JSON.stringify({
           is_enabled: checked,
@@ -124,7 +140,15 @@ export default function DocumentHeader({
           }
         })
         .catch((err) => {
-          setDocument({ ...document, is_enabled: !checked });
+          setDocuments((prevDocuments: DocumentType[] | null) => {
+            if (!prevDocuments) return null;
+            const newDocuments = prevDocuments;
+            const index = newDocuments.findIndex(
+              (document) => document.document_id === document_id
+            );
+            newDocuments[index].is_enabled = !checked;
+            return newDocuments;
+          });
           reject(Error("Error updating link status"));
         });
     });
@@ -132,7 +156,7 @@ export default function DocumentHeader({
 
   const handleDelete = async () => {
     const deletePromise = new Promise(async (resolve, reject) => {
-      const res = fetch(`/api/documents/${props.document_id}`, {
+      const res = fetch(`/api/documents/${document_id}`, {
         method: "DELETE",
       });
 
@@ -157,7 +181,7 @@ export default function DocumentHeader({
 
   const handleDownload = async () => {
     const getPromise = new Promise(async (resolve, reject) => {
-      const res = await fetch(`/api/documents/${props.document_id}`, {
+      const res = await fetch(`/api/documents/${document_id}`, {
         method: "GET",
       });
 
@@ -196,9 +220,7 @@ export default function DocumentHeader({
   /* --------------------------------- RENDER --------------------------------- */
 
   return (
-    <DocumentContext.Provider
-      value={{ document, setDocument, showNewLinkModal, setShowNewLinkModal }}
-    >
+    <section>
       <div className="flex flex-col">
         <Link href="/documents" className="pointer-events-none">
           <div className="pointer-events-auto inline-flex  items-center gap-x-2 text-shade-disabled hover:text-stratos-default hover:underline">
@@ -208,7 +230,7 @@ export default function DocumentHeader({
         </Link>
         <div className="mb-4 flex flex-row items-center justify-between gap-x-2">
           <div className="flex w-1/2 flex-row gap-x-4 overflow-hidden text-shade-pencil-black">
-            <ThumbnailImage src={document.image} document_id={document_id} />
+            <ThumbnailImage src={image} document_id={document_id} />
             <div className="flex flex-col space-y-1 overflow-hidden">
               {isEditing ? (
                 <input
@@ -240,9 +262,10 @@ export default function DocumentHeader({
               </div>
               <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
                 <CalendarDaysIcon className="h-4 w-4" />
-                <p className="flex-nowrap truncate text-xs ">{`Version ${
-                  document.document_version
-                } | Updated on ${formatDate(created_at, "MMM D YYYY")}`}</p>
+                <p className="flex-nowrap truncate text-xs ">{`Version ${document_version} | Updated on ${formatDate(
+                  created_at,
+                  "MMM D YYYY"
+                )}`}</p>
               </div>
             </div>
           </div>
@@ -267,17 +290,15 @@ export default function DocumentHeader({
               onToggle={handleToggle}
               EnabledHoverText="Disable all links"
               DisabledHoverText="Enable links"
-              LoadingToastText={<p>Updating {document?.document_name}...</p>}
+              LoadingToastText={<p>Updating {document_name}...</p>}
               ErrorToastText={
-                <p>
-                  Error in updating {document?.document_name}. Please try again!
-                </p>
+                <p>Error in updating {document_name}. Please try again!</p>
               }
               Label={
                 isEnabled
                   ? `${
-                      document?.links.filter((link) => link.is_active === true)
-                        .length ?? 0
+                      links.filter((link) => link.is_active === true).length ??
+                      0
                     } links are enabled`
                   : "All links are disabled"
               }
@@ -351,7 +372,6 @@ export default function DocumentHeader({
             isOpen={showNewLinkModal}
             setIsOpen={setShowNewLinkModal}
             link_id={null}
-            setDocument={setDocument}
             {...document}
           />
           <UploadDocumentModal
@@ -371,6 +391,6 @@ export default function DocumentHeader({
         <DocumentTabs {...document} />
       </div>
       {children}
-    </DocumentContext.Provider>
+    </section>
   );
 }
