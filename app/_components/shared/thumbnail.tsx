@@ -32,7 +32,7 @@ export function ThumbnailImage({
         // fill={true}
         height={72}
         width={137}
-        // style={{ objectFit: "contain" }}
+        style={{ borderRadius: "6px" }}
       />
       <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-shade-disabled opacity-0 transition-opacity duration-200 hover:opacity-50">
         <EyeIcon className="h-6 w-6 text-shade-pencil-black" />

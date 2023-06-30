@@ -9,11 +9,18 @@ import ViewerTopBar from "../../d/[link_id]/_components/viewerTopbar";
 import PDFViewerPage from "../../_components/pdf_viewer_page";
 import PreviewTopBar from "./previewTopBar";
 import InvalidLink from "../../d/[link_id]/_components/invalid_link";
+import { redirect } from "next/navigation";
 
 export const revalidate = 0;
 
 async function getSignedURL(document_id: string) {
   const supabase = createServerComponentClient<Database>({ cookies });
+
+  const {data: {session}, error:sessionError} = await supabase.auth.getSession(); 
+
+  if (!session || sessionError) {
+    redirect("/login");
+  };
 
   const { data: document_data, error: document_error } = await supabase
     .rpc("get_documents", { document_id_input: document_id })

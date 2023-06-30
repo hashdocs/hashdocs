@@ -22,7 +22,7 @@ export default function Navbar() {
               alt={"Hashdocs"}
             />
           </div>
-          <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
+          <h1 className="ml-1 mt-1 text-2xl font-black tracking-wide">
             Hashdocs
           </h1>
         </Link>

@@ -27,7 +27,6 @@ const sidebar = {
 const navItems = ["pricing", "roadmap"];
 
 export default function MobileNav() {
-  const { domain = "dub.sh" } = useParams() as { domain: string };
 
   const [isOpen, toggleOpen] = useCycle(false, true);
   const containerRef = useRef(null);
@@ -55,11 +54,7 @@ export default function MobileNav() {
           <div key={item} className="grid gap-3">
             <MenuItem>
               <Link
-                href={
-                  domain === "dub.sh"
-                    ? `/${item}`
-                    : `https://dub.sh/${item}?utm_source=${domain}&utm_medium=referral&utm_campaign=custom-domain`
-                }
+                href={`/${item}`}
                 onClick={() => toggleOpen()}
                 className="flex w-full font-semibold capitalize"
               >
@@ -69,31 +64,12 @@ export default function MobileNav() {
             <MenuItem className="my-3 h-px w-full bg-shade-line" />
           </div>
         ))}
-
-        <MenuItem key="Login">
+        <MenuItem key="Dashboard">
           <Link
-            href={
-              process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
-                ? "https://app.dub.sh/login"
-                : "http://app.localhost:3000/login"
-            }
+            href={`/login`}
             className="flex w-full font-semibold capitalize"
           >
-            Log in
-          </Link>
-        </MenuItem>
-        <MenuItem className="my-3 h-px w-full bg-shade-line" />
-
-        <MenuItem key="Signup">
-          <Link
-            href={
-              process.env.NEXT_PUBLIC_VERCEL_ENV === "production"
-                ? "https://app.dub.sh/register"
-                : "http://app.localhost:3000/register"
-            }
-            className="flex w-full font-semibold capitalize"
-          >
-            Sign Up
+            Dashboard
           </Link>
         </MenuItem>
       </motion.ul>

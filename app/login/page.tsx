@@ -99,7 +99,7 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="flex h-screen w-full flex-1 flex-col items-start">
+    <section className="flex h-screen w-full flex-1 flex-col items-start overflow-y-scroll">
       <Navbar />
 
       <div className="flex h-full w-full flex-1 flex-col items-center justify-center px-4">
@@ -146,9 +146,9 @@ export default function LoginPage() {
               />
               <button
                 type="submit"
-                className="bg-stratos-gradient h-10 rounded-md border border-stratos-default text-white hover:bg-stratos-default/80"
+                className="bg-stratos-gradient h-10 rounded-md text-white hover:bg-stratos-default/80"
               >
-                {"Sign in"}
+                {"Continue with email"}
               </button>
               <p className="px-2 text-center text-xs font-normal tracking-tight text-shade-pencil-light">
                 By continuing, you agree to Hashdocs&apos;{" "}

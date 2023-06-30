@@ -124,7 +124,7 @@ export default function Sidebar(user: User) {
               alt={"Hashdocs"}
             />
           </div>
-          <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
+          <h1 className="ml-1 mt-1 text-2xl font-black leading-6 tracking-wide">
             Hashdocs
           </h1>
         </div>

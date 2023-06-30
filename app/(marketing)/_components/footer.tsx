@@ -40,7 +40,7 @@ export default function Footer() {
           </div>
           <div className="flex items-center space-x-2">
             <Link
-              href="https://twitter.com/dubdotsh"
+              href="https://twitter.com/rbkayz"
               target="_blank"
               rel="noreferrer"
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
@@ -49,7 +49,7 @@ export default function Footer() {
               <FaTwitter className="h-5 w-5 text-shade-pencil-light" />
             </Link>
             <Link
-              href="https://github.com/steven-tey/dub"
+              href="https://github.com/rbkayz/hashdocs"
               target="_blank"
               rel="noreferrer"
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
