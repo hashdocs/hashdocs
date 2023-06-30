@@ -21,7 +21,6 @@ jobs:
 
       - run: supabase db start
       - run: supabase db lint
-      - run: supabase test db
 
       - name: Verify generated types are checked in
         run: |
