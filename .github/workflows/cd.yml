@@ -23,7 +23,7 @@ jobs:
           version: latest
 
       - run: |
-          supabase link --project-ref PROJECT_ID
+          supabase link --project-ref ${{ secrets.DEV_PROJECT_ID }}
           supabase db push
           supabase functions deploy authorize-viewer --legacy-bundle
           supabase functions deploy upload-document --legacy-bundle
