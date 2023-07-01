@@ -1,5 +1,6 @@
 import {
   AdjustmentsHorizontalIcon,
+  CheckBadgeIcon,
   CodeBracketSquareIcon,
   CreditCardIcon,
   CubeTransparentIcon,
@@ -68,7 +69,7 @@ const comparisonList: ComparisonProps[] = [
     ),
   },
   {
-    icon: CubeTransparentIcon,
+    icon: CheckBadgeIcon,
     title: "Custom domains",
     description:
       "Whitelabel your links and viewer with custom domains and company logo",

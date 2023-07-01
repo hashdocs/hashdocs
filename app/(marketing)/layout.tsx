@@ -8,7 +8,7 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="flex flex-1 flex-col items-center">
+    <section className="flex flex-1 flex-col items-center min-h-screen">
       <Navbar />
       <MobileNav />
       {children}

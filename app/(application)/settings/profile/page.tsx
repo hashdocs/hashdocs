@@ -1,27 +1,54 @@
+"use client";
 import Empty from "@/app/_components/navigation/empty";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 /*=========================================== TYPES ===========================================*/
 
 /*=========================================== CONSTANTS ===========================================*/
 
 export default function AnalyticsPage() {
+
+
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
+  const handleLogout = async (e: any) => {
+    const loginPromise = new Promise(async (resolve, reject) => {
+      e.preventDefault();
+
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        reject(false);
+      } else {
+        resolve(true);
+        router.push("/");
+      }
+    });
+
+    toast.promise(loginPromise, {
+      loading: "Signing out...",
+      success: "Signed out successfully!",
+      error: "Sign out failed! Please try again",
+    });
+  };
+
   return (
     <main className="flex flex-col space-y-4">
-      <div className="flex flex-col items-center justify-center space-y-4 rounded-lg border-2 border-dashed p-24 text-center ">
-        <div className="flex items-center justify-center space-x-2">
-          <WrenchScrewdriverIcon className="h-6 w-6 text-shade-pencil-light" />
-          <h1 className="text-xl text-shade-pencil-light">WIP</h1>
+      <div className="w-full flex flex-1 flex-col p-8 items-center bg-white shadow-sm rounded-md gap-y-8 ">
+        <div className="flex flex-row flex-1 items-center w-full">
+          <div className="basis-1/2 flex flex-1 text-sm font-semibold">Email</div>
+          <div className="basis-1/2 flex flex-1 bg-shade-overlay shadow-inner rounded-md p-2 border border-shade-line">Email</div>
         </div>
-
-        <Link
-          href={`https://twitter.com/intent/tweet?text=%40rbkayz`}
-          className="text-sm text-shade-pencil-light underline hover:text-stratos-default"
-        >
-          Tweet to us about the feature you want to see next
-        </Link>
+        <div className="flex flex-row flex-1 items-center w-full">
+          <div className="basis-3/4 flex flex-1 text-sm font-semibold"></div>
+          <button className="font-semibold shadow-inner rounded-md p-2 border border-red-500 text-red-700 bg-red-50" onClick={handleLogout}>Logout of all sessions</button>
+        </div>
       </div>
     </main>
   );

@@ -22,7 +22,7 @@ const Hero = () => {
         <span className="text-stratos-gradient">Docsend alternative</span>
       </h1>
       <h2 className="mt-5 max-w-xl sm:text-xl">
-       Manage access to your sensitive documents with <br/> powerful link
+       Manage secure access to your sensitive documents with <br/> powerful link
         controls and advanced tracking
       </h2>
 
