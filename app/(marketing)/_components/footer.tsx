@@ -17,12 +17,13 @@ const navigation = {
   legal: [
     { name: "Privacy", href: "/privacy" },
     { name: "Terms", href: "/terms" },
+    { name: "Cookies", href: "/cookies" },
   ],
 };
 
 export default function Footer() {
   return (
-    <footer className="z-10 flex w-full flex-1 items-center justify-center border-t border-shade-line bg-white/50">
+    <footer className="z-10 flex w-full items-center justify-center border-t border-shade-line bg-white/50">
       <div className="flex max-w-screen-xl flex-1 flex-col gap-y-4 px-4 py-8 xl:flex xl:flex-row xl:justify-between xl:gap-y-0">
         <div className="w-full space-y-4 xl:flex xl:w-1/2 xl:flex-col">
           <div className="flex items-center gap-x-2">
@@ -40,7 +41,7 @@ export default function Footer() {
           </div>
           <div className="flex items-center space-x-2">
             <Link
-              href="https://twitter.com/dubdotsh"
+              href="https://twitter.com/rbkayz"
               target="_blank"
               rel="noreferrer"
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
@@ -49,7 +50,7 @@ export default function Footer() {
               <FaTwitter className="h-5 w-5 text-shade-pencil-light" />
             </Link>
             <Link
-              href="https://github.com/steven-tey/dub"
+              href="https://github.com/rbkayz/hashdocs"
               target="_blank"
               rel="noreferrer"
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"

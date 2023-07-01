@@ -5,7 +5,10 @@ import Script from "next/script";
 import { Metadata } from "next";
 
 export const metadata:Metadata = {
-  title: "Hashdocs",
+  title: {
+    template: '%s | Hashdocs',
+    default: 'Hashdocs', // a default is required when creating a template
+  },
   description: "An open-source docsend alternative with powerful link controls and realtime tracking",
   icons: {
     icon: '/hashdocs_gradient_square.png'

@@ -2,8 +2,6 @@
 import Loader from "@/app/_components/navigation/loader";
 import { classNames } from "@/app/_utils/classNames";
 import {
-  ArrowDownCircleIcon,
-  ArrowUpCircleIcon,
   MagnifyingGlassMinusIcon,
   MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
@@ -14,7 +12,6 @@ import { pdfjs } from "react-pdf";
 import {
   DocumentCallback,
   OnItemClickArgs,
-  PageCallback,
 } from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -22,7 +19,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   const [numPages, setNumPages] = useState<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
   const pageHeight = window.innerHeight * 0.8;
-  // const pageWidth = window.innerWidth * 0.3;
+  const pageWidth = window.innerWidth * 0.65;
   const thumbnailWidth = window.innerWidth * 0.12;
   const thumbnailHeight = window.innerHeight * 0.2;
   const [zoom, setZoom] = useState(1);
@@ -31,7 +28,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   >([]);
   const thumbnailContainerRef = useRef<HTMLDivElement>(null);
   const [pageTimes, setPageTimes] = useState<
-    { pageNumber: number; entryTime: number }[]
+    { pageNumber: number; entryTime: number; exitTime?: number }[]
   >([]);
   const [hasScrolled, setHasScrolled] = useState(false);
   const scrollableElementRef = useRef<HTMLDivElement>(null);
@@ -54,6 +51,10 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   function onDocumentLoadSuccess(document: DocumentCallback) {
     setNumPages(document.numPages);
 
+    setPageTimes((oldTimes) => {
+      return [...oldTimes, { pageNumber: activePage, entryTime: Date.now() }];
+    });
+
     // Initialize an array of refs
     setPageRefs((oldRefs) =>
       Array(document.numPages)
@@ -73,18 +74,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
 
   /* ------------------------------- USE EFFECTS ------------------------------ */
 
-  useEffect(() => {
-    const calcPageHeight = pageHeight * zoom;
-
-    if (window.innerHeight / calcPageHeight < 1) {
-      setThreshold(0.5);
-    } else if (window.innerHeight / calcPageHeight < 2) {
-      setThreshold(0.75);
-    } else {
-      setThreshold(1);
-    }
-  }, [zoom, pageHeight]);
-
+  // Scroll handler
   useEffect(() => {
     const scrollHandler = () => {
       setHasScrolled(true);
@@ -104,6 +94,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     };
   }, [scrollableElementRef.current]);
 
+  // Intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -117,9 +108,11 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               (ref) => ref?.current === entry.target
             );
             setPageTimes((oldTimes) => {
+              const newTimes = [...oldTimes];
+              newTimes[newTimes.length - 1].exitTime = Date.now();
               return [
                 ...oldTimes,
-                { pageNumber: activePage, entryTime: Date.now() },
+                { pageNumber: pageIndex + 1, entryTime: Date.now() },
               ];
             });
             setActivePage(pageIndex + 1); // pages are 1-indexed
@@ -148,25 +141,17 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   }, [pageRefs, activePage, hasScrolled, threshold]);
 
   useEffect(() => {
-    const flatPageTimes = pageTimes
-      .map((pageTime, index) => {
-        if (
-          (pageTimes[index + 1]?.entryTime ?? Date.now()) - pageTime.entryTime <
-          300
-        )
-          return;
-        return {
-          ...pageTime,
-          exitTime: pageTimes[index + 1]?.entryTime || Date.now(),
-        };
-      })
-      .filter((item) => item !== undefined);
     const interval = setInterval(async () => {
-      link_id &&
-        (await fetch(`/api/viewer/${link_id}`, {
-          method: "PUT",
-          body: JSON.stringify(flatPageTimes),
-        }));
+      if (!document.hidden) {
+        const flatPageTimes = pageTimes;
+        flatPageTimes[flatPageTimes.length - 1].exitTime = Date.now();
+
+        link_id &&
+          (await fetch(`/api/viewer/${link_id}`, {
+            method: "PUT",
+            body: JSON.stringify(flatPageTimes),
+          }));
+      }
     }, 3000);
 
     // Cleanup: remove event listeners and clear interval
@@ -175,29 +160,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     };
   }, [pageTimes]);
 
-  //   /* ---------------------------------- SCROLL HANDLER ---------------------------------- */
-  //   useEffect(() => {
-  //     let timeoutId: NodeJS.Timeout | null = null;
-
-  //     const scrollListener = () => {
-  //       // set state to scrolling
-  //       setScrolling(true);
-
-  //       // clear our timeout throughout the scroll
-  //       timeoutId && clearTimeout(timeoutId);
-
-  //       // set timeout to run function after scroll ends
-  //       timeoutId = setTimeout(function () {
-  //         setScrolling(false);
-  //       }, 150); // wait for 150ms after the last scroll event
-  //     };
-
-  //     window.addEventListener("scroll", scrollListener);
-
-  //     return () => {
-  //       window.removeEventListener("scroll", scrollListener);
-  //     };
-  //   }, []);
+  /* --------------------------------- RENDER --------------------------------- */
 
   return (
     <Document
@@ -242,49 +205,71 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           </div>
         ))}
       </div>
-      <div
-        ref={scrollableElementRef}
-        className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex"
-      >
-        <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
-          <div className="flex flex-row gap-x-2">
-            <div
-              className="flex items-center justify-center font-semibold text-shade-pencil-light"
-              style={{ userSelect: "none" }}
-            >
-              {"Page"}
+      {window.innerWidth > 1024 ? (
+        <div
+          ref={scrollableElementRef}
+          className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex"
+        >
+          <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
+            <div className="flex flex-row gap-x-2">
+              <div
+                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                style={{ userSelect: "none" }}
+              >
+                {"Page"}
+              </div>
+              <div
+                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                style={{ userSelect: "none" }}
+              >
+                {activePage}
+              </div>
+              <div
+                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                style={{ userSelect: "none" }}
+              >
+                {"of"}
+              </div>
+              <div
+                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                style={{ userSelect: "none" }}
+              >
+                {numPages}
+              </div>
             </div>
-            <div
-              className="flex items-center justify-center font-semibold text-shade-pencil-light"
-              style={{ userSelect: "none" }}
-            >
-              {activePage}
-            </div>
-            <div
-              className="flex items-center justify-center font-semibold text-shade-pencil-light"
-              style={{ userSelect: "none" }}
-            >
-              {"of"}
-            </div>
-            <div
-              className="flex items-center justify-center font-semibold text-shade-pencil-light"
-              style={{ userSelect: "none" }}
-            >
-              {numPages}
+            <div className="flex flex-row gap-x-2">
+              <MagnifyingGlassPlusIcon
+                className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
+                onClick={handleZoomIn}
+              />
+              <MagnifyingGlassMinusIcon
+                className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
+                onClick={handleZoomOut}
+              />
             </div>
           </div>
-          <div className="flex flex-row gap-x-2">
-            <MagnifyingGlassPlusIcon
-              className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
-              onClick={handleZoomIn}
-            />
-            <MagnifyingGlassMinusIcon
-              className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
-              onClick={handleZoomOut}
-            />
+          <div className="hidden flex-1 flex-col p-8 focus:outline-none lg:flex ">
+            {Array.from({ length: numPages }, (_, index) => (
+              <Page
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+                loading={<Loader />}
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+                className="my-4"
+                // height={pageHeight}
+                width={pageWidth}
+                scale={zoom}
+                inputRef={pageRefs[index]}
+              />
+            ))}
           </div>
         </div>
-        <div className="hidden flex-1 flex-col p-8 focus:outline-none lg:flex ">
+      ) : (
+        <div
+          ref={scrollableElementRef}
+          className="hashdocs-scrollbar flex flex-1 flex-col items-center lg:hidden"
+        >
           {Array.from({ length: numPages }, (_, index) => (
             <Page
               key={`page_${index + 1}`}
@@ -294,13 +279,13 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               renderTextLayer={false}
               className="my-4"
               // height={pageHeight}
-              // width={pageWidth}
+              width={window.innerWidth - 32}
               scale={zoom}
               inputRef={pageRefs[index]}
             />
           ))}
         </div>
-      </div>
+      )}
     </Document>
   );
 }

@@ -13,24 +13,23 @@ const Hero = () => {
         <p className="text-sm font-semibold text-shade-pencil-light group-hover:text-stratos-default">
           Introducing Hashdocs
         </p>
-        <FaTwitter className="h-3.5 w-3.5 group-hover:text-stratos-default" />
+        <FaTwitter className="h-3.5 w-3.5 group-hover:text-stratos-default group-hover:animate-bounce" />
       </Link>
 
       <h1 className="font-display mt-5 text-3xl font-extrabold leading-9 text-shade-gradient sm:text-6xl">
-        Securely share docs with
+        An open source
         <br />
-        <span className="text-stratos-gradient">trackable links</span>
+        <span className="text-stratos-gradient">Docsend alternative</span>
       </h1>
       <h2 className="mt-5 max-w-xl sm:text-xl">
-        Hashdocs is an open-source Docsend alternative <br /> with powerful link
-        controls and tracking
+       Manage secure access to your sensitive documents with <br/> powerful link
+        controls and advanced tracking
       </h2>
 
       <div className="mx-auto mt-10 flex max-w-fit space-x-4">
         <Link
-          className="bg-stratos-default hover:bg-stratos-default/80 flex items-center justify-center space-x-2 rounded-lg border px-5 py-2 shadow-lg transition-all text-white group font-semibold"
+          className="bg-stratos-default hover:bg-stratos-default/80 flex items-center justify-center space-x-2 rounded-lg px-5 py-2 shadow-lg transition-all text-white group font-semibold"
           href="/login"
-          target="_blank"
         >
           <p className="text-sm">Start for free</p>
           <ArrowRightCircleIcon className="h-5 w-5 text-white group-hover:animate-pulse" />

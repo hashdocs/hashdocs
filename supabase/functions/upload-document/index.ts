@@ -89,9 +89,13 @@ serve(async (req) => {
       throw Error(JSON.stringify(upload_error));
     }
 
+    const {
+      data: { publicUrl },
+    } = supabaseAdmin.storage.from("thumbnails").getPublicUrl(upload_data.path);
+
     const { error: update_error } = await supabaseAdmin
       .from("tbl_documents")
-      .update({ image: upload_data.path })
+      .update({ image: publicUrl })
       .eq("document_id", doc.document_id);
 
     if (update_error) {

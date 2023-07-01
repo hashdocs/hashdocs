@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { Database } from "./supabase.types";
 
 export type ViewType = Database["public"]["Tables"]["tbl_views"]["Row"] & {
@@ -29,9 +30,7 @@ export interface documentTabType {
   stats: number | null;
 }
 
-export type DocumentContextType = {
-  document: DocumentType;
-  setDocument: (prevDocument: DocumentType) => void;
-  showNewLinkModal: boolean;
-  setShowNewLinkModal: (prevShowNewLinkModal: boolean) => void;
+export type DocumentsContextType = {
+  documents: DocumentType[] | null;
+  setDocuments: Dispatch<SetStateAction<DocumentType[] | null>>;
 };

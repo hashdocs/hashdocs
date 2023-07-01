@@ -1,18 +1,27 @@
 "use client";
-import { DocumentContext } from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 import EmptyLinks from "./_components/emptyLinks";
 import LinkRow from "./_components/linkRow";
 
 import { useContext } from "react";
+import { DocumentsContext } from "../../../_components/documentsProvider";
 
 /*=========================================== COMPONENT ===========================================*/
 
-export default function LinksPage() {
-  const _document = useContext(DocumentContext);
+export default function LinksPage({
+  params: { document_id }, // will be a page or nested layout
+}: {
+  params: { document_id: string };
+}) {
+  const _documents = useContext(DocumentsContext);
 
-  if (!_document) return null;
+  if (!_documents) throw Error("Error in fetching documents");
 
-  const { document } = _document;
+  const { documents, setDocuments } = _documents;
+
+  const document =
+    documents?.find((document) => document.document_id === document_id) ?? null;
+
+  if (!document) throw Error("Error in fetching document data");
 
   return document && document.links.length > 0 ? (
     <ul role="list" className="flex flex-col py-4">
@@ -20,6 +29,6 @@ export default function LinksPage() {
         document.links.map((link) => <LinkRow key={link.link_id} {...link} />)}
     </ul>
   ) : (
-    <EmptyLinks/>
+    <EmptyLinks />
   );
 }

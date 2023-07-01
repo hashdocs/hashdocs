@@ -1,5 +1,6 @@
 import {
   AdjustmentsHorizontalIcon,
+  CheckBadgeIcon,
   CodeBracketSquareIcon,
   CreditCardIcon,
   CubeTransparentIcon,
@@ -68,7 +69,7 @@ const comparisonList: ComparisonProps[] = [
     ),
   },
   {
-    icon: CubeTransparentIcon,
+    icon: CheckBadgeIcon,
     title: "Custom domains",
     description:
       "Whitelabel your links and viewer with custom domains and company logo",
@@ -158,25 +159,25 @@ const Comparison = () => {
       </div>
 
       <div className="my-4 flex w-full max-w-screen-xl flex-col rounded-md border bg-white">
-        <div className="mx-4 flex py-4 font-semibold shadow-inner ">
-          <div className="basis-1/2">{""}</div>
+        <div className="mx-4 flex py-4 font-semibold">
+          <div className="basis-1/2 mr-2">{""}</div>
           <div className="flex basis-1/4 justify-center">
             <div className="flex flex-row items-center">
-              <div className="relative -ml-1 h-10 w-8 scale-75 rounded-md">
+              <div className="relative h-10 w-8 scale-75 rounded-md">
                 <Image
                   src={"/hashdocs_gradient.svg"}
                   fill={true}
                   alt={"Hashdocs"}
                 />
               </div>
-              <header className="ml-1 mt-1 hidden text-2xl font-bold leading-6 tracking-wide xl:block">
-                hashdocs
+              <header className="ml-1 mt-1 hidden text-2xl font-black leading-6 tracking-wide xl:block">
+                Hashdocs
               </header>
             </div>
           </div>
           <div className="flex basis-1/4 justify-center">
             <div className="flex flex-row items-center">
-              <div className="relative -ml-1 h-8 w-8 scale-75 rounded-md">
+              <div className="relative h-8 w-8 scale-75 rounded-md">
                 <Image
                   src={"/images/docsend_logo.png"}
                   fill={true}
@@ -192,7 +193,7 @@ const Comparison = () => {
         {comparisonList.map((item) => {
           return (
             <div className="mx-4 flex border-t border-dotted border-shade-line py-6 " key={item.title}>
-              <div className="basis-1/2 flex-col text-left xl:flex-row">
+              <div className="basis-1/2 mr-2 flex-col text-left xl:flex-row">
                 <h3 className="items-center gap-x-2 text-base font-semibold text-shade-pencil-dark xl:inline-flex">
                   <item.icon className="h-5 w-5" />
                   {item.title}
@@ -201,10 +202,10 @@ const Comparison = () => {
                   {item.description}
                 </p>
               </div>
-              <div className="flex basis-1/4 flex-col items-center gap-y-1">
+              <div className="flex basis-1/4 flex-col items-center text-center gap-y-1">
                 {item.hashdocs}
               </div>
-              <div className="flex basis-1/4 flex-col items-center gap-y-1">
+              <div className="flex basis-1/4 flex-col items-center text-center gap-y-1">
                 {item.docsend}
               </div>
             </div>

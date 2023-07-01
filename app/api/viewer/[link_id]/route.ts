@@ -2,12 +2,12 @@ import { Database } from "@/types/supabase.types";
 import { AuthorizeViewerType } from "@/types/viewer.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /*================================ AUTHORIZE VIEWER ==============================*/
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params: { link_id } }: { params: { link_id: string } }
 ) {
   const supabase = createClientComponentClient<Database>();

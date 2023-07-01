@@ -22,7 +22,7 @@ export default function PreviewTopBar({
         href={`/`}
         className="flex w-1/6 flex-row items-center"
       >
-        <div className="relative -ml-1 h-10 w-8 scale-75 overflow-hidden rounded-md">
+        <div className="-ml-1 h-10 w-8 scale-75 shrink-0 rounded-md">
           <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"Hashdocs"} />
         </div>
         <header className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
@@ -37,7 +37,7 @@ export default function PreviewTopBar({
       </div> */}
       <div className="mr-4 flex flex-row items-center justify-center gap-x-4">
         {documentProps && (
-          <h1 className="text-base font-semibold leading-6 tracking-wide text-shade-pencil-light">
+          <h1 className="text-base hidden lg:flex font-semibold leading-6 tracking-wide text-shade-pencil-light">
             {documentProps.document_name} (Preview)
           </h1>
         )}

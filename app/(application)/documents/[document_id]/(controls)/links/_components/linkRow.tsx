@@ -17,8 +17,8 @@ import { LinkType, DocumentType } from "@/types/documents.types";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "@/app/(application)/documents/[document_id]/(controls)/_components/editLinkModal";
-import { DocumentContext } from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
+import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -27,20 +27,40 @@ const LinkRow: React.FC<LinkType> = (props) => {
   const [isActive, setIsActive] = useState<boolean>(props.is_active);
   const [showUpdateLinkModal, setShowUpdateLinkModal] = useState(false);
 
-  const _documentContext = useContext(DocumentContext);
+  const _documentsContext = useContext(DocumentsContext);
 
-  if (!_documentContext) return null;
+  if (!_documentsContext) return null;
 
-  const { document, setDocument } = _documentContext;
+  const { documents, setDocuments } = _documentsContext;
+
+  const document =
+    documents?.find((document) => document.document_id === props.document_id) ??
+    null;
+
+  if (!document) throw Error("Error in fetching document data");
 
   const { link_id, link_name, created_at, views } = props;
 
+  
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
 
   /*================================ FUNCTIONS ==============================*/
 
   // Handler for the toggle
   const handleToggle = async (checked: boolean) => {
+    setDocuments((prevDocuments: DocumentType[] | null) => {
+      if (!prevDocuments) return null;
+      const newDocuments = prevDocuments;
+      const index = newDocuments.findIndex(
+        (document) => document.document_id === props.document_id
+      );
+      const linkIndex = newDocuments[index].links.findIndex(
+        (link) => link.link_id === props.link_id
+      );
+
+      newDocuments[index].links[linkIndex].is_active = checked;
+      return newDocuments;
+    });
     return new Promise(async (resolve, reject) => {
       const res = await fetch(
         `/api/documents/${props.document_id}/${link_id}`,
@@ -52,17 +72,28 @@ const LinkRow: React.FC<LinkType> = (props) => {
         }
       );
 
-      if (res.status !== 200) reject(res.statusText);
+      if (res.status !== 200) {
+        setDocuments((prevDocuments: DocumentType[] | null) => {
+          if (!prevDocuments) return null;
+          const newDocuments = prevDocuments;
+          const index = newDocuments.findIndex(
+            (document) => document.document_id === props.document_id
+          );
+          const linkIndex = newDocuments[index].links.findIndex(
+            (link) => link.link_id === props.link_id
+          );
 
-      const document: DocumentType = await res.json();
-      if (!document || !document.links[0] || !document.links[0].link_id)
-        reject("error");
-      if (res.ok) {
-        resolve("done");
-        setDocument(document);
+          newDocuments[index].links[linkIndex].is_active = !checked;
+          return newDocuments;
+        });
+        reject("failed");
       }
+
+      resolve("done");
     });
   };
+
+  /*================================ RENDER ==============================*/
 
   return (
     <li
@@ -98,7 +129,9 @@ const LinkRow: React.FC<LinkType> = (props) => {
                 : "pointer-events-none text-shade-pencil-light"
             } shadow-inner`}
           >
-            <span className="px-1 font-mono">{path.replace(/^https?:\/\//, '')}</span>
+            <span className="px-1 font-mono">
+              {path.replace(/^https?:\/\//, "")}
+            </span>
             <BiCopy className="h-4 w-4 " />
             <Link
               onClick={(e) => {
@@ -253,7 +286,6 @@ const LinkRow: React.FC<LinkType> = (props) => {
         setIsOpen={setShowUpdateLinkModal}
         isActive={isActive}
         setIsActive={setIsActive}
-        setDocument={setDocument}
         handleToggle={handleToggle}
         link_id={link_id}
         {...document}

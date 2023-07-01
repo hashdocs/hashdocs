@@ -9,87 +9,55 @@ import {
   AccordionTrigger,
 } from "./accordion";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link2 } from "lucide-react";
+import { AdjustmentsVerticalIcon, ChartBarIcon, CheckBadgeIcon, CreditCardIcon, PresentationChartLineIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 const featureList = [
   {
-    key: "analytics",
-    title: "Analytics that matter",
-    // icon: <Chart className="h-5 w-5 text-shade-pencil-light" />,
+    key: "powerful-link-controls",
+    title: "Powerful link controls",
+    icon: <AdjustmentsVerticalIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Dub provides powerful analytics for your links, including geolocation, device, browser, and referrer information.",
-    cta: (
-      <Link
-        href="/stats/github"
-        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-      >
-        View demo
-      </Link>
-    ),
+      "Manage access control for your links with fine-grained settings such as restricted domains, password protection, expiry conditions and more",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/analytics.mp4",
-    thumbnail: "/_static/features/analytics.png",
   },
   {
-    key: "domains",
-    title: "Use your own domain",
-    // icon: <Airplay className="h-5 w-5 text-shade-pencil-light" />,
+    key: "advanced-tracking",
+    title: "Advanced tracking",
+    icon: <ChartBarIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Dub offers free custom domains on all plans - start personalizing your links today.",
-    cta: (
-      <a
-        href="https://app.dub.sh"
-        target="_blank"
-        rel="noreferrer"
-        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-      >
-        Create your project
-      </a>
-    ),
+      "Critical insights on your link views such as visitor emails, time spent across pages, location.",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/custom-domain.mp4",
   },
   {
-    key: "link",
-    title: "Powerful link builder",
-    // icon: <Link2 className="h-5 w-5 text-shade-pencil-light" />,
+    key: "secure-viewer",
+    title: "Secure document viewer",
+    icon: <PresentationChartLineIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Build your links with UTM parameters, password protection, expiration dates, iOS/Android targeting, etc.",
-    cta: "View demo", //custom cta
+      "Secure document viewer with watermarks, no-print, no-download, and no-copy settings",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/link.mp4",
   },
   {
-    key: "social",
-    title: "Custom social media cards",
-    // icon: <Photo className="h-5 w-5 text-shade-pencil-light" />,
+    key: "custom-data-room",
+    title: "Customize your data room",
+    icon: <CheckBadgeIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Overlay custom OG images on your links to make them stand out on social media.",
-    cta: "View demo", //custom cta
+      "Customize your data room with your logo, brand identity, and custom domains",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/og.mp4",
   },
   {
-    key: "qr",
-    title: "Free QR code generator",
-    // icon: <QR className="h-5 w-5 text-shade-pencil-light" />,
+    key: "simple-pricing",
+    title: "Simple pricing",
+    icon: <CreditCardIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "QR codes and short links are like peas in a pod. That's why we've built a QR code generator right into Dub.",
-    cta: "View demo", //custom cta
+      "No complex tiers. We have a limited free plan, and an all-access pro tier!",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/qr.mp4",
   },
   {
-    key: "team",
+    key: "manage-team",
     title: "Collaborate with your team",
-    // icon: <Users className="h-5 w-5 text-shade-pencil-light" />,
+    icon: <UserGroupIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "With Dub, you can invite unlimited team members to collaborate on your project for free - no more sharing logins via Google groups.",
-    cta: (
-      <a
-        href="https://app.dub.sh"
-        target="_blank"
-        rel="noreferrer"
-        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-      >
-        Invite your teammates
-      </a>
-    ),
+      "Invite your team members to collaborate with fine-grained permissions (coming soon)",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/team.mp4",
   },
 ];
@@ -108,16 +76,16 @@ export default function Features() {
         <div className="grid grid-cols-1 gap-10 p-5 lg:grid-cols-3">
           <Accordion
             type="single"
-            defaultValue="analytics"
+            defaultValue="powerful-link-controls"
             onValueChange={(e) => {
               setActiveFeature(featureList.findIndex(({ key }) => key === e));
             }}
           >
-            {featureList.map(({ key, title, description, cta }) => (
+            {featureList.map(({ key, icon, title, description }) => (
               <AccordionItem key={key} value={key}>
                 <AccordionTrigger>
                   <div className="flex items-center space-x-3 p-3">
-                    {/* {icon} */}
+                    {icon}
                     <h3 className="text-base font-semibold text-shade-pencil-light">
                       {title}
                     </h3>
@@ -128,21 +96,6 @@ export default function Features() {
                     <p className="mb-4 text-sm text-shade-pencil-light">
                       {description}
                     </p>
-                    {key === "link" || key === "social" ? (
-                      <button
-                        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-                      >
-                        View demo
-                      </button>
-                    ) : key === "qr" ? (
-                      <button
-                        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-                      >
-                        View demo
-                      </button>
-                    ) : (
-                      cta
-                    )}
                   </div>
                 </AccordionContent>
               </AccordionItem>
@@ -177,7 +130,6 @@ export default function Features() {
                         loop
                         width={800}
                         height={600}
-                        poster={feature.thumbnail}
                       >
                         <source src={feature.demo} type="video/mp4" />
                         Your browser does not support the video tag.

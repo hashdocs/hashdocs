@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { primaryNavigation } from "./routes.constants";
@@ -22,10 +22,11 @@ import { Popover } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase.types";
 import { EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
+import { SessionContext } from "@/app/(application)/_components/userProvider";
 
 type primaryNavigationType = (typeof primaryNavigation)[0];
 
-export default function Sidebar(user: User) {
+export default function Sidebar() {
   const path = usePathname();
 
   const defaultNav =
@@ -43,6 +44,9 @@ export default function Sidebar(user: User) {
     },
     [activeNav]
   );
+
+  const session = useContext(SessionContext);
+  const user = session?.user;
 
   const handleLogout = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {
@@ -116,7 +120,7 @@ export default function Sidebar(user: User) {
       style={{ height: "100vh" }}
     >
       <div className="flex flex-col gap-y-6  ">
-        <div className="flex flex-row items-center">
+        <Link href={`/`} className="flex flex-row items-center">
           <div className="relative -ml-1 h-12 w-9 scale-75 overflow-hidden">
             <Image
               src={"/hashdocs_gradient.svg"}
@@ -124,10 +128,10 @@ export default function Sidebar(user: User) {
               alt={"Hashdocs"}
             />
           </div>
-          <h1 className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
+          <h1 className="ml-1 mt-1 text-2xl font-extrabold leading-9 tracking-wide text-shade-pencil-black">
             Hashdocs
           </h1>
-        </div>
+        </Link>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
@@ -155,61 +159,63 @@ export default function Sidebar(user: User) {
           </li>
         </ul>
       </div>
-      <Popover className="">
-        {({ open }) => (
-          <>
-            <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
-              {user.user_metadata?.picture ? (
-                <Image
-                  className="h-6 w-6 shrink-0 rounded-full "
-                  src={user.user_metadata?.picture ?? ""}
-                  alt=""
-                  height={32}
-                  width={32}
-                />
-              ) : (
-                <UserCircleIcon
-                  className="h-6 w-6 text-shade-pencil-light"
+      {user && (
+        <Popover className="">
+          {({ open }) => (
+            <>
+              <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
+                {user?.user_metadata?.picture ? (
+                  <Image
+                    className="h-6 w-6 shrink-0 rounded-full "
+                    src={user.user_metadata?.picture ?? ""}
+                    alt=""
+                    height={32}
+                    width={32}
+                  />
+                ) : (
+                  <UserCircleIcon
+                    className="h-6 w-6 text-shade-pencil-light"
+                    aria-hidden="true"
+                  />
+                )}
+                <span
                   aria-hidden="true"
-                />
-              )}
-              <span
-                aria-hidden="true"
-                className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                  className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                >
+                  {user?.email}
+                </span>
+                <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
+              </Popover.Button>
+              <Popover.Panel
+                className={classNames(
+                  "absolute z-10 flex  -translate-y-full translate-x-52 transform"
+                )}
               >
-                {user.email}
-              </span>
-              <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
-            </Popover.Button>
-            <Popover.Panel
-              className={classNames(
-                "absolute z-10 flex  -translate-y-full translate-x-52 transform"
-              )}
-            >
-              <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                <div className="relative grid bg-white">
-                  {options.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={item.optionClick}
-                      className={classNames(
-                        "focus:ring-none flex items-center rounded-lg px-2 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                      )}
-                    >
-                      <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
-                        <item.icon aria-hidden="true" />
-                      </div>
-                      <div className="mx-3 text-xs">
-                        <p className="">{item.name}</p>
-                      </div>
-                    </button>
-                  ))}
+                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                  <div className="relative grid bg-white">
+                    {options.map((item) => (
+                      <button
+                        key={item.name}
+                        onClick={item.optionClick}
+                        className={classNames(
+                          "focus:ring-none flex items-center rounded-lg px-2 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
+                        )}
+                      >
+                        <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
+                          <item.icon aria-hidden="true" />
+                        </div>
+                        <div className="mx-3 text-xs">
+                          <p className="">{item.name}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </Popover.Panel>
-          </>
-        )}
-      </Popover>
+              </Popover.Panel>
+            </>
+          )}
+        </Popover>
+      )}
     </aside>
   );
 }
