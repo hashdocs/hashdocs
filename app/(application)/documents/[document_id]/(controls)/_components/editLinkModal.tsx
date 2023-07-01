@@ -26,12 +26,6 @@ interface EditLinkModalProps extends DocumentType {
 const EditLinkModal: React.FC<EditLinkModalProps> = (
   props: EditLinkModalProps
 ) => {
-  const _documentsContext = useContext(DocumentsContext);
-
-  if (!_documentsContext) return null;
-
-  const { setDocuments } = _documentsContext;
-
   const {
     isOpen,
     setIsOpen,
@@ -41,7 +35,6 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     handleToggle,
   } = props;
 
-  const router = useRouter();
   /*-------------------------------- SET DEFAULT VALUES ------------------------------*/
 
   const {
@@ -93,6 +86,9 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const [isExpirationEnabled, setIsExpirationEnabled] = useState<boolean>(
     is_expiration_enabled
   );
+  const router = useRouter();
+
+  const _documentsContext = useContext(DocumentsContext);
 
   /*-------------------------------- RESET STATE ON CLOSE ------------------------------*/
 
@@ -126,6 +122,10 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   useEffect(() => {
     setHeight(defaultHeight);
   }, [defaultHeight]);
+
+  if (!_documentsContext) return null;
+
+  const { setDocuments } = _documentsContext;
 
   /*-------------------------------- HANDLE SAVE BUTTON ------------------------------*/
 
@@ -316,7 +316,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                       data-tooltip-content={`🚫 Disabled`}
                     >
                       <div
-                         onClick={() =>
+                        onClick={() =>
                           CopyLinkToClipboard(
                             `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
                             true,
