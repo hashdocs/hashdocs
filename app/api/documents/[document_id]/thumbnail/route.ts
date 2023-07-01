@@ -1,5 +1,5 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import type { Database } from "@/types/supabase.types";
@@ -10,7 +10,7 @@ import { randomInt } from "crypto";
 /*================================ UPDATE THUMBNAIL ==============================*/
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
 ) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -20,8 +20,9 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    // return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   //STEP 1 - Get document_id from search params

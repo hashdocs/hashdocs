@@ -1,5 +1,5 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import type { Database } from "@/types/supabase.types";
@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 /*================================ CREATE NEW LINK ==============================*/
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
 ) {
   const props: LinkType = await request.json();
@@ -21,8 +21,9 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { searchParams } = new URL(request.url);
@@ -62,7 +63,7 @@ export async function POST(
 /*================================ UPDATE DOCUMENT ==============================*/
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
 ) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -72,8 +73,9 @@ export async function PUT(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const props = await request.json();
@@ -86,7 +88,7 @@ export async function PUT(
     .maybeSingle();
 
   if (error) console.error(error);
-  if (!data || error) return NextResponse.error();
+  if (!data || error) return NextResponse.json(null, { status: 500 });
 
   return NextResponse.json(
     { message: `Successfully updated ${data.document_id}` },
@@ -97,7 +99,7 @@ export async function PUT(
 /*================================ DELETE DOCUMENT ==============================*/
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
 ) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -107,8 +109,9 @@ export async function DELETE(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { data, error } = await supabase
@@ -119,7 +122,7 @@ export async function DELETE(
     .maybeSingle();
 
   if (error) console.error(error);
-  if (!data || error) return NextResponse.error();
+  if (!data || error) return NextResponse.json(null, { status: 500 });
 
   return NextResponse.json(
     { message: `Successfully deleted ${data.document_id}` },
@@ -130,7 +133,7 @@ export async function DELETE(
 /*================================ CREATE DOWNLOAD LINK ==============================*/
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
 ) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -140,8 +143,9 @@ export async function GET(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { data: document_data, error: document_error } = await supabase
@@ -149,7 +153,9 @@ export async function GET(
     .returns<DocumentType[]>();
 
   if (document_error || !document_data || !document_data[0]) {
-    redirect("/documents");
+    const url = request.nextUrl.clone();
+    url.pathname = '/documents'
+    return NextResponse.redirect(url);
   }
 
   const { data, error } = await supabase.storage

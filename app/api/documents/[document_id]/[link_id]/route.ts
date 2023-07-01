@@ -3,12 +3,12 @@ import { Database } from "@/types/supabase.types";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /*================================ UPDATE LINK ==============================*/
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   {
     params: { document_id, link_id },
   }: { params: { document_id: string; link_id: string } }
@@ -22,8 +22,9 @@ export async function PUT(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { error } = await supabase
@@ -32,14 +33,14 @@ export async function PUT(
     .eq("link_id", link_id)
     .maybeSingle();
 
-  if (error) return NextResponse.error();
+  if (error) return NextResponse.json(null, { status: 500 });
 
   const { data: document_id_data, error: document_id_error } = await supabase
     .rpc("get_documents", { document_id_input: document_id })
     .returns<DocumentType[]>();
 
   if (document_id_error || !document_id_data) {
-    return NextResponse.error();
+    return NextResponse.json(null, { status: 500 });
   }
   return NextResponse.json(document_id_data[0], { status: 200 });
 }
@@ -47,7 +48,7 @@ export async function PUT(
 /*================================ DELETE LINK ==============================*/
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   {
     params: { document_id, link_id },
   }: { params: { document_id: string; link_id: string } }
@@ -59,8 +60,9 @@ export async function DELETE(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json(null, { status: 401 });
-    redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { error } = await supabase
@@ -71,7 +73,7 @@ export async function DELETE(
 
   if (error) {
     console.error(error);
-    return NextResponse.error();
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { data: document_id_data, error: document_id_error } = await supabase
@@ -80,7 +82,7 @@ export async function DELETE(
 
   if (document_id_error || !document_id_data) {
     console.error(document_id_error);
-    return NextResponse.error();
+    return NextResponse.json(null, { status: 500 });
   }
   return NextResponse.json(document_id_data[0], { status: 200 });
 }

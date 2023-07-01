@@ -1,5 +1,5 @@
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import type { Database } from "@/types/supabase.types";
@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 
 /* ------------------------ GET DOCUMENT ----------------------- */
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const {
@@ -18,8 +18,9 @@ export async function GET(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    // return NextResponse.json(null, { status: 401 });
-    NextResponse.redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   const { data: document_id_data, error: document_id_error } = await supabase
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
 
 /* ------------------------ UPLOAD OR UPDATE DOCUMENT ----------------------- */
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const {
@@ -44,8 +45,9 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    // return NextResponse.json(null, { status: 401 });
-    NextResponse.redirect("/");
+    const url = request.nextUrl.clone();
+    url.pathname = '/login'
+    return NextResponse.redirect(url);
   }
 
   //STEP 1 - Get document_id from search params
