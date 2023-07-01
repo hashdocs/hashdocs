@@ -5,6 +5,7 @@ import { primaryNavigation } from "@/app/_components/navigation/routes.constants
 import { classNames } from "@/app/_utils/classNames";
 import {
   BuildingOfficeIcon,
+  CheckBadgeIcon,
   CreditCardIcon,
   PuzzlePieceIcon,
   UserIcon,
@@ -18,6 +19,7 @@ const tabs = [
   { name: "Organization", href: "organization", icon: BuildingOfficeIcon },
   { name: "Billing", href: "billing", icon: CreditCardIcon },
   { name: "Integrations", href: "integrations", icon: PuzzlePieceIcon },
+  { name: "Branding", href: "branding", icon: CheckBadgeIcon },
 ];
 
 export default function SettingsLayout({
