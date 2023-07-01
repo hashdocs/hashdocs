@@ -22,21 +22,26 @@ export default function Navbar() {
               alt={"Hashdocs"}
             />
           </div>
-          <h1 className="ml-1 mt-1 text-2xl font-black tracking-wide">
+          <h1 className="ml-1 mt-1 text-2xl font-extrabold leading-9 tracking-wide text-shade-pencil-black">
             Hashdocs
           </h1>
         </Link>
 
         <div className="hidden items-center space-x-6 sm:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item}
-              href={`/${item}`}
-              className={`rounded-md text-sm font-medium capitalize ${"text-shade-pencil-light"} transition-colors ease-out hover:text-shade-pencil-black`}
-            >
-              {item}
-            </Link>
-          ))}
+          <Link
+            key={"pricing"}
+            href={`/pricing`}
+            className={`rounded-md text-sm font-medium capitalize ${"text-shade-pencil-light"} transition-colors ease-out hover:text-shade-pencil-black`}
+          >
+            {"Pricing"}
+          </Link>
+          <Link
+            key={"roadmap"}
+            href={`https://github.com/users/rbkayz/projects/1`}
+            className={`rounded-md text-sm font-medium capitalize ${"text-shade-pencil-light"} transition-colors ease-out hover:text-shade-pencil-black`}
+          >
+            {"Roadmap"}
+          </Link>
           <Link
             href={`/login`}
             className="rounded-md bg-stratos-default px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-stratos-default/80"
@@ -48,3 +53,5 @@ export default function Navbar() {
     </div>
   );
 }
+
+// https://github.com/users/rbkayz/projects/1

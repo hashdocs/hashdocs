@@ -16,7 +16,7 @@ import {
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "../[document_id]/(controls)/_components/editLinkModal";
@@ -28,6 +28,7 @@ import { GrDocumentUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { classNames } from "@/app/_utils/classNames";
+import { DocumentsContext } from "./documentsProvider";
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
@@ -46,6 +47,12 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
 
+  const _documents = useContext(DocumentsContext);
+
+  if (!_documents) throw Error("Error in fetching documents");
+
+  const { setDocuments } = _documents;
+
   const router = useRouter();
 
   const active_links_count =
@@ -53,7 +60,17 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
 
   /* -------------------------------- FUNCTIONS ------------------------------- */
 
+  // Optimistically set document on toggle
   const handleToggle = async (checked: boolean) => {
+    setDocuments((prevDocuments: DocumentType[] | null) => {
+      if (!prevDocuments) return null;
+      const newDocuments = prevDocuments;
+      const index = newDocuments.findIndex(
+        (document) => document.document_id === document_id
+      );
+      newDocuments[index].is_enabled = checked;
+      return newDocuments;
+    });
     return new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${props.document_id}`, {
         method: "PUT",
@@ -70,10 +87,20 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         })
         .catch((err) => {
           reject(Error("Error updating doc status"));
+          setDocuments((prevDocuments: DocumentType[] | null) => {
+            if (!prevDocuments) return null;
+            const newDocuments = prevDocuments;
+            const index = newDocuments.findIndex(
+              (document) => document.document_id === document_id
+            );
+            newDocuments[index].is_enabled = !checked;
+            return newDocuments;
+          });
         });
     });
   };
 
+  // Delete document and set after deletion
   const handleDelete = async () => {
     const deletePromise = new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${props.document_id}`, {
@@ -88,6 +115,15 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         })
         .catch((err) => {
           reject(Error("Error updating doc status"));
+          setDocuments((prevDocuments: DocumentType[] | null) => {
+            if (!prevDocuments) return null;
+            let newDocuments = prevDocuments;
+            const index = newDocuments.findIndex(
+              (document) => document.document_id === document_id
+            );
+            newDocuments = newDocuments.filter((item, i) => i !== index);
+            return newDocuments;
+          });
         });
     });
 

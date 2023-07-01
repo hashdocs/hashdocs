@@ -13,11 +13,11 @@ import { Link2 } from "lucide-react";
 
 const featureList = [
   {
-    key: "analytics",
-    title: "Analytics that matter",
+    key: "powerful-link-controls",
+    title: "Powerful link controls",
     // icon: <Chart className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Dub provides powerful analytics for your links, including geolocation, device, browser, and referrer information.",
+      "Manage access control for your links with advanced settings such as restricted domains, password protection, expiry conditions and more",
     cta: (
       <Link
         href="/stats/github"
@@ -30,11 +30,11 @@ const featureList = [
     thumbnail: "/_static/features/analytics.png",
   },
   {
-    key: "domains",
-    title: "Use your own domain",
+    key: "advanced-tracking",
+    title: "Advanced tracking",
     // icon: <Airplay className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Dub offers free custom domains on all plans - start personalizing your links today.",
+      "Critical insights on your link views such as visitor emails, location, device, and time spent across pages",
     cta: (
       <a
         href="https://app.dub.sh"
@@ -48,48 +48,35 @@ const featureList = [
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/custom-domain.mp4",
   },
   {
-    key: "link",
-    title: "Powerful link builder",
+    key: "secure-viewer",
+    title: "Secure document viewer",
     // icon: <Link2 className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Build your links with UTM parameters, password protection, expiration dates, iOS/Android targeting, etc.",
-    cta: "View demo", //custom cta
+      "Secure document viewer with watermarks, no-print, no-download, and no-copy settings",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/link.mp4",
   },
   {
-    key: "social",
-    title: "Custom social media cards",
+    key: "custom-data-room",
+    title: "Customize your data room",
     // icon: <Photo className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "Overlay custom OG images on your links to make them stand out on social media.",
-    cta: "View demo", //custom cta
+      "Customize your data room with your logo, brand identity, and custom domains",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/og.mp4",
   },
   {
-    key: "qr",
-    title: "Free QR code generator",
+    key: "simple-pricing",
+    title: "Simple pricing",
     // icon: <QR className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "QR codes and short links are like peas in a pod. That's why we've built a QR code generator right into Dub.",
-    cta: "View demo", //custom cta
+      "No complex tiers. We have a limited free plan, and an all-access pro tier!",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/qr.mp4",
   },
   {
-    key: "team",
+    key: "manage-team",
     title: "Collaborate with your team",
     // icon: <Users className="h-5 w-5 text-shade-pencil-light" />,
     description:
-      "With Dub, you can invite unlimited team members to collaborate on your project for free - no more sharing logins via Google groups.",
-    cta: (
-      <a
-        href="https://app.dub.sh"
-        target="_blank"
-        rel="noreferrer"
-        className="block max-w-fit rounded-full border border-black bg-black px-4 py-1.5 text-sm text-white transition-all hover:bg-white hover:text-black"
-      >
-        Invite your teammates
-      </a>
-    ),
+      "Invite your team members to collaborate with fine-grained permissions (coming soon)",
     demo: "https://d2vwwcvoksz7ty.cloudfront.net/team.mp4",
   },
 ];

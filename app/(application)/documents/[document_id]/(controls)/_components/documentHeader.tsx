@@ -74,6 +74,7 @@ export default function DocumentHeader({
     setName(event.target.value);
   };
 
+  // Optimistically set name after change
   const handleBlur = () => {
     setIsEditing(false);
     setDocuments((prevDocuments: DocumentType[] | null) => {
@@ -115,6 +116,7 @@ export default function DocumentHeader({
     setIsEditing(true);
   };
 
+  // Optimistically toggle the document
   const handleToggle = async (checked: boolean) => {
     setDocuments((prevDocuments: DocumentType[] | null) => {
       if (!prevDocuments) return null;
@@ -125,6 +127,7 @@ export default function DocumentHeader({
       newDocuments[index].is_enabled = checked;
       return newDocuments;
     });
+    router.refresh();
     return new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${document_id}`, {
         method: "PUT",
@@ -154,6 +157,7 @@ export default function DocumentHeader({
     });
   };
 
+  // Delete document
   const handleDelete = async () => {
     const deletePromise = new Promise(async (resolve, reject) => {
       const res = fetch(`/api/documents/${document_id}`, {
@@ -164,6 +168,15 @@ export default function DocumentHeader({
         .then((res) => {
           if (res.ok) {
             resolve(res.status);
+            setDocuments((prevDocuments: DocumentType[] | null) => {
+              if (!prevDocuments) return null;
+              let newDocuments = prevDocuments;
+              const index = newDocuments.findIndex(
+                (document) => document.document_id === document_id
+              );
+              newDocuments = newDocuments.filter((item, i) => i !== index);
+              return newDocuments;
+            });
           }
         })
         .catch((err) => {
@@ -179,6 +192,7 @@ export default function DocumentHeader({
     router.push("/documents");
   };
 
+  // Download document
   const handleDownload = async () => {
     const getPromise = new Promise(async (resolve, reject) => {
       const res = await fetch(`/api/documents/${document_id}`, {
@@ -273,7 +287,7 @@ export default function DocumentHeader({
             <Toggle
               toggleId={`${document_id}-toggle`}
               SuccessToastText={
-                isEnabled ? (
+                document.is_enabled ? (
                   <p>
                     {document_name} is now{" "}
                     {<span className="text-shade-pencil-light">DISABLED</span>}
@@ -295,7 +309,7 @@ export default function DocumentHeader({
                 <p>Error in updating {document_name}. Please try again!</p>
               }
               Label={
-                isEnabled
+                document.is_enabled
                   ? `${
                       links.filter((link) => link.is_active === true).length ??
                       0
@@ -361,7 +375,7 @@ export default function DocumentHeader({
               ButtonIcon={LinkIcon}
               ButtonId={`${document_id}-newlink`}
               ButtonClassName={
-                isEnabled
+                document.is_enabled
                   ? `bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
                   : `bg-shade-disabled cursor-not-allowed`
               }

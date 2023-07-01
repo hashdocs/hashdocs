@@ -63,5 +63,6 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("prettier-plugin-tailwindcss"),
     require('tailwind-scrollbar')({ nocompatible: true }),
+    require('@tailwindcss/typography'),
   ],
 };

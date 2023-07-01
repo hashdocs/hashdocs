@@ -30,7 +30,6 @@ const Hero = () => {
         <Link
           className="bg-stratos-default hover:bg-stratos-default/80 flex items-center justify-center space-x-2 rounded-lg px-5 py-2 shadow-lg transition-all text-white group font-semibold"
           href="/login"
-          target="_blank"
         >
           <p className="text-sm">Start for free</p>
           <ArrowRightCircleIcon className="h-5 w-5 text-white group-hover:animate-pulse" />

@@ -41,6 +41,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
 
   const { link_id, link_name, created_at, views } = props;
 
+  
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
 
   /*================================ FUNCTIONS ==============================*/

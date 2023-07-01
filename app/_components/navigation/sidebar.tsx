@@ -116,18 +116,18 @@ export default function Sidebar(user: User) {
       style={{ height: "100vh" }}
     >
       <div className="flex flex-col gap-y-6  ">
-        <div className="flex flex-row items-center">
-          <div className="relative -ml-1 h-12 w-9 scale-75 overflow-hidden">
+      <Link href={`/`} className="flex flex-row items-center">
+        <div className="relative -ml-1 h-12 w-9 scale-75 overflow-hidden">
             <Image
               src={"/hashdocs_gradient.svg"}
               fill={true}
               alt={"Hashdocs"}
             />
           </div>
-          <h1 className="ml-1 mt-1 text-2xl font-black leading-6 tracking-wide">
+          <h1 className="ml-1 mt-1 text-2xl font-extrabold leading-9 text-shade-pencil-black tracking-wide">
             Hashdocs
           </h1>
-        </div>
+        </Link>
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
