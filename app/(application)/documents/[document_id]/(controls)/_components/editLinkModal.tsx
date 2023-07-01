@@ -245,7 +245,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       if (res.status !== 200) reject(res.statusText);
 
       const document: DocumentType = await res.json();
-      if (!document || !document.links[0] || !document.links[0].link_id)
+      if (!document)
         reject("error");
       if (res.ok) {
         setIsSaved(true);
@@ -259,6 +259,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
           return newDocuments;
         });
         resolve("deleted");
+        router.refresh();
         setIsOpen(false);
       }
     });

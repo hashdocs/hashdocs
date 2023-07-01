@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useParams } from "next/navigation";
 import { RefObject, createRef, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { Document, Page, Thumbnail } from "react-pdf";
 import { pdfjs } from "react-pdf";
 import {
@@ -167,7 +168,9 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
       file={signedURL}
       onLoadSuccess={onDocumentLoadSuccess}
       loading={<Loader />}
-      onContextMenu={(e) => e.preventDefault()}
+      onContextMenu={(e) => {
+        toast.error("Context menu and print as pdf is disabled for security reasons");
+        e.preventDefault()}}
       className="no-print -mx-1 flex w-full flex-1 flex-row justify-center bg-shade-overlay"
       externalLinkTarget="_blank"
     >
