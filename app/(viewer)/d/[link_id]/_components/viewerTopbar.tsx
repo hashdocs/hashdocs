@@ -20,7 +20,7 @@ export default function ViewerTopBar({
         href={`/`}
         className="flex w-1/6 flex-row items-center"
       >
-        <div className="relative -ml-1 h-10 w-8 scale-75 rounded-md">
+        <div className="-ml-1 h-10 w-8 scale-75 shrink-0 rounded-md">
           <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"Hashdocs"} />
         </div>
         <header className="ml-1 mt-1 text-2xl font-bold leading-6 tracking-wide">
@@ -29,7 +29,7 @@ export default function ViewerTopBar({
       </Link>
       <div className="mr-4 flex flex-row items-center justify-center gap-x-4">
         {linkProps && (
-          <h1 className="text-base font-semibold text-shade-pencil-light leading-6 tracking-wide">
+          <h1 className="text-base hidden lg:flex font-semibold text-shade-pencil-light leading-6 tracking-wide">
             {linkProps.document_name}
           </h1>
         )}
