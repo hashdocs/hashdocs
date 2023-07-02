@@ -20,9 +20,10 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   //STEP 1 - Get document_id from search params

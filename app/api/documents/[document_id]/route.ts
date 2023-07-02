@@ -21,9 +21,10 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+  //   const url = request.nextUrl.clone();
+  //   url.pathname = '/login'
+  //   return NextResponse.redirect(url);
+  return NextResponse.json(null, { status: 500 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -73,9 +74,10 @@ export async function PUT(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const props = await request.json();
@@ -109,9 +111,10 @@ export async function DELETE(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { data, error } = await supabase
@@ -143,9 +146,10 @@ export async function GET(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { data: document_data, error: document_error } = await supabase

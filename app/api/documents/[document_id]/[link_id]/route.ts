@@ -22,9 +22,10 @@ export async function PUT(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { error } = await supabase
@@ -60,9 +61,10 @@ export async function DELETE(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { error } = await supabase
