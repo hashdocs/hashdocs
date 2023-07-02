@@ -15,7 +15,7 @@ BEGIN
 		source_path,
 		source_type)
 	VALUES (
-		document_id_input,
+		COALESCE(document_id_input, gen_document_id()),
 		document_name_input,
 		source_path_input,
 		source_type_input)
