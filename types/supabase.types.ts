@@ -249,6 +249,8 @@ export interface Database {
       tbl_views: {
         Row: {
           document_version: number | null
+          geo_data: Json | null
+          ip_address: string | null
           link_id: string | null
           view_id: string
           view_seq: number
@@ -257,6 +259,8 @@ export interface Database {
         }
         Insert: {
           document_version?: number | null
+          geo_data?: Json | null
+          ip_address?: string | null
           link_id?: string | null
           view_id: string
           view_seq?: number
@@ -265,6 +269,8 @@ export interface Database {
         }
         Update: {
           document_version?: number | null
+          geo_data?: Json | null
+          ip_address?: string | null
           link_id?: string | null
           view_id?: string
           view_seq?: number

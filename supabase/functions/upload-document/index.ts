@@ -115,7 +115,11 @@ serve(async (req) => {
     return errorHandler(page_update_error);
   }
 
-  return new Response(JSON.stringify({ message: "success" }), {
+  const { data: new_document } = await supabaseAdmin
+    .rpc("get_documents", { document_id_input: document_id })
+    .returns<DocumentType[]>();
+
+  return new Response(JSON.stringify(new_document), {
     headers: { "Content-Type": "application/json" },
   });
 });

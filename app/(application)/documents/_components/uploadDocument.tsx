@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Uppy, { UppyFile } from "@uppy/core";
 import { Dashboard } from "@uppy/react";
@@ -11,6 +11,8 @@ import Loader from "@/app/_components/navigation/loader";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
+import { DocumentsContext } from "./documentsProvider";
+import { DocumentType } from "@/types/documents.types";
 
 interface UploadDocumentModalProps {
   isOpen: boolean;
@@ -30,6 +32,12 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   /*-------------------------------- SET STATE VARIABLES  ------------------------------*/
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const _documentContext = useContext(DocumentsContext);
+
+  if (!_documentContext) return null;
+
+  const { setDocuments } = _documentContext;
 
   /*-------------------------------- FUNCTIONS ------------------------------*/
 
@@ -77,9 +85,9 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         <Link
           onClick={(e) => {
             e.stopPropagation();
-            toast.dismiss(`${response.body.document_id}-toast`);
+            toast.dismiss(`${response.body[0].document_id}-toast`);
           }}
-          href={`/preview/${response.body.document_id}`}
+          href={`/preview/${response.body[0].document_id}`}
           target="_blank"
           rel="noreferrer"
           className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
@@ -88,10 +96,24 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           <span className="font-normal">{`Preview`}</span>
         </Link>
       </div>,
-      { duration: 10000, id: `${response.body.document_id}-toast` }
+      { duration: 10000, id: `${response.body[0].document_id}-toast` }
     );
     setIsOpen(false);
-    router.push(`/documents/${response.body.document_id}`);
+    setDocuments((prevDocuments: DocumentType[] | null) => {
+      if (!prevDocuments) return null;
+      const docIndex = prevDocuments.findIndex((doc) => {
+        return doc.document_id === response.body[0].document_id;
+      });
+      if (docIndex > -1) {
+        const newDocuments = [...prevDocuments];
+        newDocuments[docIndex] = response.body[0];
+        return newDocuments;
+      } else {
+        const newDocuments = [response.body[0], ...prevDocuments];
+        return newDocuments;
+      }
+    });
+    router.push(`/documents/${response.body[0].document_id}/links`);
     router.refresh();
   });
 

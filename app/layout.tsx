@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
+import PHProvider from '@/app/_components/providers/posthog'
 
 export const metadata:Metadata = {
   title: {
@@ -51,26 +52,28 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
-        <Toaster
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              fontWeight: "bolder",
-              fontSize: "12px",
-              borderRadius: "8px",
-              width: "fit-content",
-              maxWidth: "50%",
-            },
-          }}
-        />
-        {children}
-        <Analytics />
-        <Script
-          src="https://accounts.google.com/gsi/client"
-          strategy="beforeInteractive"
-        />
-      </body>
+      <PHProvider>
+        <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
+          <Toaster
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                fontWeight: "bolder",
+                fontSize: "12px",
+                borderRadius: "8px",
+                width: "fit-content",
+                maxWidth: "50%",
+              },
+            }}
+          />
+          {children}
+          <Analytics />
+          <Script
+            src="https://accounts.google.com/gsi/client"
+            strategy="beforeInteractive"
+          />
+        </body>
+      </PHProvider>
     </html>
   );
 }

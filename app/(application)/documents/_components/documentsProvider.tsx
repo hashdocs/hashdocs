@@ -37,7 +37,6 @@ export default function DocumentsProvider({
       })
       .catch((err) => {
         console.error(err);
-        router.replace("/login");
       });
   }, []);
 
