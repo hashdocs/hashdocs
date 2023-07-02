@@ -1,44 +1,49 @@
 import ViewerTopBar from "@/app/(viewer)/d/[link_id]/_components/viewerTopbar";
 import { getLinkProps } from "../../_components/functions";
-import { Metadata } from "next";
 import ViewerProvider from "./_components/viewerProvider";
+import { Metadata, ResolvingMetadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Secure Viewer",
-  description:
-    "An open-source docsend alternative with powerful link controls and realtime tracking",
-  icons: {
-    icon: "/hashdocs_gradient_square.png",
-  },
-  themeColor: "#0010FF",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? ""),
-  openGraph: {
-    title: "Hashdocs",
-    description:
-      "An open-source docsend alternative with powerful link controls and realtime tracking",
-    url: process.env.NEXT_PUBLIC_BASE_URL,
-    siteName: "Hashdocs",
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`,
-        width: 1200,
-        height: 630,
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Hashdocs - an open source docsend alternative",
-    description:
-      "Hashdocs is a powerful document sharing platform with advanced link controls and realtime tracking",
-    siteId: "1467726470533754880",
-    creator: "@rbkayz",
-    creatorId: "1467726470533754880",
-    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`],
-  },
-};
+export async function generateMetadata(
+  { link_id }: { link_id: string },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const link_props = await getLinkProps(link_id);
+
+  return {
+    title: link_props?.document_name,
+    description: "Securely view this document with Hashdocs",
+    openGraph: {
+      title: link_props?.document_name ?? "Hashdocs",
+      description: "Securely view this document with Hashdocs",
+      siteName: "Hashdocs",
+      images: [
+        {
+          url:
+            link_props?.image ??
+            `${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title:
+        link_props?.document_name ??
+        "Hashdocs - an open source docsend alternative",
+      description: "Securely view this document with Hashdocs",
+      siteId: "1467726470533754880",
+      creator: "@rbkayz",
+      creatorId: "1467726470533754880",
+      images: [
+        link_props?.image ?? `${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`,
+      ],
+    },
+  };
+}
 
 export default async function ViewerLayout({
   children,
