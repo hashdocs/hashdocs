@@ -91,11 +91,8 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
       { duration: 10000, id: `${response.body.document_id}-toast` }
     );
     setIsOpen(false);
-    {
-      document_id
-        ? router.refresh()
-        : router.push(`/documents/${response.body.document_id}`);
-    }
+    router.push(`/documents/${response.body.document_id}`);
+    router.refresh();
   });
 
   uppy.on("upload-error", (file, error) => {

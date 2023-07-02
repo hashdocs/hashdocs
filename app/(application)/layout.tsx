@@ -4,7 +4,7 @@ import TopBar from "@/app/_components/navigation/topbar";
 import { cookies } from "next/headers";
 import { Database } from "@/types/supabase.types";
 import { redirect, useSearchParams } from "next/navigation";
-import SessionProvider from "./_components/userProvider";
+import UserProvider from "./_components/userProvider";
 
 export default async function ApplicationLayout({
   children,
@@ -13,7 +13,7 @@ export default async function ApplicationLayout({
 }) {
 
   return (
-    <SessionProvider>
+    <UserProvider>
       <div className="flex max-h-screen w-full flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex h-screen w-full flex-1 flex-col items-center overflow-x-auto">
@@ -27,6 +27,6 @@ export default async function ApplicationLayout({
           </div>
         </main>
       </div>
-    </SessionProvider>
+    </UserProvider>
   );
 }

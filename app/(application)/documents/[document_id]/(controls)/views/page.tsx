@@ -138,7 +138,7 @@ export default function ViewsPage({
                     "w-full border-none py-2 pr-10 text-sm leading-5 focus:ring-0",
                     selectedLink ? "" : "placeholder-shade-disabled"
                   )}
-                  placeholder="All links"
+                  placeholder="Filter by link"
                   displayValue={(selectedLink: LinkType) =>
                     selectedLink?.link_name ?? ""
                   }
@@ -217,7 +217,7 @@ export default function ViewsPage({
           )}
           <input
             className=" flex-1 border-none text-sm placeholder:text-shade-disabled focus:ring-0"
-            placeholder="Filter by link name or email"
+            placeholder="Search by email"
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}

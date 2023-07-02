@@ -22,7 +22,10 @@ type AuthorizeViewerProps = {
 
 async function generateAccessToken(props: AuthorizeViewerProps) {
   const { data, error } = await supabase
-    .rpc("authorize_viewer", props)
+    .rpc("authorize_viewer", {
+      link_id_input: props.link_id_input,
+      email_input: props.email_input,
+    })
     .returns<AuthorizeViewerType>()
     .maybeSingle();
 
@@ -92,7 +95,10 @@ function validateViewer(
 
   if (
     link_props.is_domain_restricted &&
-    !validateDomain(input_props.email_input, link_props.restricted_domains ?? undefined)
+    !validateDomain(
+      input_props.email_input,
+      link_props.restricted_domains ?? undefined
+    )
   ) {
     return false;
   }

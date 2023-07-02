@@ -56,6 +56,7 @@ export default function DocumentHeader({
     links,
     created_at,
     created_by,
+    updated_at
   } = document;
 
   const router = useRouter();
@@ -205,6 +206,10 @@ export default function DocumentHeader({
 
       if (!data.signedUrl) reject("error");
 
+      if (typeof window !== "undefined"){
+        window.location.href = data.signedUrl
+      }
+
       resolve(data.signedUrl);
     });
 
@@ -277,7 +282,7 @@ export default function DocumentHeader({
               <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
                 <CalendarDaysIcon className="h-4 w-4" />
                 <p className="flex-nowrap truncate text-xs ">{`Version ${document_version} | Updated on ${formatDate(
-                  created_at,
+                  updated_at,
                   "MMM D YYYY"
                 )}`}</p>
               </div>
