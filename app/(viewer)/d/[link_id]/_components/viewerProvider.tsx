@@ -1,10 +1,8 @@
 "use client";
-import { DocumentType, GetLinkProps } from "@/types/documents.types";
+import { GetLinkProps } from "@/types/documents.types";
 import { createContext, useEffect, useState } from "react";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import {
-  Session,
-  User,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase.types";

@@ -18,9 +18,10 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { data: document_id_data, error: document_id_error } = await supabase
@@ -45,9 +46,10 @@ export async function POST(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login'
-    return NextResponse.redirect(url);
+    // const url = request.nextUrl.clone();
+    // url.pathname = '/login'
+    // return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   //STEP 1 - Get document_id from search params

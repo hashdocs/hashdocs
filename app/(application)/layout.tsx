@@ -1,9 +1,5 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import Sidebar from "@/app/_components/navigation/sidebar";
 import TopBar from "@/app/_components/navigation/topbar";
-import { cookies } from "next/headers";
-import { Database } from "@/types/supabase.types";
-import { redirect, useSearchParams } from "next/navigation";
 import UserProvider from "./_components/userProvider";
 
 export default async function ApplicationLayout({

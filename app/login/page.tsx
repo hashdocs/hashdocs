@@ -82,10 +82,13 @@ export default function LoginPage() {
       });
 
       if (error) {
+        console.error(error);
         reject(false);
+        return;
       }
 
-      if (data) {
+      if (data.user) {
+        console.log(data);
         resolve(true);
         router.push("/documents");
       }
@@ -94,7 +97,7 @@ export default function LoginPage() {
     toast.promise(loginPromise, {
       loading: "Authorizing...",
       success: "Signed in successfully!",
-      error: "Sign in failed! Please try again",
+      error: "Sign in failed! If you've signed in directly with your email previously, please try that",
     });
   }
 
