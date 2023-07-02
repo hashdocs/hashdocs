@@ -230,7 +230,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
           <PopOver
             options={[
               {
-                name: "Edit document",
+                name: "Edit",
                 icon: PencilIcon,
                 optionClick: () => {
                   router.push(`/documents/${document_id}`);

@@ -22,7 +22,7 @@ import { Popover } from "@headlessui/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/types/supabase.types";
 import { EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
-import { SessionContext } from "@/app/(application)/_components/userProvider";
+import { UserContext } from "@/app/(application)/_components/userProvider";
 
 type primaryNavigationType = (typeof primaryNavigation)[0];
 
@@ -45,8 +45,7 @@ export default function Sidebar() {
     [activeNav]
   );
 
-  const session = useContext(SessionContext);
-  const user = session?.user;
+  const user = useContext(UserContext);
 
   const handleLogout = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {

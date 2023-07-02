@@ -12,12 +12,12 @@ export async function POST(
 ) {
   const supabase = createClientComponentClient<Database>();
 
-  const { email } = await request.json();
+  const { email, password } = await request.json();
 
   const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
     "authorize-viewer",
     {
-      body: { link_id_input: link_id, email_input: email },
+      body: { link_id_input: link_id, email_input: email, password_input: password },
     }
   );
 

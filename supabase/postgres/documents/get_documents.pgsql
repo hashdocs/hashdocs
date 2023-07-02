@@ -59,6 +59,7 @@ links AS (
 					row_to_json(views.*)
 				FROM
 					views
+				WHERE views.link_id = tbl_links.link_id
 				ORDER BY
 					views.view_seq DESC)
 		END AS views
@@ -91,6 +92,7 @@ FROM (
 		tbl_documents.document_seq,
 		tbl_documents.document_id,
 		tbl_documents.created_at,
+		tbl_document_versions.created_at AS updated_at,
 		tbl_documents.document_name,
 		tbl_documents.source_path,
 		tbl_documents.source_type,
@@ -109,6 +111,7 @@ FROM (
 					row_to_json(links.*)
 				FROM
 					links
+				WHERE links.document_id = tbl_documents.document_id
 				ORDER BY
 					links.link_seq DESC)
 		END AS links
@@ -127,6 +130,7 @@ GROUP BY
 	tbl_documents.document_seq,
 	tbl_documents.document_id,
 	tbl_documents.created_at,
+	tbl_document_versions.created_at,
 	tbl_documents.document_name,
 	tbl_documents.source_path,
 	tbl_documents.source_type,

@@ -8,33 +8,33 @@ import {
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 
-export const SessionContext = createContext<Session | null>(null);
+export const UserContext = createContext<User | null>(null);
 
-async function getSession(): Promise<Session> {
+async function getUser(): Promise<User> {
   const supabase = createClientComponentClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session?.user) {
-    redirect('/')
+  if (!user) {
+    redirect('/login')
   }
 
-  return session;
+  return user;
 }
 
-export default function SessionProvider({
+export default function UserProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
-    getSession()
-      .then((session) => {
-        setSession(session);
+    getUser()
+      .then((user) => {
+        setUser(user);
       })
       .catch((err) => {
         console.error(err);
@@ -42,5 +42,5 @@ export default function SessionProvider({
       });
   }, []);
 
-  return <SessionContext.Provider value={session}>{children}</SessionContext.Provider>;
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }

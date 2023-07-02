@@ -19,10 +19,10 @@ export default async function LoginLayout({
   });
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user }, error
+  } = await supabase.auth.getUser();
 
-  if (session) {
+  if (user && !error) {
     // this is a protected route - only users who are signed in can view this route
     redirect("/documents");
   }

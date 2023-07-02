@@ -48,6 +48,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     });
   }
 
+
   // First call when the document loads to set the page count
   function onDocumentLoadSuccess(document: DocumentCallback) {
     setNumPages(document.numPages);

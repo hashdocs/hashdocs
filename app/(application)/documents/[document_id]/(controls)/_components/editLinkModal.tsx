@@ -173,14 +173,15 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
           return newDocuments;
         });
         router.push(`/documents/${props.document_id}`);
-        resolve(document.links[0].link_id);
+        router.refresh();
+        resolve(link_id ?? document.links[0].link_id);
         setIsOpen(false);
       }
     });
 
     const toastPromiseText = {
       loading: link_id ? "Updating link..." : "Generating link...",
-      success: (link_id: any) => (
+      success: (updated_link_id: any) => (
         <div className={`flex items-center justify-start space-x-2`}>
           <p className="font-normal">
             {link_id
@@ -190,25 +191,25 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
           <Link
             onClick={(e) => {
               e.stopPropagation();
-              toast.dismiss(`${link_id}-toast`);
+              toast.dismiss(`${updated_link_id}-toast`);
             }}
-            href={`/d/${link_id}`}
+            href={`/d/${updated_link_id}`}
             target="_blank"
             rel="noreferrer"
             className="flex flex-row space-x-2"
           >
             <span className="text-stratos-default underline">{`${(
               process.env.NEXT_PUBLIC_BASE_URL ?? ""
-            ).replace(/^https?:\/\//, "")}/d/${link_id}`}</span>
+            ).replace(/^https?:\/\//, "")}/d/${updated_link_id}`}</span>
             <BiLinkExternal className="h-4 w-4" />
           </Link>
           <BiCopy
             className="h-4 w-4 cursor-pointer"
             onClick={() =>
               CopyLinkToClipboard(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`,
+                `${process.env.NEXT_PUBLIC_BASE_URL}/d/${updated_link_id}`,
                 true,
-                `${link_id}-toast`
+                `${updated_link_id}-toast`
               )
             }
           />
@@ -245,8 +246,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       if (res.status !== 200) reject(res.statusText);
 
       const document: DocumentType = await res.json();
-      if (!document)
-        reject("error");
+      if (!document) reject("error");
       if (res.ok) {
         setIsSaved(true);
         setDocuments((prevDocuments: DocumentType[] | null) => {
@@ -290,7 +290,15 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
           <div className="fixed inset-0 bg-shade-overlay bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="z-100 fixed inset-0 overflow-y-auto">
+        <form
+          className="z-100 fixed inset-0 overflow-y-auto"
+          onSubmit={handleSave}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSave();
+            }
+          }}
+        >
           <div className="flex min-h-full items-center justify-center text-left">
             <Transition.Child
               as={Fragment}
@@ -581,7 +589,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
               </Dialog.Panel>
             </Transition.Child>
           </div>
-        </div>
+        </form>
       </Dialog>
     </Transition.Root>
   );
