@@ -45,7 +45,10 @@ export default async function ViewerTopBar({
     const getPromise = new Promise(async (resolve, reject) => {
       const signedUrl = await getSignedDownloadURL(linkProps);
 
-      if (!signedUrl) reject("error");
+      if (!signedUrl) {
+        reject("error");
+        return;
+      }
 
       if (typeof window !== "undefined") {
         window.location.href = signedUrl;

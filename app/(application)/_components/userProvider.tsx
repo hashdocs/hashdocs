@@ -7,6 +7,7 @@ import {
   User,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
+import PostHogClient from "@/app/_lib/postHogClient";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -17,7 +18,7 @@ async function getUser(): Promise<User> {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login')
+    redirect("/login");
   }
 
   return user;
@@ -30,11 +31,13 @@ export default function UserProvider({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
+  const posthog = PostHogClient();
 
   useEffect(() => {
     getUser()
       .then((user) => {
         setUser(user);
+        posthog.identify({ distinctId: user.id, properties: user });
       })
       .catch((err) => {
         console.error(err);

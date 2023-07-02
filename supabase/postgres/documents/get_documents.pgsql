@@ -15,8 +15,8 @@ BEGIN
 			tbl_views.viewed_at,
 			tbl_views.viewer,
 			tbl_views.document_version,
-			COALESCE(sum(tbl_view_logs.end_time - tbl_view_logs.start_time),0) AS duration,
-			(count(DISTINCT page_num)::float / page_count * 100)::numeric AS completion
+			coalesce(sum(tbl_view_logs.end_time - tbl_view_logs.start_time), 0) AS duration,
+			round((count(DISTINCT page_num)::float / page_count * 100)::numeric) AS completion
 		FROM
 			tbl_views
 		LEFT JOIN tbl_view_logs ON tbl_views.view_id = tbl_view_logs.view_id
@@ -59,7 +59,8 @@ links AS (
 					row_to_json(views.*)
 				FROM
 					views
-				WHERE views.link_id = tbl_links.link_id
+				WHERE
+					views.link_id = tbl_links.link_id
 				ORDER BY
 					views.view_seq DESC)
 		END AS views
@@ -111,7 +112,8 @@ FROM (
 					row_to_json(links.*)
 				FROM
 					links
-				WHERE links.document_id = tbl_documents.document_id
+				WHERE
+					links.document_id = tbl_documents.document_id
 				ORDER BY
 					links.link_seq DESC)
 		END AS links

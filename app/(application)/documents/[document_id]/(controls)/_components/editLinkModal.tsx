@@ -130,6 +130,14 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   /*-------------------------------- HANDLE SAVE BUTTON ------------------------------*/
 
   const handleSave = async () => {
+    if (
+      !linkName ||
+      (isDomainRestricted && !(domains && domains.length > 0)) ||
+      (isPasswordRequired && !(password && password.length > 0))
+    ) {
+      return toast.error("Please fill in all required fields");
+    }
+
     const toastPromise = new Promise(async (resolve, reject) => {
       const _url = link_id
         ? `/api/documents/${props.document_id}?link_id=${link_id}`

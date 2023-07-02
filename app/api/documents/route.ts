@@ -7,7 +7,6 @@ import type { DocumentType } from "@/types/documents.types";
 import { LinkType } from "@/types/documents.types";
 import { redirect } from "next/navigation";
 
-
 /* ------------------------ GET DOCUMENT ----------------------- */
 
 export async function GET(request: NextRequest) {
@@ -98,13 +97,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(null, { status: 500 });
   }
 
-  supabase.functions.invoke("upload-document",{body: JSON.stringify({document_id})}).then((res) => {
-  }).catch((err) => {
-    console.error(err)
+  const { data, error } = await supabase.functions.invoke("upload-document", {
+    body: JSON.stringify({ document_id }),
   });
 
-  return NextResponse.json(
-    { document_id: new_document_data.document_id },
-    { status: 200 }
-  );
+  if (error) {
+    console.error(error);
+  }
+
+  return NextResponse.json(data, { status: 200 });
 }

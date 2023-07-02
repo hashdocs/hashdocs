@@ -142,5 +142,7 @@ serve(async (req) => {
     return errorHandler(Error("Unauthorized"));
   }
 
+  console.log(input_props);
+
   return generateAccessToken(input_props);
 });
