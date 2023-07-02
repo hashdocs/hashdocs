@@ -3,10 +3,11 @@ import { getLinkProps } from "../../_components/functions";
 import ViewerProvider from "./_components/viewerProvider";
 import { Metadata, ResolvingMetadata } from "next";
 
-export async function generateMetadata(
-  { link_id }: { link_id: string },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params: { link_id }, // will be a page or nested layout
+}: {
+  params: { link_id: string };
+}): Promise<Metadata> {
   // fetch data
   const link_props = await getLinkProps(link_id);
 
