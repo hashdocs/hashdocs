@@ -1,14 +1,14 @@
 import { parseMarkdownContent } from "@/app/_lib/markdownParser";
 import { Metadata } from "next";
 
-// export const metadata: Metadata = {
-//   title: "Privacy Policy",
-//   description: "Information on how we handle, process and protect your personal data",
-//   openGraph: {
-//     title: "Privacy Policy",
-//     description: "Information on how we handle, process and protect your personal data",
-//   },
-// };
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Information on how we handle, process and protect your personal data",
+  openGraph: {
+    title: "Privacy Policy",
+    description: "Information on how we handle, process and protect your personal data",
+  },
+};
 
 export default async function PrivacyPage() {
   const content = await parseMarkdownContent(`app/(marketing)/(legal)/privacy/content`);

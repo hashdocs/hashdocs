@@ -55,7 +55,6 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      {/* <PHProvider> */}
       <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
         <Toaster
           toastOptions={{
@@ -76,7 +75,6 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </body>
-      {/* </PHProvider> */}
     </html>
   );
 }
