@@ -586,7 +586,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     </button>
                     <button
                       type="button"
-                      className="bg-stratos-gradient hover:bg-stratos-gradient/80 disabled:bg-stratos-gradient/50 inline-flex justify-center rounded-md px-3 py-2 font-semibold text-white shadow-sm"
+                      className="bg-stratos-default hover:bg-stratos-default/80 disabled:bg-stratos-default/50 inline-flex justify-center rounded-md px-3 py-2 font-semibold text-white shadow-sm"
                       onClick={handleSave}
                       disabled={linkName ? false : true}
                     >
@@ -642,9 +642,11 @@ function LinkModalCheckBox({
       </div>
       <div className="ml-3 text-sm leading-6">
         <label
+          htmlFor={id}
           className={classNames(
             "font-medium",
-            isChecked ? "" : "text-shade-pencil-light"
+            isChecked ? "" : "text-shade-pencil-light",
+            disabled ? "cursor-not-allowed" : "cursor-pointer"
           )}
         >
           {label}
