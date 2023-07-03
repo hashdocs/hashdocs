@@ -96,7 +96,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           <span className="font-normal">{`Preview`}</span>
         </Link>
       </div>,
-      { duration: 10000, id: `${response.body[0].document_id}-toast` }
+      { duration: 5000, id: `${response.body[0].document_id}-toast` }
     );
     setIsOpen(false);
     setDocuments((prevDocuments: DocumentType[] | null) => {

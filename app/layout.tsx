@@ -3,24 +3,26 @@ import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
-import PHProvider from '@/app/_components/providers/posthog'
+import PHProvider from "@/app/_components/providers/posthog";
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
   title: {
-    template: '%s | Hashdocs',
-    default: 'Hashdocs', // a default is required when creating a template
+    template: "%s | Hashdocs",
+    default: "Hashdocs", // a default is required when creating a template
   },
-  description: "An open-source docsend alternative with powerful link controls and realtime tracking",
+  description:
+    "An open-source docsend alternative with powerful link controls and realtime tracking",
   icons: {
-    icon: '/hashdocs_gradient_square.png'
+    icon: "/hashdocs_gradient_square.png",
   },
   themeColor: "#0010FF",
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? ""),
   openGraph: {
-    title: 'Hashdocs',
-    description: 'An open-source docsend alternative with powerful link controls and realtime tracking',
+    title: "Hashdocs",
+    description:
+      "An open-source docsend alternative with powerful link controls and realtime tracking",
     url: process.env.NEXT_PUBLIC_BASE_URL,
-    siteName: 'Hashdocs',
+    siteName: "Hashdocs",
     images: [
       {
         url: `${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`,
@@ -28,16 +30,17 @@ export const metadata:Metadata = {
         height: 630,
       },
     ],
-    locale: 'en_US',
-    type: 'website',
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Hashdocs - an open source docsend alternative',
-    description: 'Hashdocs is a powerful document sharing platform with advanced link controls and realtime tracking',
-    siteId: '1467726470533754880',
-    creator: '@rbkayz',
-    creatorId: '1467726470533754880',
+    card: "summary_large_image",
+    title: "Hashdocs - an open source docsend alternative",
+    description:
+      "Hashdocs is a powerful document sharing platform with advanced link controls and realtime tracking",
+    siteId: "1467726470533754880",
+    creator: "@rbkayz",
+    creatorId: "1467726470533754880",
     images: [`${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`],
   },
 };
@@ -52,28 +55,26 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <PHProvider>
-        <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
-          <Toaster
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                fontWeight: "bolder",
-                fontSize: "12px",
-                borderRadius: "8px",
-                width: "fit-content",
-                maxWidth: "50%",
-              },
-            }}
-          />
-          {children}
-          <Analytics />
-          <Script
-            src="https://accounts.google.com/gsi/client"
-            strategy="beforeInteractive"
-          />
-        </body>
-      </PHProvider>
+      <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
+        <Toaster
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              fontWeight: "bolder",
+              fontSize: "12px",
+              borderRadius: "8px",
+              width: "fit-content",
+              maxWidth: "50%",
+            },
+          }}
+        />
+        {children}
+        <Analytics />
+        <Script
+          src="https://accounts.google.com/gsi/client"
+          strategy="beforeInteractive"
+        />
+      </body>
     </html>
   );
 }
