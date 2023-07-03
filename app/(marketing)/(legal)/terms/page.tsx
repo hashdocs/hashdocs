@@ -1,14 +1,14 @@
 import { parseMarkdownContent } from "@/app/_lib/markdownParser";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Terms",
-  description: "Information on the terms and conditions to use the Hashdocs platform",
-  openGraph: {
-    title: "Terms",
-    description: "Information on the terms and conditions to use the Hashdocs platform",
-  },
-};
+// export const metadata: Metadata = {
+//   title: "Terms",
+//   description: "Information on the terms and conditions to use the Hashdocs platform",
+//   openGraph: {
+//     title: "Terms",
+//     description: "Information on the terms and conditions to use the Hashdocs platform",
+//   },
+// };
 
 export default async function TermsPage() {
   const content = await parseMarkdownContent(`app/(marketing)/(legal)/terms/content`);

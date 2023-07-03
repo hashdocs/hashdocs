@@ -1,14 +1,14 @@
 import { parseMarkdownContent } from "@/app/_lib/markdownParser";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Cookie Policy",
-  description: "Details on the cookies used and stored by the Hashlabs platform",
-  openGraph: {
-    title: "Cookie Policy",
-    description: "Details on the cookies used and stored by the Hashlabs platform",
-  },
-};
+// export const metadata: Metadata = {
+//   title: "Cookie Policy",
+//   description: "Details on the cookies used and stored by the Hashlabs platform",
+//   openGraph: {
+//     title: "Cookie Policy",
+//     description: "Details on the cookies used and stored by the Hashlabs platform",
+//   },
+// };
 
 export default async function CookiesPage() {
   const content = await parseMarkdownContent(`app/(marketing)/(legal)/cookies/content`);

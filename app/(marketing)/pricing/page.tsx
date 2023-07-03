@@ -1,14 +1,14 @@
 import { parseMarkdownContent } from "@/app/_lib/markdownParser";
 import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Pricing",
-  description: "Information on the pricing and billing terms of Hashdocs",
-  openGraph: {
-    title: "Privacy",
-    description: "Information on the pricing and billing terms of Hashdocs",
-  },
-};
+// export const metadata: Metadata = {
+//   title: "Pricing",
+//   description: "Information on the pricing and billing terms of Hashdocs",
+//   openGraph: {
+//     title: "Privacy",
+//     description: "Information on the pricing and billing terms of Hashdocs",
+//   },
+// };
 
 export default async function PricingPage() {
 
