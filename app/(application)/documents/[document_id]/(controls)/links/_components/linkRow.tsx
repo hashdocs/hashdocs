@@ -19,6 +19,8 @@ import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "@/app/(application)/documents/[document_id]/(controls)/_components/editLinkModal";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import { ViewsHeader } from "../../views/_components/viewsHeader";
+import ViewRow from "../../views/_components/viewRow";
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -220,50 +222,11 @@ const LinkRow: React.FC<LinkType> = (props) => {
         <AnimatePresence initial={false}>
           {isOpen && views && views.length > 0 && (
             <div className="accordion-content mt-6 flex w-full flex-col">
-              <div className="grid grid-cols-12 py-2 text-xs uppercase text-shade-pencil-light shadow-sm">
-                <div className="col-span-4 grid">{"Name"}</div>
-                <div className="col-span-3 grid justify-center">{"Date"}</div>
-                <div className="col-span-2 grid justify-center">
-                  {"Duration (min)"}
-                </div>
-                <div className="col-span-2 grid justify-center">
-                  {"Completion %"}
-                </div>
-                <div className="col-span-1 grid justify-center">{""}</div>
-              </div>
+              {ViewsHeader()}
               {views &&
                 views.map((view, idx) =>
                   idx < 5 ? (
-                    <div
-                      key={`${link_id}-${view.view_id}`}
-                      className="grid grid-cols-12 items-center border-t border-dashed py-3"
-                    >
-                      <div className="col-span-4 flex items-center space-x-4">
-                        <div className="h-6 w-6 rounded-full border border-shade-line"></div>
-                        <p className={`font-semibold`}>{view.viewer}</p>
-                      </div>
-                      <div className="col-span-3 grid justify-center">
-                        <div className="">
-                          {view.viewed_at &&
-                            formatDate(view.viewed_at, "MMM D", true)}
-                        </div>
-                      </div>
-
-                      <div className="col-span-2 grid justify-center">
-                        {formatTime(view.duration)}
-                      </div>
-                      <div className="col-span-2 flex items-center justify-center gap-x-2">
-                        <PercentageCircle percentage={view.completion} />
-                      </div>
-                      <div className="col-span-1 grid justify-end">
-                        <IconButton
-                          ButtonId={`${view.view_id}-analytics`}
-                          ButtonText={"Analytics (coming soon)"}
-                          ButtonIcon={ChartBarIcon}
-                          ButtonSize={4}
-                        />
-                      </div>
-                    </div>
+                    ViewRow({link_name, ...view},idx)
                   ) : null
                 )}
               <div className=" grid grid-cols-12 justify-end pt-2 text-xs text-shade-pencil-light shadow-sm hover:text-stratos-default hover:underline">

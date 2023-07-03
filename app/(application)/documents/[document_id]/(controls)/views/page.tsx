@@ -1,10 +1,6 @@
 "use client";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { LinkType, ViewType } from "@/types/documents.types";
-import { formatDate, formatTime } from "@/app/_utils/dateFormat";
-import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
-import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { ChartBarIcon } from "@heroicons/react/24/solid";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronUpDownIcon,
@@ -17,6 +13,10 @@ import {
 import { Combobox, Transition } from "@headlessui/react";
 import { classNames } from "@/app/_utils/classNames";
 import { DocumentsContext } from "../../../_components/documentsProvider";
+import { ViewsHeader } from "./_components/viewsHeader";
+import ViewRow from "./_components/viewRow";
+
+export type ViewTableType = ViewType & { link_name: string };
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -37,8 +37,6 @@ export default function ViewsPage({
   if (!document) throw Error("Error in fetching document data");
   const router = useRouter();
   const pathname = usePathname();
-
-  type ViewTableType = ViewType & { link_name: string };
 
   const searchParams = useSearchParams();
 
@@ -226,49 +224,9 @@ export default function ViewsPage({
       </div>
 
       <div className="flex flex-col rounded-md border bg-white">
-        <div className="grid grid-cols-12 border-b bg-shade-overlay px-6 py-4 text-xs uppercase text-shade-pencil-light shadow-sm ">
-          <div className="col-span-3 grid">{"Name"}</div>
-          <div className="col-span-2 grid">{"Link"}</div>
-          <div className="col-span-2 grid justify-center">{"Date"}</div>
-          <div className="col-span-2 grid justify-center">
-            {"Duration (min)"}
-          </div>
-          <div className="col-span-1 grid justify-center">{"Version"}</div>
-          <div className="col-span-2 grid justify-center">{"Completion %"}</div>
-        </div>
+        {ViewsHeader()}
         {views && views.length > 0 ? (
-          views.map((view, idx) => (
-            <div
-              key={`${view.view_id}`}
-              className="mx-2 grid grid-cols-12 items-center gap-x-2 border-t p-3 "
-            >
-              <div className="col-span-3 flex items-center space-x-4">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-shade-line bg-shade-overlay font-mono font-extrabold uppercase text-shade-disabled">
-                  {view.viewer.charAt(0)}
-                </div>
-                <p className={`truncate font-semibold`}>{view.viewer}</p>
-              </div>
-              <div className="col-span-2 grid truncate">{view.link_name}</div>
-              <div className="col-span-2 grid justify-center">
-                {view.viewed_at && formatDate(view.viewed_at, "MMM D", true)}
-              </div>
-              <div className="col-span-2 grid justify-center">
-                {formatTime(view.duration)}
-              </div>
-              <div className="col-span-1 grid justify-center">
-                {view.document_version}
-              </div>
-              <div className="col-span-2 flex items-center justify-end gap-x-10">
-                <PercentageCircle percentage={view.completion} />
-                <IconButton
-                  ButtonId={`${view.view_id}-analytics`}
-                  ButtonText={"Analytics (coming soon)"}
-                  ButtonIcon={ChartBarIcon}
-                  ButtonSize={4}
-                />
-              </div>
-            </div>
-          ))
+          views.map((view, idx) => ViewRow(view,idx))
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2 bg-white p-24">
             <EyeSlashIcon className="h-8 w-8 text-shade-pencil-light" />
