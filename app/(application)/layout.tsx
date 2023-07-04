@@ -1,7 +1,7 @@
 import Sidebar from "@/app/_components/navigation/sidebar";
 import TopBar from "@/app/_components/navigation/topbar";
 import UserProvider from "./_components/userProvider";
-import PHProvider from "../_components/providers/posthog";
+import PHProvider from "./_components/posthog";
 
 export default async function ApplicationLayout({
   children,

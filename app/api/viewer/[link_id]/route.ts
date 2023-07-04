@@ -2,7 +2,7 @@ import { Database } from "@/types/supabase.types";
 import { AuthorizeViewerType } from "@/types/viewer.types";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, userAgent } from "next/server";
 
 /*================================ AUTHORIZE VIEWER ==============================*/
 
@@ -17,7 +17,14 @@ export async function POST(
   const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
     "authorize-viewer",
     {
-      body: { link_id_input: link_id, email_input: email, password_input: password },
+      body: {
+        link_id_input: link_id,
+        email_input: email,
+        password_input: password,
+        ip: request.ip,
+        geo: request.geo,
+        ua: userAgent(request),
+      },
     }
   );
 

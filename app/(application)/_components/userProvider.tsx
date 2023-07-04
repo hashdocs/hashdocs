@@ -7,7 +7,7 @@ import {
   User,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
-import PostHogClient from "@/app/_lib/postHogClient";
+import { usePostHog } from "posthog-js/react";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -31,13 +31,13 @@ export default function UserProvider({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  const posthog = PostHogClient();
+  const posthog = usePostHog();
 
   useEffect(() => {
     getUser()
       .then((user) => {
         setUser(user);
-        posthog.identify({ distinctId: user.id, properties: user });
+        posthog.identify(user.id, user);
       })
       .catch((err) => {
         console.error(err);

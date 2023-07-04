@@ -28,7 +28,9 @@ export default function DocumentsProvider({
   children: React.ReactNode;
 }) {
   const [documents, setDocuments] = useState<DocumentType[] | null>(null);
-  const router = useRouter();
+  const [showViewAnalyticsModal, setShowViewAnalyticsModal] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     getDocuments()
@@ -41,7 +43,14 @@ export default function DocumentsProvider({
   }, []);
 
   return (
-    <DocumentsContext.Provider value={{ documents, setDocuments }}>
+    <DocumentsContext.Provider
+      value={{
+        documents,
+        setDocuments,
+        showViewAnalyticsModal,
+        setShowViewAnalyticsModal,
+      }}
+    >
       {children}
     </DocumentsContext.Provider>
   );

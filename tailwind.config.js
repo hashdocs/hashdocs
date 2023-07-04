@@ -13,7 +13,7 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "grid": "url('/grid.svg')",
+        grid: "url('/grid.svg')",
       },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
@@ -22,7 +22,7 @@ module.exports = {
         shade: {
           overlay: "#f9fafb", //bg-gray-50,
           line: "#e5e7eb", //bg-gray-200,
-          disabled:"#9CA3AF", //bg-gray-400,
+          disabled: "#9CA3AF", //bg-gray-400,
           pencil: {
             light: "#6b7280", //bg-gray-500,
             dark: "#374151", //bg-gray-700,
@@ -62,7 +62,7 @@ module.exports = {
     // ...
     require("@tailwindcss/forms"),
     require("prettier-plugin-tailwindcss"),
-    require('tailwind-scrollbar')({ nocompatible: true }),
-    require('@tailwindcss/typography'),
+    require("tailwind-scrollbar")({ nocompatible: true }),
+    require("@tailwindcss/typography"),
   ],
 };

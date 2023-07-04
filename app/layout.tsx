@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
-import PHProvider from "@/app/_components/providers/posthog";
+import PHProvider from "@/app/(application)/_components/posthog";
 
 export const metadata: Metadata = {
   title: {

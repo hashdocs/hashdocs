@@ -1,10 +1,6 @@
 "use client";
 import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { LinkType, ViewType } from "@/types/documents.types";
-import { formatDate, formatTime } from "@/app/_utils/dateFormat";
-import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
-import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { ChartBarIcon } from "@heroicons/react/24/solid";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronUpDownIcon,
@@ -17,6 +13,11 @@ import {
 import { Combobox, Transition } from "@headlessui/react";
 import { classNames } from "@/app/_utils/classNames";
 import { DocumentsContext } from "../../../_components/documentsProvider";
+import { ViewsHeader } from "./_components/viewsHeader";
+import ViewRow from "./_components/viewRow";
+import AnalyticsModal from "../analytics/_components/analyticsModal";
+
+export type ViewTableType = ViewType & { link_name: string };
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -26,25 +27,22 @@ export default function ViewsPage({
   params: { document_id: string };
 }) {
   const _documents = useContext(DocumentsContext);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  if (!_documents) throw Error("Error in fetching documents");
-
-  const { documents } = _documents;
+  const {
+    documents,
+    showViewAnalyticsModal = null,
+    setShowViewAnalyticsModal = () => {},
+  } = _documents ?? {};
 
   const document =
     documents?.find((document) => document.document_id === document_id) ?? null;
 
-  if (!document) throw Error("Error in fetching document data");
-  const router = useRouter();
-  const pathname = usePathname();
-
-  type ViewTableType = ViewType & { link_name: string };
-
-  const searchParams = useSearchParams();
-
   const link_id = searchParams.get("id");
   const defaultLink =
-    document.links?.find((link) => link.link_id == link_id) ?? null;
+    document?.links?.find((link) => link.link_id == link_id) ?? null;
 
   const [searchValue, setSearchValue] = useState<string>("");
   let [views, setViews] = useState<ViewTableType[]>([]);
@@ -68,14 +66,14 @@ export default function ViewsPage({
 
   const filteredLinks =
     linkQuery === ""
-      ? document.links
-      : document.links.filter((link) =>
+      ? document?.links
+      : document?.links.filter((link) =>
           link.link_name.toLowerCase().includes(linkQuery.toLowerCase())
         );
 
   const handleComboboxChange = (link_name: any) => {
     const _link = link_name
-      ? document.links.find(
+      ? document?.links.find(
           (link) => link.link_name.toLowerCase() === link_name.toLowerCase()
         ) ?? null
       : null;
@@ -88,7 +86,7 @@ export default function ViewsPage({
   useEffect(() => {
     views = [];
 
-    document.links?.forEach((link) => {
+    document?.links?.forEach((link) => {
       if (selectedLink && link.link_id !== selectedLink.link_id) {
       } else {
         link.views?.forEach((view) => {
@@ -160,12 +158,12 @@ export default function ViewsPage({
               afterLeave={() => setLinkQuery("")}
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled focus:outline-none">
-                {filteredLinks.length === 0 && linkQuery !== "" ? (
+                {filteredLinks?.length === 0 && linkQuery !== "" ? (
                   <div className="relative cursor-default select-none px-4 py-2 text-shade-pencil-light">
                     Nothing found.
                   </div>
                 ) : (
-                  filteredLinks.map((link) => (
+                  filteredLinks?.map((link) => (
                     <Combobox.Option
                       key={link.link_id}
                       className={({ active }) =>
@@ -226,49 +224,9 @@ export default function ViewsPage({
       </div>
 
       <div className="flex flex-col rounded-md border bg-white">
-        <div className="grid grid-cols-12 border-b bg-shade-overlay px-6 py-4 text-xs uppercase text-shade-pencil-light shadow-sm ">
-          <div className="col-span-3 grid">{"Name"}</div>
-          <div className="col-span-2 grid">{"Link"}</div>
-          <div className="col-span-2 grid justify-center">{"Date"}</div>
-          <div className="col-span-2 grid justify-center">
-            {"Duration (min)"}
-          </div>
-          <div className="col-span-1 grid justify-center">{"Version"}</div>
-          <div className="col-span-2 grid justify-center">{"Completion %"}</div>
-        </div>
+        {ViewsHeader()}
         {views && views.length > 0 ? (
-          views.map((view, idx) => (
-            <div
-              key={`${view.view_id}`}
-              className="mx-2 grid grid-cols-12 items-center gap-x-2 border-t p-3 "
-            >
-              <div className="col-span-3 flex items-center space-x-4">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-shade-line bg-shade-overlay font-mono font-extrabold uppercase text-shade-disabled">
-                  {view.viewer.charAt(0)}
-                </div>
-                <p className={`truncate font-semibold`}>{view.viewer}</p>
-              </div>
-              <div className="col-span-2 grid truncate">{view.link_name}</div>
-              <div className="col-span-2 grid justify-center">
-                {view.viewed_at && formatDate(view.viewed_at, "MMM D", true)}
-              </div>
-              <div className="col-span-2 grid justify-center">
-                {formatTime(view.duration)}
-              </div>
-              <div className="col-span-1 grid justify-center">
-                {view.document_version}
-              </div>
-              <div className="col-span-2 flex items-center justify-end gap-x-10">
-                <PercentageCircle percentage={view.completion} />
-                <IconButton
-                  ButtonId={`${view.view_id}-analytics`}
-                  ButtonText={"Analytics (coming soon)"}
-                  ButtonIcon={ChartBarIcon}
-                  ButtonSize={4}
-                />
-              </div>
-            </div>
-          ))
+          views.map((view, idx) => ViewRow(view, idx))
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2 bg-white p-24">
             <EyeSlashIcon className="h-8 w-8 text-shade-pencil-light" />
@@ -276,6 +234,11 @@ export default function ViewsPage({
           </div>
         )}
       </div>
+      <AnalyticsModal
+        viewId={showViewAnalyticsModal}
+        setViewId={setShowViewAnalyticsModal}
+        document_id={document_id}
+      />
     </section>
   );
 }

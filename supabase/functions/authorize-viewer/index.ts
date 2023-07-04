@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { errorHandler } from "../_shared/errorHandler.ts";
-import { supabase } from "../_shared/supabaseClient.ts";
+import { supabase, supabaseAdmin } from "../_shared/supabaseClient.ts";
 import { Database } from "../../../types/supabase.types.ts";
 
 type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &
@@ -9,32 +9,49 @@ type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &
 
 type AuthorizeViewerType = {
   view_token: string;
-  view: Database["public"]["Tables"]["tbl_views"]["Row"];
 };
 
 type AuthorizeViewerProps = {
   link_id_input: string;
   email_input?: string;
   password_input?: string;
+  ip: string | undefined;
+  geo: {
+    city: string | undefined;
+    country: string | undefined;
+    region: string | undefined;
+    latitude: string | undefined;
+    longitude: string | undefined;
+  };
+  ua: {
+    isBot: boolean;
+    ua: string;
+    browser: {
+      name?: string;
+      version?: string;
+    };
+    device: {
+      model?: string;
+      type?: string;
+      vendor?: string;
+    };
+    engine: {
+      name?: string;
+      version?: string;
+    };
+    os: {
+      name?: string;
+      version?: string;
+    };
+    cpu: {
+      architecture?: string;
+    };
+  };
 };
 
 /* --------------------------------- SUCCESS RETURN FUNCTION -------------------------------- */
 
-async function generateAccessToken(props: AuthorizeViewerProps) {
-  const { data, error } = await supabase
-    .rpc("authorize_viewer", {
-      link_id_input: props.link_id_input,
-      email_input: props.email_input,
-    })
-    .returns<AuthorizeViewerType>()
-    .maybeSingle();
-
-  if (error || !data) return errorHandler(error);
-
-  return new Response(JSON.stringify(data), {
-    headers: { "Content-Type": "application/json" },
-  });
-}
+async function generateAccessToken(props: AuthorizeViewerProps) {}
 
 function validateViewer(
   input_props: AuthorizeViewerProps,
@@ -113,7 +130,13 @@ function validateViewer(
 serve(async (req) => {
   const input_props = await req.json();
 
-  const { link_id_input } = input_props as AuthorizeViewerProps;
+  const {
+    link_id_input,
+    email_input,
+    ip,
+    geo = {},
+    ua,
+  } = input_props as AuthorizeViewerProps;
 
   const { data: link_props, error } = await supabase
     .rpc("get_link_props", { link_id_input })
@@ -136,13 +159,45 @@ serve(async (req) => {
     return errorHandler(Error("Invalid link"));
   }
 
+  const { data: insert_view, error: insert_view_error } = await supabaseAdmin
+    .from("tbl_views")
+    .insert({
+      link_id: link_id_input,
+      viewer: email_input && email_input.length > 0 ? email_input : "Anonymous",
+      ip: ip,
+      geo: geo,
+      ua: ua,
+      is_authorized: false,
+    })
+    .select("view_id")
+    .maybeSingle();
+
+  if (insert_view_error || !insert_view || !insert_view.view_id) {
+    return errorHandler(insert_view_error);
+  }
+
   const is_valid_viewer = validateViewer(input_props, link_props);
 
   if (!is_valid_viewer) {
     return errorHandler(Error("Unauthorized"));
   }
 
-  console.log(input_props);
+  console.log(input_props, insert_view);
 
-  return generateAccessToken(input_props);
+  const { data: authorize_data, error: authorize_error } = await supabaseAdmin
+    .rpc("authorize_viewer", {
+      view_id_input: insert_view.view_id,
+    })
+    .returns<AuthorizeViewerType>();
+
+  if (authorize_error || !authorize_data) {
+    console.error(
+      `Error in authorization RPC - ${JSON.stringify(authorize_error)}`
+    );
+    return errorHandler(error);
+  }
+
+  return new Response(JSON.stringify(authorize_data), {
+    headers: { "Content-Type": "application/json" },
+  });
 });

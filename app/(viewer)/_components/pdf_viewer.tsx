@@ -48,7 +48,6 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     });
   }
 
-
   // First call when the document loads to set the page count
   function onDocumentLoadSuccess(document: DocumentCallback) {
     setNumPages(document.numPages);
@@ -146,7 +145,9 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     const interval = setInterval(async () => {
       if (!document.hidden) {
         const flatPageTimes = pageTimes;
-        flatPageTimes[flatPageTimes.length - 1].exitTime = Date.now();
+        if (flatPageTimes[flatPageTimes.length - 1]) {
+          flatPageTimes[flatPageTimes.length - 1].exitTime = Date.now();
+        }
 
         link_id &&
           (await fetch(`/api/viewer/${link_id}`, {
@@ -170,8 +171,11 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
       onLoadSuccess={onDocumentLoadSuccess}
       loading={<Loader />}
       onContextMenu={(e) => {
-        toast.error("Context menu and print as pdf is disabled for security reasons");
-        e.preventDefault()}}
+        toast.error(
+          "Context menu and print as pdf is disabled for security reasons"
+        );
+        e.preventDefault();
+      }}
       className="no-print -mx-1 flex w-full flex-1 flex-row justify-center bg-shade-overlay"
       externalLinkTarget="_blank"
     >

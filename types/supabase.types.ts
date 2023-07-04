@@ -130,7 +130,7 @@ export interface Database {
           is_password_required: boolean
           is_verification_required: boolean
           is_watermarked: boolean
-          link_id: string | null
+          link_id: string
           link_name: string
           link_password: string | null
           link_seq: number
@@ -148,7 +148,7 @@ export interface Database {
           is_password_required?: boolean
           is_verification_required?: boolean
           is_watermarked?: boolean
-          link_id?: string | null
+          link_id?: string
           link_name: string
           link_password?: string | null
           link_seq?: number
@@ -166,7 +166,7 @@ export interface Database {
           is_password_required?: boolean
           is_verification_required?: boolean
           is_watermarked?: boolean
-          link_id?: string | null
+          link_id?: string
           link_name?: string
           link_password?: string | null
           link_seq?: number
@@ -237,54 +237,46 @@ export interface Database {
           view_id?: string | null
           view_log_seq?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_view_logs_view_id_fkey"
-            columns: ["view_id"]
-            referencedRelation: "tbl_views"
-            referencedColumns: ["view_id"]
-          }
-        ]
+        Relationships: []
       }
       tbl_views: {
         Row: {
           document_version: number | null
-          geo_data: Json | null
-          ip_address: string | null
+          geo: Json | null
+          ip: string | null
+          is_authorized: boolean
           link_id: string | null
+          ua: Json | null
           view_id: string
           view_seq: number
-          viewed_at: string | null
+          viewed_at: string
           viewer: string
         }
         Insert: {
           document_version?: number | null
-          geo_data?: Json | null
-          ip_address?: string | null
+          geo?: Json | null
+          ip?: string | null
+          is_authorized?: boolean
           link_id?: string | null
+          ua?: Json | null
           view_id: string
           view_seq?: number
-          viewed_at?: string | null
+          viewed_at?: string
           viewer?: string
         }
         Update: {
           document_version?: number | null
-          geo_data?: Json | null
-          ip_address?: string | null
+          geo?: Json | null
+          ip?: string | null
+          is_authorized?: boolean
           link_id?: string | null
+          ua?: Json | null
           view_id?: string
           view_seq?: number
-          viewed_at?: string | null
+          viewed_at?: string
           viewer?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_views_link_id_fkey"
-            columns: ["link_id"]
-            referencedRelation: "tbl_links"
-            referencedColumns: ["link_id"]
-          }
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -293,8 +285,7 @@ export interface Database {
     Functions: {
       authorize_viewer: {
         Args: {
-          link_id_input: string
-          email_input?: string
+          view_id_input: string
         }
         Returns: Json
       }
@@ -326,6 +317,12 @@ export interface Database {
       get_link_props: {
         Args: {
           link_id_input: string
+        }
+        Returns: Json
+      }
+      get_views: {
+        Args: {
+          document_id_input?: string
         }
         Returns: Json
       }
