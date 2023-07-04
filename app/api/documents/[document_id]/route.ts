@@ -159,7 +159,7 @@ export async function GET(
   if (document_error || !document_data || !document_data[0]) {
     const url = request.nextUrl.clone();
     url.pathname = '/documents'
-    return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 })
   }
 
   const { data, error } = await supabase.storage

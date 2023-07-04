@@ -27,24 +27,22 @@ export default function ViewsPage({
   params: { document_id: string };
 }) {
   const _documents = useContext(DocumentsContext);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  if (!_documents) return null;
-
-  const { documents, showViewAnalyticsModal, setShowViewAnalyticsModal } =
-    _documents;
+  const {
+    documents,
+    showViewAnalyticsModal = null,
+    setShowViewAnalyticsModal = () => {},
+  } = _documents ?? {};
 
   const document =
     documents?.find((document) => document.document_id === document_id) ?? null;
 
-  if (!document) return null;
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const searchParams = useSearchParams();
-
   const link_id = searchParams.get("id");
   const defaultLink =
-    document.links?.find((link) => link.link_id == link_id) ?? null;
+    document?.links?.find((link) => link.link_id == link_id) ?? null;
 
   const [searchValue, setSearchValue] = useState<string>("");
   let [views, setViews] = useState<ViewTableType[]>([]);
@@ -68,14 +66,14 @@ export default function ViewsPage({
 
   const filteredLinks =
     linkQuery === ""
-      ? document.links
-      : document.links.filter((link) =>
+      ? document?.links
+      : document?.links.filter((link) =>
           link.link_name.toLowerCase().includes(linkQuery.toLowerCase())
         );
 
   const handleComboboxChange = (link_name: any) => {
     const _link = link_name
-      ? document.links.find(
+      ? document?.links.find(
           (link) => link.link_name.toLowerCase() === link_name.toLowerCase()
         ) ?? null
       : null;
@@ -88,7 +86,7 @@ export default function ViewsPage({
   useEffect(() => {
     views = [];
 
-    document.links?.forEach((link) => {
+    document?.links?.forEach((link) => {
       if (selectedLink && link.link_id !== selectedLink.link_id) {
       } else {
         link.views?.forEach((view) => {
@@ -160,12 +158,12 @@ export default function ViewsPage({
               afterLeave={() => setLinkQuery("")}
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled focus:outline-none">
-                {filteredLinks.length === 0 && linkQuery !== "" ? (
+                {filteredLinks?.length === 0 && linkQuery !== "" ? (
                   <div className="relative cursor-default select-none px-4 py-2 text-shade-pencil-light">
                     Nothing found.
                   </div>
                 ) : (
-                  filteredLinks.map((link) => (
+                  filteredLinks?.map((link) => (
                     <Combobox.Option
                       key={link.link_id}
                       className={({ active }) =>
