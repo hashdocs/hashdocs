@@ -15,6 +15,7 @@ import { classNames } from "@/app/_utils/classNames";
 import { DocumentsContext } from "../../../_components/documentsProvider";
 import { ViewsHeader } from "./_components/viewsHeader";
 import ViewRow from "./_components/viewRow";
+import AnalyticsModal from "../analytics/_components/analyticsModal";
 
 export type ViewTableType = ViewType & { link_name: string };
 
@@ -27,14 +28,15 @@ export default function ViewsPage({
 }) {
   const _documents = useContext(DocumentsContext);
 
-  if (!_documents) throw Error("Error in fetching documents");
+  if (!_documents) return null;
 
-  const { documents } = _documents;
+  const { documents, showViewAnalyticsModal, setShowViewAnalyticsModal } =
+    _documents;
 
   const document =
     documents?.find((document) => document.document_id === document_id) ?? null;
 
-  if (!document) throw Error("Error in fetching document data");
+  if (!document) return null;
   const router = useRouter();
   const pathname = usePathname();
 
@@ -226,7 +228,7 @@ export default function ViewsPage({
       <div className="flex flex-col rounded-md border bg-white">
         {ViewsHeader()}
         {views && views.length > 0 ? (
-          views.map((view, idx) => ViewRow(view,idx))
+          views.map((view, idx) => ViewRow(view, idx))
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2 bg-white p-24">
             <EyeSlashIcon className="h-8 w-8 text-shade-pencil-light" />
@@ -234,6 +236,11 @@ export default function ViewsPage({
           </div>
         )}
       </div>
+      <AnalyticsModal
+        viewId={showViewAnalyticsModal}
+        setViewId={setShowViewAnalyticsModal}
+        document_id={document_id}
+      />
     </section>
   );
 }
