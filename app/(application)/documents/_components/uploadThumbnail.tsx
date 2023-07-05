@@ -123,29 +123,29 @@ const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
               {isLoading ? (
                 <Loader />
               ) : (
-                <Dialog.Panel className="relative flex transform flex-col space-y-6 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
+                <Dialog.Panel className="relative flex transform flex-col space-y-3 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
                   <div className="flex items-start justify-between">
-                    <div className="flex flex-col justify-between">
+                    <div className="flex flex-col justify-between gap-y-2">
                       <Dialog.Title
                         as="h3"
-                        className="text-left font-semibold uppercase leading-6"
+                        className="text-left font-semibold uppercase"
                       >
                         Update thumbnail
                       </Dialog.Title>
                       <Dialog.Description
                         as="h3"
-                        className="text-left text-xs leading-6 text-shade-pencil-light"
+                        className="text-left text-xs leading-5 text-shade-pencil-light"
                       >
-                        {"Resolution: 1200x630 px"}
+                        File types: .jpg, .jpeg, .png files<br/>Resolution: 1200x630 px
                       </Dialog.Description>
                     </div>
-                    <Toggle
+                    {/* <Toggle
                       toggleId={`${document_id}-thumbnail-toggle`}
                       isChecked={isCustomImage}
                       setIsChecked={setIsCustomImage}
                       onToggle={handleToggle}
                       Label={"Custom thumbnail"}
-                    />
+                    /> */}
                   </div>
                   {/* {isCustomImage ? ( */}
                     <Dashboard

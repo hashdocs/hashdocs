@@ -6,10 +6,10 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, 
+export async function GET(
+  request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
-  ) {
-
+) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const {

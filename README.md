@@ -1,34 +1,95 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![Hashdocs OG](https://github.com/rbkayz/hashdocs/assets/62215539/d8e3c2d6-dc36-46b6-be79-5d7758f68dc3)
 
-## Getting Started
+---
 
-First, run the development server:
+[Hashdocs](https://hashdocs.org) is an open source Docsend alternative. We're building a more feature-rich secure document sharing and data room platform.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Sharing sensitive documents as attachments is risky and arcane. Attachments get forwarded all the time:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- You can't see and control who has access to your documents
+- You can't track how long they spend on each page
+- You can't revoke access to your documents
+- You can't update your documents once they're sent
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Features
 
-## Learn More
+- [x] Powerful link controls - _control access to your documents with custom links_
+  - [x] Capture user emails and details prior to view
+  - [x] Verify emails with additional-factor authentication
+  - [x] Restrict emails to select domains or email addresses (e.g. ONLY for hooli.com)
+  - [x] Password authentication
+  - [ ] Expiry settings for links
+  - [ ] Enable / Disable downloads
 
-To learn more about Next.js, take a look at the following resources:
+- [x] Dataroom console
+  - [x] Single document uploads (PDFs)
+  - [x] Version control for documents
+  - [ ] Support for additional document types (PPT, Word)
+  - [ ] Support for media types (images, videos)
+  - [ ] Folders & Multi-document uploads
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [x] Advanced tracking and analytics - _prevent unauthorized downloads, printing or saving as images_
+  - [x] Track completion % and time spent across pages for each visit
+  - [x] Prevent bot / document scraper access
+  - [x] Geo location, device and IP address tracking
+  - [ ] Domain blacklists
+  - [ ] Aggregate view analytics 
+  - [ ] Detailed access logs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- [x] Secure document viewer
+  - [x] Secure PDF viewer to prevent unauthorized downloads, printing or saving as images
+  - [ ] Contact author, book a meeting settings
+  - [ ] Custom watermarks
+  - [ ] White-labelled datarooms with organization branding and logo
 
-## Deploy on Vercel
+- [ ] Integrations
+  - [ ] Email notifications for new views, unauthorized visits
+  - [ ] Slack / Teams integrations for notifications
+  - [ ] Slack / Teams integrations to generate links
+  - [ ] Gmail plugins
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [x] Misc settings
+  - [x] Login with google
+  - [ ] Team management
+  - [ ] Organization branding for console and data rooms
+  - [ ] Self-hosting options
+  
+![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Support
+
+- [Roadmap](https://github.com/users/rbkayz/projects/1). View our roadmap
+- [Discussions Forum](https://github.com/rbkayz/hashdocs/discussions). Request features, suggest updates, discuss roadmap
+- [GitHub Issues](https://github.com/rbkayz/hashdocs/issues). Bugs and errors you may have encountered
+- [Email Support](mailto:support@hashlabs.dev). Please use this for rapid support
+
+Star this repo and watch releases to get notified of any updates
+
+## Status
+
+- [x] Public Beta: Open for signups at [hashdocs](https://hashdocs.org/login). Still ironing out issues
+- [ ] Public: General Availability
+
+---
+
+## Our tech stack
+
+Hashdocs is built entirely on open source tools. We’re deeply grateful to the contributors and maintainers of these tools for their incredible work. And we hope we can pay it forward
+
+**Architecture**
+
+- [Supabase](https://supabase.com/) is an open-source Firebase alternative with an incredible feature-rich backend-as-a-service. We use Supabase for our database, authentication, edge functions and storage
+- [NextJS](https://nextjs.org) is a React framework that provides hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more. We use NextJS 13 (App router) for our frontend
+
+**Packages**
+
+You can access a full list of packages [here](./package.json). Shoutouts to a few packages and tools:
+
+- [Tailwind](https://tailwindcss.com/), for building the best DX for css styling
+- [Framer](https://github.com/framer/motion), for their beautiful animation and gesture libraries
+- [Recharts](https://recharts.org/), for building such a feature-rich charting library for React
+- [Posthog](https://posthog.com) for their amazing auto-capture analytics features
+- [react-pdf](https://github.com/wojtekmaj/react-pdf) for making such a simple plug-and-play pdf viewer
+- [Uppy](https://uppy.io/docs/uppy/) for their simple file uploader
+- [Dub.sh] (https://github.com/steven-tey/dub) To Steven and Dub, for being an inspiration on Twitter, and for building the most elegant feature preview component I've seen

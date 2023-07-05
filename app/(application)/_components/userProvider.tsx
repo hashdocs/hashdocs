@@ -1,48 +1,21 @@
 "use client";
-import { DocumentType } from "@/types/documents.types";
-import { createContext, useEffect, useState } from "react";
-import { redirect, useRouter } from "next/navigation";
-import {
-  Session,
-  User,
-  createClientComponentClient,
-} from "@supabase/auth-helpers-nextjs";
+import { createContext, useEffect } from "react";
+import { User } from "@supabase/auth-helpers-nextjs";
 import { usePostHog } from "posthog-js/react";
 
 export const UserContext = createContext<User | null>(null);
 
-async function getUser(): Promise<User> {
-  const supabase = createClientComponentClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  return user;
-}
-
 export default function UserProvider({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user: User;
 }) {
-  const [user, setUser] = useState<User | null>(null);
-  const router = useRouter();
   const posthog = usePostHog();
 
   useEffect(() => {
-    getUser()
-      .then((user) => {
-        setUser(user);
-        posthog.identify(user.id, user);
-      })
-      .catch((err) => {
-        console.error(err);
-        router.replace("/login");
-      });
+    posthog.identify(user.id, user);
   }, []);
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;

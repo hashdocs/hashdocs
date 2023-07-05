@@ -97,13 +97,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(null, { status: 500 });
   }
 
-  const { data, error } = await supabase.functions.invoke("upload-document", {
-    body: JSON.stringify({ document_id }),
-  });
+  supabase.functions
+    .invoke("upload-document", {
+      body: JSON.stringify({ document_id }),
+    })
+    .then((res) => {
+      console.log(`Updated ${document_id} successfully`);
+    })
+    .catch((err) => {
+      console.error(err);
+      console.error(`Failed to update ${document_id}`);
+    });
 
-  if (error) {
-    console.error(error);
-  }
-
-  return NextResponse.json(data, { status: 200 });
+  return NextResponse.json({ document_id, document_version }, { status: 200 });
 }

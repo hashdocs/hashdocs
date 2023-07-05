@@ -5,6 +5,7 @@ import Toggle from "@/app/_components/shared/buttons/toggle";
 import {
   ArrowDownTrayIcon,
   ArrowLongLeftIcon,
+  ArrowPathIcon,
   BackwardIcon,
   CalendarDaysIcon,
   DocumentArrowUpIcon,
@@ -56,7 +57,7 @@ export default function DocumentHeader({
     links,
     created_at,
     created_by,
-    updated_at
+    updated_at,
   } = document;
 
   const router = useRouter();
@@ -115,6 +116,34 @@ export default function DocumentHeader({
 
   const handleClick = () => {
     setIsEditing(true);
+  };
+
+  // Refresh document
+  const handleRefresh = async () => {
+    const refreshPromise = new Promise(async (resolve, reject) => {
+      const res = fetch(`/api/documents`, {
+        method: "GET",
+      });
+
+      res
+        .then(async (res) => {
+          if (res.ok) {
+            resolve(res.status);
+            const data = await res.json();
+            setDocuments(data);
+            router.refresh();
+          }
+        })
+        .catch((err) => {
+          reject(Error("Error refreshing doc"));
+        });
+    });
+
+    toast.promise(refreshPromise, {
+      loading: "Refreshing data...",
+      success: "Successfully refreshed the document",
+      error: "Error in refreshing document. Please try again",
+    });
   };
 
   // Optimistically toggle the document
@@ -206,8 +235,8 @@ export default function DocumentHeader({
 
       if (!data.signedUrl) reject("error");
 
-      if (typeof window !== "undefined"){
-        window.location.href = data.signedUrl
+      if (typeof window !== "undefined") {
+        window.location.href = data.signedUrl;
       }
 
       resolve(data.signedUrl);
@@ -336,6 +365,13 @@ export default function DocumentHeader({
               ButtonText={"Update document"}
               ButtonIcon={DocumentArrowUpIcon}
               onClick={() => setShowUpdateDocumentModal(true)}
+            />
+            <IconButton
+              key={`${document_id}-refresh`}
+              ButtonId={`${document_id}-refresh`}
+              ButtonText={"Refresh"}
+              ButtonIcon={ArrowPathIcon}
+              onClick={handleRefresh}
             />
             <PopOver
               options={[

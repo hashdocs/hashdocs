@@ -15,7 +15,7 @@ export default function OSS() {
       </div>
       <div className="flex items-center justify-center py-10">
       <Link
-          href={`/roadmap`}
+          href={`https://github.com/users/rbkayz/projects/1`}
           target="_blank"
           rel="noreferrer"
           className="mx-2"
