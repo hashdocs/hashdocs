@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://hashdocs.org/hashdocs_full_logo.png">
+![Hashdocs OG](https://github.com/rbkayz/hashdocs/assets/62215539/d8e3c2d6-dc36-46b6-be79-5d7758f68dc3)
 </p>
 
 ---
@@ -15,6 +15,8 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
 
 
 ## Features
+
+![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
 - [x] Powerful link controls - _control access to your documents with custom links_
   - [x] Capture user emails and details prior to view
@@ -57,12 +59,11 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [ ] Organization branding for console and data rooms
   - [ ] Self-hosting options
 
-![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
-
 ## Support
 
-- [Discussions Forum](https://github.com/supabase/supabase/discussions). Request features, suggest updates, discuss roadmap
-- [GitHub Issues](https://github.com/supabase/supabase/issues). Bugs and errors you may have encountered
+- [Roadmap](https://github.com/users/rbkayz/projects/1). View our roadmap
+- [Discussions Forum](https://github.com/rbkayz/hashdocs/discussions). Request features, suggest updates, discuss roadmap
+- [GitHub Issues](https://github.com/rbkayz/hashdocs/issues). Bugs and errors you may have encountered
 - [Email Support](mailto:support@hashlabs.dev). Please use this for rapid support
 
 Star this repo and watch releases to get notified of any updates
@@ -85,9 +86,7 @@ Hashdocs is built entirely on open source tools. We’re deeply grateful to the 
 
 **Packages**
 
-You can access a full list of packages [here](./package.json)
-
-Shoutouts to a few packages and tools:
+You can access a full list of packages [here](./package.json). Shoutouts to a few packages and tools:
 
 - [Tailwind](https://tailwindcss.com/), for building the best DX for css styling
 - [Framer](https://github.com/framer/motion), for their beautiful animation and gesture libraries
