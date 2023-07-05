@@ -8,11 +8,11 @@ import Image from "next/image";
 const navigation = {
   product: [
     { name: "Pricing", href: "/pricing" },
-    { name: "Roadmap", href: "/roadmap" },
+    { name: "Roadmap", href: "https://github.com/users/rbkayz/projects/1" },
   ],
   company: [
-    { name: "Blog", href: "/blog" },
-    { name: "Security", href: "/security" },
+    { name: "Blog", href: "/" },
+    { name: "Security", href: "/" },
   ],
   legal: [
     { name: "Privacy", href: "/privacy" },

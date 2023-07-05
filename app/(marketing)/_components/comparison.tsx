@@ -127,7 +127,7 @@ const comparisonList: ComparisonProps[] = [
           href={`https://github.com/rbkayz`}
           className="text-sm font-normal text-shade-pencil-dark"
         >
-          {"Free tier with all features"}
+          {"Free plan + simple pricing tier"}
         </Link>
       </>
     ),

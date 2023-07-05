@@ -463,7 +463,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                                 ? "pointer-events-none bg-shade-line/20"
                                 : ""
                             )}
-                            placeholder="e.g. gavin@hooli.com, aviato.co, breamhall.com"
+                            placeholder="e.g. gmail.com, hooli.com, sequoia.com"
                             defaultValue={domains ? domains : undefined}
                             disabled={!isDomainRestricted}
                             style={{

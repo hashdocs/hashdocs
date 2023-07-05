@@ -297,11 +297,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           />
                         }
                       />
-                      <Bar
-                        dataKey="duration"
-                        fill="#0010FF"
-                        minPointSize={1}
-                      > <LabelList dataKey="duration" position="top" /></Bar>
+                      <Bar dataKey="duration" fill="#0010FF" minPointSize={1} label={{position:"top"}}>
+                      </Bar>
                     </BarChart>
                   </div>
                 </Dialog.Panel>
