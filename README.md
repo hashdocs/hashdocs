@@ -4,8 +4,6 @@
 
 ---
 
-# Hashdocs
-
 [Hashdocs](https://hashdocs.org) is an open source Docsend alternative. We're building a more feature-rich secure document sharing and data room platform.
 
 Sharing sensitive documents as attachments is risky and arcane. Attachments get forwarded all the time:
@@ -59,8 +57,7 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [ ] Organization branding for console and data rooms
   - [ ] Self-hosting options
 
-![Supabase Dashboard](https://raw.githubusercontent.com/supabase/supabase/master/apps/www/public/images/github/supabase-dashboard.png)
-
+![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
 ## Support
 
