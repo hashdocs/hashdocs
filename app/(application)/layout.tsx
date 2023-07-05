@@ -5,15 +5,35 @@ import PHProvider from "./_components/posthog";
 import Link from "next/link";
 import Image from "next/image";
 import { BackwardIcon } from "@heroicons/react/24/outline";
+import { User, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+async function getUser(): Promise<User> {
+  const supabase = createServerComponentClient({cookies});
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    await supabase.auth.signOut();
+    redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`)
+  }
+
+  return user;
+}
 
 export default async function ApplicationLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const user = await getUser();
+
   return (
     <PHProvider>
-      <UserProvider>
+      <UserProvider user={user}>
         <div className="hidden max-h-screen w-full flex-1 overflow-hidden lg:flex">
           <Sidebar />
           <main className="flex h-screen w-full flex-1 flex-col items-center overflow-x-auto">

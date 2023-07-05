@@ -1,4 +1,5 @@
 "use client";
+import { User } from "@supabase/supabase-js";
 import { usePathname, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
