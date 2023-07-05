@@ -14,8 +14,6 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
 
 ## Features
 
-![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
-
 - [x] Powerful link controls - _control access to your documents with custom links_
   - [x] Capture user emails and details prior to view
   - [x] Verify emails with additional-factor authentication
@@ -56,6 +54,8 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [ ] Team management
   - [ ] Organization branding for console and data rooms
   - [ ] Self-hosting options
+  
+![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
 ## Support
 
