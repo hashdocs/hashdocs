@@ -39,6 +39,6 @@ export default function LinksPage({
       />
     </>
   ) : (
-    <EmptyLinks />
+    <EmptyLinks document_id={document_id} />
   );
 }
