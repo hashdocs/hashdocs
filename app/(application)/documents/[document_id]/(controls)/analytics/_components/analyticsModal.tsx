@@ -1,10 +1,11 @@
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { DocumentType, GetViewLogs } from "@/types/documents.types";
 import {
   Bar,
   BarChart,
   Cell,
+  LabelList,
   Pie,
   PieChart,
   Tooltip,
@@ -13,7 +14,8 @@ import {
 } from "recharts";
 import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import Loader from "@/app/_components/navigation/loader";
-
+import { classNames } from "@/app/_utils/classNames";
+import dynamic from "next/dynamic";
 
 interface AnalyticsModalProps {
   viewId: string | null;
@@ -21,12 +23,31 @@ interface AnalyticsModalProps {
   document_id: string;
 }
 
+const ChartViewer = dynamic(() => import("./chart_viewer"), {
+  ssr: false,
+});
+
+const CustomTooltip = ({ active, payload, label, signed_url }: any) => {
+  return (
+    <div className="rounded-sm bg-white p-2">
+      {<ChartViewer signedUrl={signed_url ?? ""} page_num={label as number} />}
+    </div>
+  );
+};
+
 const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   props: AnalyticsModalProps
 ) => {
   const { viewId, setViewId, document_id } = props;
 
   const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
+  const [signedUrl, setSignedUrl] = useState<
+    {
+      version: number;
+      path: string;
+      signed_url: string;
+    }[]
+  >([]);
 
   useMemo(() => {
     const getViewLogs = async () => {
@@ -40,14 +61,30 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
       }
     };
 
+    const getSignedUrl = async () => {
+      const res = await fetch(`/api/documents/${document_id}/views/signedUrl`);
+      if (!res.ok) {
+        return;
+      }
+      if (res.status === 200) {
+        const data = (await res.json()) as {
+          version: number;
+          path: string;
+          signed_url: string;
+        }[];
+        setSignedUrl(data);
+      }
+    };
+
     getViewLogs();
+    getSignedUrl();
   }, [document_id]);
 
   if (!viewLogs) return null;
 
   const { links, document_name } = viewLogs;
 
-  const link = links.find(
+  const link = links?.find(
     (link) => link.link_id && viewId?.includes(link.link_id)
   );
 
@@ -59,16 +96,19 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
 
   if (!view) return null;
 
-  const {page_count}=view;
+  const { page_count } = view;
 
   if (!page_count) return null;
 
   const chart_data = Array.from({ length: page_count }, (_, index) => {
     return {
       page_num: index + 1,
-      duration: Math.round((view.view_logs?.find((log) => log.page_num === index + 1)?.duration ?? 0)/1000),
-    }
-  })
+      duration: Math.round(
+        (view.view_logs?.find((log) => log.page_num === index + 1)?.duration ??
+          0) / 1000
+      ),
+    };
+  });
 
   /*-------------------------------- RENDER ------------------------------*/
 
@@ -145,7 +185,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Date
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {formatDate(view.viewed_at, "MMM DD, YYYY")}
+                            {formatDate(view.viewed_at, "MMM DD, YYYY HH:MM")}
                           </div>
                         </div>
                         <div className="flex flex-row">
@@ -153,7 +193,11 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Location
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {view.geo ? `${(view.geo as any)?.city ?? ""}, ${(view.geo as any)?.country ?? ""}` : "unknown"}
+                            {view.geo
+                              ? `${(view.geo as any)?.city ?? ""}, ${
+                                  (view.geo as any)?.country ?? ""
+                                }`
+                              : "unknown"}
                           </div>
                         </div>
                         <div className="flex flex-row">
@@ -161,7 +205,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Device
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {(view.ua as any)?.browser?.name ?? ""}{","}
+                            {(view.ua as any)?.browser?.name ?? ""}
+                            {", "}
                             {(view.ua as any)?.os?.name ?? ""}
                           </div>
                         </div>
@@ -196,14 +241,14 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                               dataKey="value"
                               startAngle={90}
                               endAngle={-270}
-                              style={{ outline: 'none' }}
+                              style={{ outline: "none" }}
                               className="focus:outline-none"
                             >
                               {[view.completion, 100 - view.completion].map(
                                 (entry, index) => (
                                   <Cell
                                     key={`cell-${index}`}
-                                    style={{ outline: 'none' }}
+                                    style={{ outline: "none" }}
                                     className="focus:outline-none"
                                     fill={
                                       ["#0010FF", "#FBFBFB"][
@@ -222,7 +267,6 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                       </div>
                     </div>
                     <div className="flex items-center justify-center py-1">
-                      <div className="mr-4 flex-grow border-t border-shade-line"></div>
                       <span className="bg-white px-2 text-shade-disabled">
                         {"TIME SPENT PER PAGE (SECONDS)"}
                       </span>
@@ -241,8 +285,23 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                     >
                       <XAxis dataKey="page_num" />
                       <YAxis name="Duration" />
-                      <Tooltip />
-                      <Bar dataKey="duration" fill="#0010FF" minPointSize={1}></Bar>
+                      <Tooltip
+                        offset={20}
+                        content={
+                          <CustomTooltip
+                            signed_url={
+                              signedUrl.find(
+                                (url) => url.version == view.document_version
+                              )?.signed_url
+                            }
+                          />
+                        }
+                      />
+                      <Bar
+                        dataKey="duration"
+                        fill="#0010FF"
+                        minPointSize={1}
+                      > <LabelList dataKey="duration" position="top" /></Bar>
                     </BarChart>
                   </div>
                 </Dialog.Panel>

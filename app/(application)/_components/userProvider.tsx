@@ -18,6 +18,7 @@ async function getUser(): Promise<User> {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    await supabase.auth.signOut();
     redirect("/login");
   }
 
@@ -41,7 +42,6 @@ export default function UserProvider({
       })
       .catch((err) => {
         console.error(err);
-        router.replace("/login");
       });
   }, []);
 

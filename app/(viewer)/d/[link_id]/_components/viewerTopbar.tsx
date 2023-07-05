@@ -106,12 +106,12 @@ export default async function ViewerTopBar({
         )}
         <IconButton
           ButtonId={"topbar-download"}
-          ButtonText={"Schedule a meeting"}
+          ButtonText={"Schedule a meeting (coming soon)"}
           ButtonIcon={CalendarDaysIcon}
         />
         <IconButton
           ButtonId={"topbar-download"}
-          ButtonText={"Email the author"}
+          ButtonText={"Email author (coming soon)"}
           ButtonIcon={EnvelopeIcon}
         />
       </div>
