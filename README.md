@@ -1,6 +1,4 @@
-<p align="center">
 ![Hashdocs OG](https://github.com/rbkayz/hashdocs/assets/62215539/d8e3c2d6-dc36-46b6-be79-5d7758f68dc3)
-</p>
 
 ---
 
