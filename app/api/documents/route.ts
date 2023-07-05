@@ -4,8 +4,6 @@ import { cookies } from "next/headers";
 
 import type { Database } from "@/types/supabase.types";
 import type { DocumentType } from "@/types/documents.types";
-import { LinkType } from "@/types/documents.types";
-import { redirect } from "next/navigation";
 
 /* ------------------------ GET DOCUMENT ----------------------- */
 
@@ -73,15 +71,15 @@ export async function POST(request: NextRequest) {
       source_path_input: name,
       source_type_input: "LOCAL",
     })
-    .returns<{ document_id: string; document_version: string }>();
+    .returns<DocumentType[]>();
 
-  if (new_document_error || !new_document_data) {
+  if (new_document_error || !new_document_data || !new_document_data[0]) {
     console.error(new_document_error);
     return NextResponse.json(null, { status: 500 });
   }
 
-  document_id = new_document_data.document_id;
-  const document_version = new_document_data.document_version;
+  document_id = new_document_data[0].document_id;
+  const document_version = new_document_data[0].document_version;
 
   //STEP 4 - Store document in supabase storage
   const { data: _document_upload_path, error: document_upload_error } =
@@ -109,5 +107,5 @@ export async function POST(request: NextRequest) {
       console.error(`Failed to update ${document_id}`);
     });
 
-  return NextResponse.json({ document_id, document_version }, { status: 200 });
+  return NextResponse.json(new_document_data[0], { status: 200 });
 }

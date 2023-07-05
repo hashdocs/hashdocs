@@ -1,9 +1,9 @@
-DROP FUNCTION IF EXISTS upsert_document;
+set check_function_bodies = off;
 
-CREATE OR REPLACE FUNCTION upsert_document(document_id_input text DEFAULT NULL, document_name_input text DEFAULT NULL, source_path_input text DEFAULT NULL, source_type_input text DEFAULT NULL)
-	RETURNS json
-	LANGUAGE PLPGSQL
-	AS $$
+CREATE OR REPLACE FUNCTION public.upsert_document(document_id_input text DEFAULT NULL::text, document_name_input text DEFAULT NULL::text, source_path_input text DEFAULT NULL::text, source_type_input text DEFAULT NULL::text)
+ RETURNS json
+ LANGUAGE plpgsql
+AS $function$
 DECLARE
 	found_document_id text;
 	insert_data tbl_document_versions;
@@ -68,5 +68,7 @@ RETURNING
 	--
 	RETURN return_data;
 END;
-$$;
+$function$
+;
+
 
