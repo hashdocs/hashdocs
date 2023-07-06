@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  cd:
+  supabaseDeploy:
     runs-on: ubuntu-22.04
 
     env:
