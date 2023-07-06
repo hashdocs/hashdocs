@@ -36,7 +36,7 @@ const Hero = () => {
         </Link>
         <Link
           className="flex items-center justify-center font-semibold space-x-2 rounded-lg border bg-white px-5 py-2 shadow-lg transition-all hover:border-shade-pencil-dark"
-          href="https://github.com/rbkayz/hashdocs"
+          href="https://github.com/hashdocs/hashdocs"
           target="_blank"
           rel="noreferrer"
         >

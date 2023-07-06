@@ -98,7 +98,7 @@ const comparisonList: ComparisonProps[] = [
       <>
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
         <Link
-          href={`https://github.com/rbkayz`}
+          href={`https://github.com/hashdocs/hashdocs`}
           target="_blank"
           className="text-sm font-normal text-shade-pencil-dark"
         >
@@ -124,7 +124,7 @@ const comparisonList: ComparisonProps[] = [
       <>
         <CheckCircleIcon className="h-5 w-5 text-green-600" />
         <Link
-          href={`https://github.com/rbkayz`}
+          href={`https://github.com/hashdocs/hashdocs`}
           className="text-sm font-normal text-shade-pencil-dark"
         >
           {"Free plan + simple pricing tier"}

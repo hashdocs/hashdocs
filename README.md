@@ -55,16 +55,16 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [ ] Organization branding for console and data rooms
   - [ ] Self-hosting options
   
-![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
+![Hashdocs Link controls](https://github.com/hashdocs/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
 ## Contributing & Support
 
 We're building Hashdocs in the open. We'd love your help in making it better. To get started, please read our [contribution guide](./CONTRIBUTING.md)
 
-- [Roadmap](https://github.com/users/rbkayz/projects/1). View our roadmap
-- [Discussions Forum](https://github.com/rbkayz/hashdocs/discussions). Request features, suggest updates, discuss roadmap
-- [GitHub Issues](https://github.com/rbkayz/hashdocs/issues). Bugs and errors you may have encountered
-- [Email Support](mailto:support@hashlabs.dev). Please use this for rapid support
+- [Roadmap](https://github.com/hashdocs/hashdocs/issues). View our roadmap, and add feature requests
+- [Discussions Forum](https://github.com/hashdocs/hashdocs/discussions). Request features, suggest updates, discuss roadmap
+- [GitHub Issues](https://github.com/hashdocs/hashdocs/issues). Bugs and errors you may have encountered
+- [Email Support](mailto:bharat@hashlabs.dev). Please use this for critical support
 
 Star this repo and watch releases to get notified of any updates
 
@@ -75,7 +75,7 @@ Star this repo and watch releases to get notified of any updates
 
 ---
 
-### Tech stack
+## Tech stack
 
 Hashdocs is built entirely on open source tools. We’re deeply grateful to the contributors and maintainers of these tools for their incredible work. And we hope we can pay it forward
 

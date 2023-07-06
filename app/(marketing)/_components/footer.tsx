@@ -8,7 +8,7 @@ import Image from "next/image";
 const navigation = {
   product: [
     { name: "Pricing", href: "/pricing" },
-    { name: "Roadmap", href: "https://github.com/users/rbkayz/projects/1" },
+    { name: "Roadmap", href: "https://github.com/hashdocs/hashdocs/issues" },
   ],
   company: [
     { name: "Blog", href: "/" },
@@ -50,7 +50,7 @@ export default function Footer() {
               <FaTwitter className="h-5 w-5 text-shade-pencil-light" />
             </Link>
             <Link
-              href="https://github.com/rbkayz/hashdocs"
+              href="https://github.com/hashdocs/hashdocs"
               target="_blank"
               rel="noreferrer"
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
