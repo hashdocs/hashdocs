@@ -111,19 +111,20 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         .then((res) => {
           if (res.ok) {
             resolve(res.status);
+            setDocuments((prevDocuments: DocumentType[] | null) => {
+              if (!prevDocuments) return null;
+              let newDocuments = prevDocuments;
+              const index = newDocuments.findIndex(
+                (document) => document.document_id === document_id
+              );
+              newDocuments = newDocuments.filter((item, i) => i !== index);
+              return newDocuments;
+            });     
+            router.refresh();
           }
         })
         .catch((err) => {
           reject(Error("Error updating doc status"));
-          setDocuments((prevDocuments: DocumentType[] | null) => {
-            if (!prevDocuments) return null;
-            let newDocuments = prevDocuments;
-            const index = newDocuments.findIndex(
-              (document) => document.document_id === document_id
-            );
-            newDocuments = newDocuments.filter((item, i) => i !== index);
-            return newDocuments;
-          });
         });
     });
 
@@ -132,7 +133,6 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
       success: "Successfully deleted document",
       error: "Error in deleting document. Please try again",
     });
-    router.refresh();
   };
 
   /* --------------------------------- RENDER --------------------------------- */
