@@ -49,27 +49,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(null, { status: 500 });
   }
 
-  //STEP 1 - Get document_id from search params
-  const { searchParams } = new URL(request.url);
-  let document_id = searchParams.get("document_id");
+  //STEP 1 - Parse body
+  const body = (await request.json()) as {
+    document_id: string | null;
+    path: string;
+    source_path: string;
+    document_name: string | null;
+    source_type: string | null;
+  };
 
-  //STEP 2 - Parse file body from formdata
-  const filedata = await request.formData();
-  const name = filedata.get("name") as string;
-  const type = filedata.get("type") as string;
-  const filebody = filedata.get("file") as File;
+  let { document_id, path, source_path, document_name, source_type } = body;
 
-  const lastDot = name.lastIndexOf(".");
+  const lastDot = source_path.lastIndexOf(".");
   const name_without_extension =
-    lastDot === -1 ? name : name.substring(0, lastDot);
+    lastDot === -1 ? source_path : source_path.substring(0, lastDot);
 
   //STEP 3 - Insert document into db
   const { data: new_document_data, error: new_document_error } = await supabase
     .rpc("upsert_document", {
       document_id_input: document_id ?? undefined,
-      document_name_input: name_without_extension,
-      source_path_input: name,
-      source_type_input: "LOCAL",
+      document_name_input: document_name ?? name_without_extension,
+      source_path_input: source_path,
+      source_type_input: source_type ?? "LOCAL",
     })
     .returns<DocumentType[]>();
 
@@ -85,10 +86,7 @@ export async function POST(request: NextRequest) {
   const { data: _document_upload_path, error: document_upload_error } =
     await supabase.storage
       .from("documents")
-      .upload(`${document_id}/${document_version}.pdf`, filebody, {
-        contentType: type,
-        upsert: true,
-      });
+      .move(path, `${document_id}/${document_version}.pdf`);
 
   if (document_upload_error) {
     console.error(document_upload_error);

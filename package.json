@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "concurrently \"next dev\" \"supabase functions serve\"",
+    "dev": "concurrently \"next dev\" \"supabase functions serve --env-file supabase/functions/.env\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

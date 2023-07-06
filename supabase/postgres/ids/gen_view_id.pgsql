@@ -35,6 +35,8 @@ BEGIN
 		END LOOP;
 		counter := 0;
 	END LOOP;
+
+	RAISE EXCEPTION 'Unexpected error: could not generate view_id';
 END
 $$;
 

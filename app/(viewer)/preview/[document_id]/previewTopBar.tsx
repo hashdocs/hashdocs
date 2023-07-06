@@ -30,11 +30,11 @@ export default function PreviewTopBar({
             {documentProps.document_name} (Preview)
           </h1>
         )}
-        <IconButton
+        {/* <IconButton
           ButtonId={"topbar-download"}
           ButtonText={"Download document"}
           ButtonIcon={ArrowDownTrayIcon}
-        />
+        /> */}
         <IconButton
           ButtonId={"topbar-download"}
           ButtonText={"Schedule a meeting (coming soon)"}

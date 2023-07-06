@@ -33,6 +33,8 @@ BEGIN
 		END LOOP;
 		counter := 0;
 	END LOOP;
+
+	RAISE EXCEPTION 'Unexpected error: could not generate document_id';
 END
 $$;
 

@@ -88,7 +88,6 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        console.log(data);
         resolve(true);
         router.push("/documents");
       }
