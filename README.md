@@ -19,8 +19,8 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [x] Verify emails with additional-factor authentication
   - [x] Restrict emails to select domains or email addresses (e.g. ONLY for hooli.com)
   - [x] Password authentication
-  - [ ] Expiry settings for links
-  - [ ] Enable / Disable downloads
+  - [x] Expiry settings for links
+  - [x] Enable / Disable downloads
 
 - [x] Dataroom console
   - [x] Single document uploads (PDFs)
@@ -57,7 +57,9 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   
 ![Hashdocs Link controls](https://github.com/rbkayz/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
-## Support
+## Contributing & Support
+
+We're building Hashdocs in the open. We'd love your help in making it better. To get started, please read our [contribution guide](./CONTRIBUTING.md)
 
 - [Roadmap](https://github.com/users/rbkayz/projects/1). View our roadmap
 - [Discussions Forum](https://github.com/rbkayz/hashdocs/discussions). Request features, suggest updates, discuss roadmap
@@ -73,14 +75,14 @@ Star this repo and watch releases to get notified of any updates
 
 ---
 
-## Our tech stack
+### Tech stack
 
 Hashdocs is built entirely on open source tools. We’re deeply grateful to the contributors and maintainers of these tools for their incredible work. And we hope we can pay it forward
 
 **Architecture**
 
 - [Supabase](https://supabase.com/) is an open-source Firebase alternative with an incredible feature-rich backend-as-a-service. We use Supabase for our database, authentication, edge functions and storage
-- [NextJS](https://nextjs.org) is a React framework that provides hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more. We use NextJS 13 (App router) for our frontend
+- [NextJS](https://nextjs.org) is a React framework that provides hybrid static & server rendering, TypeScript support, smart bundling, route pre-fetching, and more. We use NextJS 13 (App router) for our frontend, hosted on [Vercel](https://vercel.com)
 
 **Packages**
 
