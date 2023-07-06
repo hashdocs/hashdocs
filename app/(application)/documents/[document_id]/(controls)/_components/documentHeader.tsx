@@ -21,7 +21,7 @@ import { useContext, useState } from "react";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
 import EditLinkModal from "./editLinkModal";
-import { DocumentType } from "@/types/documents.types";
+import { DocumentType, GetViewLogs } from "@/types/documents.types";
 import DocumentTabs from "./documentTabs";
 import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
@@ -44,7 +44,7 @@ export default function DocumentHeader({
 
   if (!_documents) throw Error("Error in fetching documents");
 
-  const { setDocuments } = _documents;
+  const { setDocuments, setViewLogs } = _documents;
 
   const {
     document_id,
@@ -121,14 +121,9 @@ export default function DocumentHeader({
   // Refresh document
   const handleRefresh = async () => {
     const refreshPromise = new Promise(async (resolve, reject) => {
-      const res = fetch(`/api/documents`, {
-        method: "GET",
-      });
-
-      res
+      const docPromise = fetch(`/api/documents`)
         .then(async (res) => {
           if (res.ok) {
-            resolve(res.status);
             const data = await res.json();
             setDocuments(data);
             router.refresh();
@@ -137,6 +132,21 @@ export default function DocumentHeader({
         .catch((err) => {
           reject(Error("Error refreshing doc"));
         });
+
+      const viewPromise = fetch(`/api/documents/${document_id}/views`)
+        .then(async (res) => {
+          if (res.ok) {
+            resolve(res.status);
+            const data = await res.json();
+            setViewLogs(data);
+          }
+        })
+        .catch((err) => {
+          reject(Error("Error refreshing doc"));
+        });
+
+      await Promise.all([docPromise, viewPromise]);
+      resolve("success");
     });
 
     toast.promise(refreshPromise, {

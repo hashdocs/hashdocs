@@ -1,7 +1,11 @@
 "use client";
-import { DocumentsContextType, DocumentType } from "@/types/documents.types";
+import {
+  DocumentsContextType,
+  DocumentType,
+  GetViewLogs,
+  ViewType,
+} from "@/types/documents.types";
 import { createContext, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export const DocumentsContext = createContext<DocumentsContextType | null>(
   null
@@ -31,6 +35,7 @@ export default function DocumentsProvider({
   const [showViewAnalyticsModal, setShowViewAnalyticsModal] = useState<
     string | null
   >(null);
+  const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
 
   useEffect(() => {
     getDocuments()
@@ -49,6 +54,8 @@ export default function DocumentsProvider({
         setDocuments,
         showViewAnalyticsModal,
         setShowViewAnalyticsModal,
+        viewLogs,
+        setViewLogs,
       }}
     >
       {children}

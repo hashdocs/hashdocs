@@ -47,4 +47,6 @@ export type DocumentsContextType = {
   setDocuments: Dispatch<SetStateAction<DocumentType[] | null>>;
   showViewAnalyticsModal: string | null;
   setShowViewAnalyticsModal: Dispatch<SetStateAction<string | null>>;
+  viewLogs: GetViewLogs | null;
+  setViewLogs: Dispatch<SetStateAction<GetViewLogs | null>>;
 };
