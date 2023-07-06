@@ -1,5 +1,4 @@
-
-![Hashdocs OG](https://github.com/hashdocs/hashdocs/assets/62215539/a8744bf9-138b-4603-9323-265337e8d0d7)
+![Hashdocs OG](https://github.com/hashdocs/hashdocs/assets/62215539/cec6eae6-c9b0-4c2e-a8c5-cbcb5053918c)
 
 ---
 
