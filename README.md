@@ -1,4 +1,5 @@
-![Hashdocs OG](https://github.com/rbkayz/hashdocs/assets/62215539/d8e3c2d6-dc36-46b6-be79-5d7758f68dc3)
+
+![Hashdocs OG](https://github.com/hashdocs/hashdocs/assets/62215539/a8744bf9-138b-4603-9323-265337e8d0d7)
 
 ---
 
@@ -54,8 +55,6 @@ Sharing sensitive documents as attachments is risky and arcane. Attachments get 
   - [ ] Team management
   - [ ] Organization branding for console and data rooms
   - [ ] Self-hosting options
-  
-![Hashdocs Link controls](https://github.com/hashdocs/hashdocs/assets/62215539/c4dcf6dd-99d2-4002-b628-5b7391e32f7f)
 
 ## Contributing & Support
 
