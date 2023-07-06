@@ -13,6 +13,7 @@ import Link from "next/link";
 import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { DocumentsContext } from "./documentsProvider";
 import { DocumentType } from "@/types/documents.types";
+import { classNames } from "@/app/_utils/classNames";
 
 interface UploadDocumentModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   /*-------------------------------- SET STATE VARIABLES  ------------------------------*/
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const _documentContext = useContext(DocumentsContext);
 
@@ -62,64 +64,94 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     onBeforeUpload: (files) => handleBeforeUpload(files),
     allowMultipleUploads: false,
   }).use(XHR, {
-    //TODO:Update to https
-    endpoint: `${process.env.NEXT_PUBLIC_BASE_URL}/api/documents${
-      document_id ? `?document_id=${document_id}` : ""
-    }`,
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+      "x-upsert": "true",
+    },
+    endpoint: `${
+      process.env.NEXT_PUBLIC_SUPABASE_URL
+    }/storage/v1/object/documents/TEMP/${Math.round(Math.random() * 1000000)}`,
   });
 
   uppy.on("upload-success", (file, response) => {
-    const new_document = response.body as DocumentType;
+    const path = (response.body.Key as string).replace(`documents/`, "");
 
-    toast.success(
-      <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
-        <div className="flex flex-col gap-y-1">
-          <p className="">
-            <span className="font-semibold text-stratos-default">
-              {document_name || file?.name}
-            </span>{" "}
-            {document_id ? "updated" : "uploaded"} successfully
-          </p>
-          <p className="font-normal">
-            You can now create secure links for sharing. 
-          </p>
-          {/* <p className="font-normal">
+    const postUploadPromise = new Promise<DocumentType>(
+      async (resolve, reject) => {
+        const res = await fetch(`/api/documents`, {
+          method: "POST",
+          body: JSON.stringify({
+            document_id,
+            path,
+            source_path: file?.name,
+            document_name: document_name,
+            source_type: "LOCAL",
+          }),
+        });
+
+        if (!res.ok) {
+          reject();
+          return;
+        }
+
+        const new_document = (await res.json()) as DocumentType;
+
+        resolve(new_document);
+        setDocuments((prevDocuments: DocumentType[] | null) => {
+          if (!prevDocuments) return null;
+          const docIndex = prevDocuments.findIndex((doc) => {
+            return doc.document_id === new_document.document_id;
+          });
+          if (docIndex > -1) {
+            const newDocuments = [...prevDocuments];
+            newDocuments[docIndex] = new_document;
+            return newDocuments;
+          } else {
+            const newDocuments = [new_document, ...prevDocuments];
+            return newDocuments;
+          }
+        });
+        setIsOpen(false);
+        router.push(`/documents/${new_document.document_id}/links`);
+        router.refresh();
+      }
+    );
+
+    toast.promise(postUploadPromise, {
+      loading: "Processing your document...",
+      success: (new_doc: DocumentType) => (
+        <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
+          <div className="flex flex-col gap-y-1">
+            <p className="">
+              <span className="font-semibold text-stratos-default">
+                {document_name || file?.name}
+              </span>{" "}
+              {document_id ? "updated" : "uploaded"} successfully
+            </p>
+            <p className="font-normal">
+              You can now create secure links for sharing.
+            </p>
+            {/* <p className="font-normal">
             It may take a few seconds to generate the thumbnail. But if you prefer, you can upload a custom thumbnail from the three dots
           </p> */}
+          </div>
+          <Link
+            onClick={(e) => {
+              e.stopPropagation();
+              toast.dismiss(`${new_doc.document_id}-toast`);
+            }}
+            href={`/preview/${new_doc.document_id}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
+          >
+            <PresentationChartBarIcon className="h-5 w-5 " />
+            <span className="font-normal">{`Preview`}</span>
+          </Link>
         </div>
-        <Link
-          onClick={(e) => {
-            e.stopPropagation();
-            toast.dismiss(`${new_document.document_id}-toast`);
-          }}
-          href={`/preview/${new_document.document_id}`}
-          target="_blank"
-          rel="noreferrer"
-          className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
-        >
-          <PresentationChartBarIcon className="h-5 w-5 " />
-          <span className="font-normal">{`Preview`}</span>
-        </Link>
-      </div>,
-      { duration: 5000, id: `${new_document.document_id}-toast` }
-    );
-    setIsOpen(false);
-    setDocuments((prevDocuments: DocumentType[] | null) => {
-      if (!prevDocuments) return null;
-      const docIndex = prevDocuments.findIndex((doc) => {
-        return doc.document_id === new_document.document_id;
-      });
-      if (docIndex > -1) {
-        const newDocuments = [...prevDocuments];
-        newDocuments[docIndex] = new_document;
-        return newDocuments;
-      } else {
-        const newDocuments = [new_document, ...prevDocuments];
-        return newDocuments;
-      }
+      ),
+      error: "Upload failed, please try again",
     });
-    router.push(`/documents/${new_document.document_id}/links`);
-    router.refresh();
   });
 
   uppy.on("upload-error", (file, error) => {
@@ -177,13 +209,10 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
                         }
                       </Dialog.Description>
                     </div>
-                    <Link
-                      href={`/preview/${document_id}`}
-                      target="_blank"
-                      className="max-w-1/3 truncate text-xs text-stratos-default underline"
-                    >
-                      {document_name}
-                    </Link>
+                    {/* <CustomThumbnailCheckbox
+                      isChecked={isChecked}
+                      setIsChecked={setIsChecked}
+                      id="custom-thumbnail"/> */}
                   </div>
                   <Dashboard
                     uppy={uppy}
@@ -203,5 +232,45 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
     </Transition.Root>
   );
 };
+
+function CustomThumbnailCheckbox({
+  isChecked,
+  setIsChecked,
+  id,
+}: {
+  isChecked: boolean;
+  setIsChecked: Function;
+  id: string;
+}): JSX.Element {
+  return (
+    <div className="relative flex items-start">
+      <div className="ml-3 text-sm leading-6">
+        <label
+          htmlFor={id}
+          className={classNames(
+            "font-medium",
+            isChecked ? "" : "text-shade-pencil-light",
+            "cursor-pointer"
+          )}
+        >
+          {`Custom thumbnail?`}
+        </label>
+        <p className="text-xs text-shade-pencil-light/80">{`Generated from the 1st page`}</p>
+      </div>
+      <div className="flex h-6 items-center">
+        <input
+          id={id}
+          checked={isChecked}
+          onChange={() => setIsChecked(!isChecked)}
+          type="checkbox"
+          className={classNames(
+            "h-4 w-4 rounded border-shade-line text-stratos-default focus:ring-white",
+            "cursor-pointer"
+          )}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default UploadDocumentModal;
