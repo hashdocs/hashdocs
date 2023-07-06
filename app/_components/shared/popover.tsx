@@ -41,7 +41,7 @@ export default function PopOver({ options, panelClassName }: PopOverProps) {
           > */}
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex max-w-sm shrink",
+                "absolute z-10 flex max-w-sm shrink -translate-x-3/4",
                 panelClassName ?? ""
               )}
             >

@@ -25,7 +25,7 @@ const LargeButton: React.FC<LargeButtonProps> = (props) => {
       type="button"
       key={ButtonId}
       className={classNames(
-        "flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm",
+        "flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm shrink-0",
         ButtonClassName
       )}
       // data-tooltip-id="button-tooltip"
