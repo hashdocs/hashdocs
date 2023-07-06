@@ -15,7 +15,7 @@ export default function OSS() {
       </div>
       <div className="flex items-center justify-center py-10">
       <Link
-          href={`https://github.com/users/rbkayz/projects/1`}
+          href={`https://github.com/hashdocs/hashdocs/issues`}
           target="_blank"
           rel="noreferrer"
           className="mx-2"
@@ -28,7 +28,7 @@ export default function OSS() {
           </div>
         </Link>
         <Link
-          href="https://github.com/rbkayz/hashdocs"
+          href="https://github.com/hashdocs/hashdocs"
           target="_blank"
           rel="noreferrer"
           className="mx-2"

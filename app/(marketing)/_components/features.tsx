@@ -28,7 +28,7 @@ const featureList = [
     ),
     description:
       "Manage access control for your links with fine-grained settings such as restricted domains, password protection, expiry conditions and more",
-    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/powerful-link-controls.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/powerful-link-controls.mp4",
   },
   {
     key: "advanced-tracking",
@@ -36,7 +36,7 @@ const featureList = [
     icon: <ChartBarIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
       "Critical insights on your link views - visitor emails, time spent across pages, geo-location, ip",
-    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/advanced-tracking.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/advanced-tracking.mp4",
   },
   {
     key: "secure-viewer",
@@ -46,7 +46,7 @@ const featureList = [
     ),
     description:
       "Secure document viewer with watermarks, no-print, no-download, and no-copy settings to protect your sensitive docs",
-    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/secure-viewer.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/secure-viewer.mp4",
   },
   {
     key: "custom-data-room",
@@ -54,7 +54,7 @@ const featureList = [
     icon: <CheckBadgeIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
       "Customizable data room with your logo, brand identity, custom domains and social cards",
-    demo: "https://d2vwwcvoksz7ty.cloudfront.net/og.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/custom-data-room.mp4",
   },
   {
     key: "signatures",
@@ -62,7 +62,7 @@ const featureList = [
     icon: <PencilSquareIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
       "Collect and manage e-signatures for all your documents (coming soon)",
-    demo: "https://d2vwwcvoksz7ty.cloudfront.net/qr.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/signatures.mp4",
   },
   {
     key: "manage-team",
@@ -70,7 +70,7 @@ const featureList = [
     icon: <UserGroupIcon className="h-5 w-5 text-shade-pencil-light" />,
     description:
       "Invite your team members to collaborate with custom permissions (coming soon)",
-    demo: "https://d2vwwcvoksz7ty.cloudfront.net/team.mp4",
+    demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/manage-team.mp4",
   },
 ];
 

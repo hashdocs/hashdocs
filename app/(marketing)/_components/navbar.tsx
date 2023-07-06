@@ -37,7 +37,7 @@ export default function Navbar() {
           </Link>
           <Link
             key={"roadmap"}
-            href={`https://github.com/users/rbkayz/projects/1`}
+            href={`https://github.com/hashdocs/hashdocs/issues`}
             className={`rounded-md text-sm font-medium capitalize ${"text-shade-pencil-light"} transition-colors ease-out hover:text-shade-pencil-black`}
           >
             {"Roadmap"}
@@ -53,5 +53,3 @@ export default function Navbar() {
     </div>
   );
 }
-
-// https://github.com/users/rbkayz/projects/1
