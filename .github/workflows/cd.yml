@@ -25,9 +25,7 @@ jobs:
       - run: |
           supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
           supabase db push
-          supabase functions deploy authorize-viewer --legacy-bundle
-          supabase functions deploy upload-document --legacy-bundle
-          supabase functions deploy trigger-slack-notification --legacy-bundle
+          supabase functions deploy --legacy-bundle
 
   
   slackNotification:
