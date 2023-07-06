@@ -40,7 +40,7 @@ serve(async (req) => {
 
   try {
     const res = await fetch(
-      `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=eXGjMP9OLZfun7mv`,
+      `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=${Deno.env.get('CONVERTAPI_SECRET')}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

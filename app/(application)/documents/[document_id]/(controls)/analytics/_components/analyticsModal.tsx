@@ -35,6 +35,28 @@ const CustomTooltip = ({ active, payload, label, signed_url }: any) => {
   );
 };
 
+const CustomLabel = ({ x, y, width, height, value }: any) => {
+  const radius = 10;
+
+  const duration = parseFloat(value);
+
+  return (
+    <text
+      x={x + width / 2}
+      y={y - radius}
+      fill="#000"
+      textAnchor="middle"
+      dominantBaseline="middle"
+    >
+      {duration <= 0
+        ? '-'
+        : duration < 10
+        ? duration.toFixed(1)
+        : duration.toFixed(0)}
+    </text>
+  );
+};
+
 const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   props: AnalyticsModalProps
 ) => {
@@ -103,10 +125,9 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   const chart_data = Array.from({ length: page_count }, (_, index) => {
     return {
       page_num: index + 1,
-      duration: Math.round(
+      duration:
         (view.view_logs?.find((log) => log.page_num === index + 1)?.duration ??
-          0) / 1000
-      ),
+          0) / 1000,
     };
   });
 
@@ -193,7 +214,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Location
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {view.geo
+                            {(view.geo as any)?.city || (view.geo as any)?.country
                               ? `${(view.geo as any)?.city ?? ""}, ${
                                   (view.geo as any)?.country ?? ""
                                 }`
@@ -284,7 +305,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                       }}
                     >
                       <XAxis dataKey="page_num" />
-                      <YAxis name="Duration" />
+                      <YAxis name="Duration" allowDecimals={false} />
                       <Tooltip
                         offset={20}
                         content={
@@ -297,8 +318,12 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           />
                         }
                       />
-                      <Bar dataKey="duration" fill="#0010FF" minPointSize={1} label={{position:"top"}}>
-                      </Bar>
+                      <Bar
+                        dataKey="duration"
+                        fill="#0010FF"
+                        minPointSize={1}
+                        label={CustomLabel}
+                      ></Bar>
                     </BarChart>
                   </div>
                 </Dialog.Panel>

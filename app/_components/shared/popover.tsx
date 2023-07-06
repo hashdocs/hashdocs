@@ -19,7 +19,7 @@ export default function PopOver({ options, panelClassName }: PopOverProps) {
   return (
     <Popover className="">
       {({ open }) => (
-        <>
+        <div className="relative">
           <Popover.Button
             className={`
               ${open ? "" : "text-opacity-90"}
@@ -41,7 +41,7 @@ export default function PopOver({ options, panelClassName }: PopOverProps) {
           > */}
             <Popover.Panel
               className={classNames(
-                "absolute z-10 flex max-w-sm shrink -translate-x-2/3 transform",
+                "absolute z-10 flex max-w-sm shrink",
                 panelClassName ?? ""
               )}
             >
@@ -59,7 +59,7 @@ export default function PopOver({ options, panelClassName }: PopOverProps) {
                       <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
                         <item.icon aria-hidden="true" />
                       </div>
-                      <div className="ml-3 text-xs">
+                      <div className="ml-3 text-xs whitespace-nowrap">
                         <p className="">{item.name}</p>
                       </div>
                     </button>
@@ -68,7 +68,7 @@ export default function PopOver({ options, panelClassName }: PopOverProps) {
               </div>
             </Popover.Panel>
           {/* </Transition> */}
-        </>
+        </div>
       )}
     </Popover>
   );
