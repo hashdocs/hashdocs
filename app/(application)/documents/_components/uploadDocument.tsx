@@ -69,6 +69,8 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   });
 
   uppy.on("upload-success", (file, response) => {
+    const new_document = response.body as DocumentType;
+
     toast.success(
       <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
         <div className="flex flex-col gap-y-1">
@@ -79,15 +81,18 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             {document_id ? "updated" : "uploaded"} successfully
           </p>
           <p className="font-normal">
-            You can now create secure links for sharing
+            You can now create secure links for sharing. 
           </p>
+          {/* <p className="font-normal">
+            It may take a few seconds to generate the thumbnail. But if you prefer, you can upload a custom thumbnail from the three dots
+          </p> */}
         </div>
         <Link
           onClick={(e) => {
             e.stopPropagation();
-            toast.dismiss(`${response.body[0].document_id}-toast`);
+            toast.dismiss(`${new_document.document_id}-toast`);
           }}
-          href={`/preview/${response.body[0].document_id}`}
+          href={`/preview/${new_document.document_id}`}
           target="_blank"
           rel="noreferrer"
           className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
@@ -96,24 +101,24 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
           <span className="font-normal">{`Preview`}</span>
         </Link>
       </div>,
-      { duration: 5000, id: `${response.body[0].document_id}-toast` }
+      { duration: 5000, id: `${new_document.document_id}-toast` }
     );
     setIsOpen(false);
     setDocuments((prevDocuments: DocumentType[] | null) => {
       if (!prevDocuments) return null;
       const docIndex = prevDocuments.findIndex((doc) => {
-        return doc.document_id === response.body[0].document_id;
+        return doc.document_id === new_document.document_id;
       });
       if (docIndex > -1) {
         const newDocuments = [...prevDocuments];
-        newDocuments[docIndex] = response.body[0];
+        newDocuments[docIndex] = new_document;
         return newDocuments;
       } else {
-        const newDocuments = [response.body[0], ...prevDocuments];
+        const newDocuments = [new_document, ...prevDocuments];
         return newDocuments;
       }
     });
-    router.push(`/documents/${response.body[0].document_id}/links`);
+    router.push(`/documents/${new_document.document_id}/links`);
     router.refresh();
   });
 

@@ -9,10 +9,11 @@ import { DocumentType, LinkType } from "@/types/documents.types";
 import toast from "react-hot-toast";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { Database } from "@/types/supabase.types";
+import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation";
 import { DocumentsContext } from "../../../_components/documentsProvider";
+import dayjs from "dayjs";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -45,6 +46,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
     is_download_allowed = false,
     is_watermarked = false,
     is_expiration_enabled = false,
+    expiration_date = null,
   } = props && props.links && props.links.length > 0
     ? props.links.find((link) => link.link_id === link_id) ?? props.links[0]
     : {};
@@ -64,20 +66,19 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const maxHeight = 128;
   const [height, setHeight] = useState<number>(32);
   const [isSaved, setIsSaved] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date>(new Date());
-
+  
   /*-------------------------------- SET STATE VARIABLES FOR PROPS (9 + INHERITED ACTIVE) ------------------------------*/
-
+  
   const [isEmailRequired, setIsEmailRequired] =
-    useState<boolean>(is_email_required);
+  useState<boolean>(is_email_required);
   const [isVerifyEmail, setIsVerifyEmail] = useState<boolean>(
     is_verification_required
-  );
-  const [isDomainRestricted, setIsDomainRestricted] =
+    );
+    const [isDomainRestricted, setIsDomainRestricted] =
     useState<boolean>(is_domain_restricted);
   const [isPasswordRequired, setIsPasswordRequired] =
     useState<boolean>(is_password_required);
-  const [isDownloadAllowed, setIsDownloadAllowed] =
+    const [isDownloadAllowed, setIsDownloadAllowed] =
     useState<boolean>(is_download_allowed);
   const [isWatermarked, setIsWatermarked] = useState<boolean>(is_watermarked);
   const [domains, setDomains] = useState<string | null>(restricted_domains);
@@ -85,7 +86,8 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const [linkName, setLinkName] = useState<string | null>(link_name);
   const [isExpirationEnabled, setIsExpirationEnabled] = useState<boolean>(
     is_expiration_enabled
-  );
+    );
+  const [expirationDate, setExpirationDate] = useState<Date | null>(expiration_date ? new Date(expiration_date) : null);
   const router = useRouter();
 
   const _documentsContext = useContext(DocumentsContext);
@@ -148,6 +150,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
         link_name: linkName!,
         link_password: password,
         restricted_domains: domains,
+        expiration_date: expirationDate ? dayjs(expirationDate).endOf('day').toISOString() : null,
         is_active: isActive,
         is_email_required: isEmailRequired,
         is_password_required: isPasswordRequired,
@@ -483,10 +486,10 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     setIsChecked={setIsExpirationEnabled}
                     id={"expiry-checkbox"}
                     name={"expiry-checkbox"}
-                    label={"Expiration settings (coming soon)"}
-                    disabled={true}
+                    label={"Expiration settings"}
+                    disabled={false}
                     description={
-                      "Set the link to automatically expire after a certain date"
+                      "Set the link to automatically be disabled after a certain date"
                     }
                   />
                   <motion.div
@@ -501,15 +504,18 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                   >
                     <AnimatePresence initial={isExpirationEnabled}>
                       {
-                        <div className="accordion-content ml-7 mt-4 flex w-full flex-col space-y-4">
+                        <div className="accordion-content ml-7 mt-4 flex w-full flex-col">
                           <DatePicker
-                            selected={startDate}
+                            selected={expirationDate}
                             onChange={(date) =>
-                              setStartDate(date ?? new Date())
+                              setExpirationDate(date ?? new Date())
                             }
+                            dateFormat={"MMM d, yyyy"}
                             className="rounded-md border-0 py-1.5 text-sm shadow-inner ring-1 ring-inset ring-shade-line placeholder:text-shade-disabled focus:ring-inset focus:ring-stratos-default"
-                            calendarClassName="font-inter"
+                            calendarClassName="font-inter text-shade-disabled rounded-sm"
+                            // minDate={new Date()}
                           />
+                          {dayjs().diff(dayjs(expirationDate), "d") > 0 && <p className="text-red-500 text-xs">Warning! Link is inactive because date is in the past</p>}
                         </div>
                       }
                     </AnimatePresence>

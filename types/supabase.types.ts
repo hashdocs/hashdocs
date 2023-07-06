@@ -122,6 +122,7 @@ export interface Database {
           created_at: string | null
           created_by: string | null
           document_id: string
+          expiration_date: string | null
           is_active: boolean
           is_domain_restricted: boolean
           is_download_allowed: boolean
@@ -140,6 +141,7 @@ export interface Database {
           created_at?: string | null
           created_by?: string | null
           document_id: string
+          expiration_date?: string | null
           is_active?: boolean
           is_domain_restricted?: boolean
           is_download_allowed?: boolean
@@ -158,6 +160,7 @@ export interface Database {
           created_at?: string | null
           created_by?: string | null
           document_id?: string
+          expiration_date?: string | null
           is_active?: boolean
           is_domain_restricted?: boolean
           is_download_allowed?: boolean
@@ -247,7 +250,7 @@ export interface Database {
           is_authorized: boolean
           link_id: string | null
           ua: Json | null
-          view_id: string
+          view_id: string | null
           view_seq: number
           viewed_at: string
           viewer: string
@@ -259,7 +262,7 @@ export interface Database {
           is_authorized?: boolean
           link_id?: string | null
           ua?: Json | null
-          view_id: string
+          view_id?: string | null
           view_seq?: number
           viewed_at?: string
           viewer?: string
@@ -271,7 +274,7 @@ export interface Database {
           is_authorized?: boolean
           link_id?: string | null
           ua?: Json | null
-          view_id?: string
+          view_id?: string | null
           view_seq?: number
           viewed_at?: string
           viewer?: string

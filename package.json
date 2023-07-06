@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"supabase functions serve\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -65,6 +65,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/react-datepicker": "^4.11.2",
+    "concurrently": "^8.2.0",
     "encoding": "^0.1.13",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",

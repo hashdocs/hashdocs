@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { errorHandler } from "../_shared/errorHandler.ts";
 import { supabase, supabaseAdmin } from "../_shared/supabaseClient.ts";
 import { Database } from "../../../types/supabase.types.ts";
+import * as mod from "https://deno.land/std@0.193.0/datetime/mod.ts";
 
 type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &
   Database["public"]["Tables"]["tbl_documents"]["Row"] &
@@ -50,8 +51,6 @@ type AuthorizeViewerProps = {
 };
 
 /* --------------------------------- SUCCESS RETURN FUNCTION -------------------------------- */
-
-async function generateAccessToken(props: AuthorizeViewerProps) {}
 
 function validateViewer(
   input_props: AuthorizeViewerProps,
@@ -140,7 +139,7 @@ serve(async (req) => {
 
   const { data: link_props, error } = await supabase
     .rpc("get_link_props", { link_id_input })
-    .returns<GetLinkProps>()
+    .returns<GetLinkProps[]>()
     .maybeSingle();
 
   if (error) {
@@ -151,13 +150,7 @@ serve(async (req) => {
     return errorHandler(Error("Invalid link"));
   }
 
-  const { is_enabled, is_active } = link_props;
-
-  /* ------------------ CHECK IF DOCUMENT AND LINK ARE ACTIVE ----------------- */
-
-  if (!is_enabled || !is_active) {
-    return errorHandler(Error("Invalid link"));
-  }
+  /* ------------------ INSERT VIEW LOG ----------------- */
 
   const { data: insert_view, error: insert_view_error } = await supabaseAdmin
     .from("tbl_views")
@@ -175,6 +168,32 @@ serve(async (req) => {
   if (insert_view_error || !insert_view || !insert_view.view_id) {
     return errorHandler(insert_view_error);
   }
+
+  /* ------------------ CHECK IF DOCUMENT AND LINK ARE ACTIVE ----------------- */
+
+  const { is_enabled, is_active } = link_props;
+
+  if (!is_enabled || !is_active) {
+    return errorHandler(Error("Invalid link"));
+  }
+
+  /* -------------------------- CHECK FOR EXPIRATION -------------------------- */
+
+  const { is_expiration_enabled, expiration_date } = link_props;
+
+  if (is_expiration_enabled && expiration_date) {
+    const expiration_date_obj = new Date(expiration_date);
+
+    const diff = mod.difference(new Date(), expiration_date_obj, {
+      units: ["days"],
+    });
+
+    if (diff.days ?? -1 < 0) {
+      return errorHandler(Error("Link expired"));
+    }
+  }
+
+  /* -------------------------- CHECK FOR AUTHORIZATION -------------------------- */
 
   const is_valid_viewer = validateViewer(input_props, link_props);
 
