@@ -78,6 +78,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
 
     const postUploadPromise = new Promise<DocumentType>(
       async (resolve, reject) => {
+        setIsOpen(false);
         const res = await fetch(`/api/documents`, {
           method: "POST",
           body: JSON.stringify({
@@ -111,7 +112,6 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             return newDocuments;
           }
         });
-        setIsOpen(false);
         router.push(`/documents/${new_document.document_id}/links`);
         router.refresh();
       }

@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { DocumentType, GetViewLogs } from "@/types/documents.types";
 import {
@@ -16,6 +16,7 @@ import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import Loader from "@/app/_components/navigation/loader";
 import { classNames } from "@/app/_utils/classNames";
 import dynamic from "next/dynamic";
+import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
 
 interface AnalyticsModalProps {
   viewId: string | null;
@@ -49,7 +50,7 @@ const CustomLabel = ({ x, y, width, height, value }: any) => {
       dominantBaseline="middle"
     >
       {duration <= 0
-        ? '-'
+        ? "-"
         : duration < 10
         ? duration.toFixed(1)
         : duration.toFixed(0)}
@@ -62,7 +63,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
 ) => {
   const { viewId, setViewId, document_id } = props;
 
-  const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
+  const _documents = useContext(DocumentsContext);
+
   const [signedUrl, setSignedUrl] = useState<
     {
       version: number;
@@ -72,17 +74,6 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   >([]);
 
   useMemo(() => {
-    const getViewLogs = async () => {
-      const res = await fetch(`/api/documents/${document_id}/views`);
-      if (!res.ok) {
-        return;
-      }
-      if (res.status === 200) {
-        const data = (await res.json()) as GetViewLogs;
-        setViewLogs(data);
-      }
-    };
-
     const getSignedUrl = async () => {
       const res = await fetch(`/api/documents/${document_id}/views/signedUrl`);
       if (!res.ok) {
@@ -98,9 +89,12 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
       }
     };
 
-    getViewLogs();
     getSignedUrl();
   }, [document_id]);
+
+  if (!_documents) return null;
+
+  const { viewLogs } = _documents;
 
   if (!viewLogs) return null;
 
@@ -214,7 +208,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Location
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {(view.geo as any)?.city || (view.geo as any)?.country
+                            {(view.geo as any)?.city ||
+                            (view.geo as any)?.country
                               ? `${(view.geo as any)?.city ?? ""}, ${
                                   (view.geo as any)?.country ?? ""
                                 }`

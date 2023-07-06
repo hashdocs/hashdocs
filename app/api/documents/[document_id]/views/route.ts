@@ -6,6 +6,8 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+const revalidate = 0;
+
 export async function GET(
   request: NextRequest,
   { params: { document_id } }: { params: { document_id: string } }
