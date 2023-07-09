@@ -106,6 +106,7 @@ serve(async (req) => {
 
     /* ------------------------ Create customer in stripe ----------------------- */
 
+    //@ts-expect-error: <Stripe Deno error>
     const customer = await stripe.customers.create({
       email: owner?.email,
       metadata: { org_id: org_info.org_id },

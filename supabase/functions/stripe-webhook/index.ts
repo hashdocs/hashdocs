@@ -8,6 +8,7 @@ serve(async (request) => {
 
   const body = await request.text();
 
+  //@ts-expect-error: <Stripe Deno error>
   const receivedEvent = await stripe.webhooks.constructEventAsync(
     body,
     signature!,
