@@ -9,13 +9,14 @@ import { User } from "@supabase/supabase-js";
 import {
   ArrowLeftOnRectangleIcon,
   BuildingOfficeIcon,
+  CreditCardIcon,
   EllipsisVerticalIcon,
   PlusIcon,
   QuestionMarkCircleIcon,
   UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { UserCircleIcon, BoltIcon } from "@heroicons/react/24/solid";
 import PopOver from "../shared/popover";
 import toast from "react-hot-toast";
 import { Popover } from "@headlessui/react";
@@ -47,7 +48,7 @@ export default function Sidebar() {
 
   const _userContext = useContext(UserContext);
 
-  const { user } = _userContext!;
+  const { user, org } = _userContext!;
 
   const handleLogout = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {
@@ -99,6 +100,13 @@ export default function Sidebar() {
             icon: <QuestionMarkCircleIcon className="h-4 w-4" />,
           }
         );
+      },
+    },
+    {
+      name: "Manage billing",
+      icon: CreditCardIcon,
+      optionClick: () => {
+        router.push(`/settings/billing`);
       },
     },
     {
@@ -160,63 +168,68 @@ export default function Sidebar() {
           </li>
         </ul>
       </div>
-      {user && (
-        <Popover className="">
-          {({ open }) => (
-            <>
-              <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
-                {user?.user_metadata?.picture ? (
-                  <Image
-                    className="h-6 w-6 shrink-0 rounded-full "
-                    src={user.user_metadata?.picture ?? ""}
-                    alt=""
-                    height={32}
-                    width={32}
-                  />
-                ) : (
-                  <UserCircleIcon
-                    className="h-6 w-6 text-shade-pencil-light"
+      <div className="flex flex-col gap-y-6">
+        {org?.stripe_product_plan === 'Free' && <Link href={'/settings/billing'} className="flex gap-x-2 px-2 py-3 rounded-md hover:bg-stratos-default hover:text-white border border-dashed border-stratos-default text-stratos-default font-semibold items-center">
+          <BoltIcon className="h-5 w-5" /><p>Upgrade to Pro</p>
+        </Link>}
+        {user && (
+          <Popover className="">
+            {({ open }) => (
+              <>
+                <Popover.Button className="flex items-center justify-center gap-x-3 py-2 focus:outline-none focus:ring-0">
+                  {user?.user_metadata?.picture ? (
+                    <Image
+                      className="h-6 w-6 shrink-0 rounded-full "
+                      src={user.user_metadata?.picture ?? ""}
+                      alt=""
+                      height={32}
+                      width={32}
+                    />
+                  ) : (
+                    <UserCircleIcon
+                      className="h-6 w-6 text-shade-pencil-light"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span
                     aria-hidden="true"
-                  />
-                )}
-                <span
-                  aria-hidden="true"
-                  className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                    className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                  >
+                    {user?.email}
+                  </span>
+                  <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
+                </Popover.Button>
+                <Popover.Panel
+                  className={classNames(
+                    "absolute z-10 flex  -translate-y-full translate-x-52 transform"
+                  )}
                 >
-                  {user?.email}
-                </span>
-                <EllipsisVerticalIcon className="h-5 w-5 text-shade-pencil-dark hover:text-shade-pencil-dark" />
-              </Popover.Button>
-              <Popover.Panel
-                className={classNames(
-                  "absolute z-10 flex  -translate-y-full translate-x-52 transform"
-                )}
-              >
-                <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div className="relative grid bg-white">
-                    {options.map((item) => (
-                      <button
-                        key={item.name}
-                        onClick={item.optionClick}
-                        className={classNames(
-                          "focus:ring-none flex items-center rounded-lg px-2 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                        )}
-                      >
-                        <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
-                          <item.icon aria-hidden="true" />
-                        </div>
-                        <div className="mx-3 text-xs">
-                          <p className="">{item.name}</p>
-                        </div>
-                      </button>
-                    ))}
+                  <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
+                    <div className="relative grid bg-white">
+                      {options.map((item) => (
+                        <button
+                          key={item.name}
+                          onClick={item.optionClick}
+                          className={classNames(
+                            "focus:ring-none flex items-center rounded-lg px-2 py-3 transition duration-150 ease-in-out hover:bg-gray-50"
+                          )}
+                        >
+                          <div className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center">
+                            <item.icon aria-hidden="true" />
+                          </div>
+                          <div className="mx-3 text-xs">
+                            <p className="">{item.name}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </Popover.Panel>
-            </>
-          )}
-        </Popover>
-      )}
+                </Popover.Panel>
+              </>
+            )}
+          </Popover>
+        )}
+      </div>
     </aside>
   );
 }

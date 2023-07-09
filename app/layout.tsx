@@ -74,6 +74,19 @@ export default function RootLayout({
           src="https://accounts.google.com/gsi/client"
           strategy="beforeInteractive"
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QKEK5NGXV4"
+          async
+        />
+        <Script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-QKEK5NGXV4');`,
+          }}
+        />
       </body>
     </html>
   );

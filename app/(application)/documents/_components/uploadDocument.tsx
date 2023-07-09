@@ -14,6 +14,7 @@ import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
 import { DocumentsContext } from "./documentsProvider";
 import { DocumentType } from "@/types/documents.types";
 import { classNames } from "@/app/_utils/classNames";
+import { UserContext } from "../../_components/userProvider";
 
 interface UploadDocumentModalProps {
   isOpen: boolean;
@@ -36,16 +37,35 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const _documentContext = useContext(DocumentsContext);
+  const _userContext = useContext(UserContext);
 
-  if (!_documentContext) return null;
+  if (!_documentContext || !_userContext) return null;
 
-  const { setDocuments } = _documentContext;
+  const { documents, setDocuments } = _documentContext;
+  const { user, org } = _userContext;
 
   /*-------------------------------- FUNCTIONS ------------------------------*/
 
   const handleBeforeUpload = (files: {
     [key: string]: UppyFile<Record<string, unknown>, Record<string, unknown>>;
   }) => {
+    if (!document_id && org?.stripe_product_plan === "Free" && (documents ?? []).length > 0) {
+      toast.error(
+        <p>
+          You have reached the maximum number of documents for the free plan.
+          Please{" "}
+          <Link
+            className="text-stratos-default underline"
+            href={"/settings/billing"}
+          >
+            upgrade
+          </Link>{" "}
+          to our Pro plan for unlimited documents.
+        </p>
+      );
+      return false;
+    }
+
     if (Object.keys(files).length > 1) return false;
 
     let file = files[Object.keys(files)[0]];
