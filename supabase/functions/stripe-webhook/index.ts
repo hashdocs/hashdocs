@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { cryptoProvider, stripe } from "../_shared/stripeClient.ts";
-// import StripeType from "https://esm.sh/v128/stripe@12.12.0/types/index.d.ts";
+import StripeType from "https://esm.sh/v128/stripe@12.12.0/types/index.d.ts";
 import { supabaseAdmin } from "../_shared/supabaseClient.ts";
 
 serve(async (request) => {
@@ -21,8 +21,7 @@ serve(async (request) => {
 
   if (receivedEvent.type.includes("customer.subscription")) {
     const subscription_data = receivedEvent.data
-      .object 
-      // as StripeType.Subscription;
+      .object as StripeType.Subscription;
 
     const {
       customer,
@@ -31,6 +30,11 @@ serve(async (request) => {
       current_period_end,
       items,
     } = subscription_data;
+
+    //@ts-expect-error: <Stripe Deno error>
+    const product = await stripe.products.retrieve(
+      items.data[0].price.product
+    ) as StripeType.Product;
 
     const { data: subscription_update, error: subscription_update_error } =
       await supabaseAdmin
@@ -46,6 +50,8 @@ serve(async (request) => {
               current_period_end * 1000
             ).toISOString(),
             stripe_price_plan: items.data[0].price.id,
+            //@ts-expect-error: <Enums not defined>
+            stripe_product_plan: product.name,
           },
           { onConflict: "stripe_customer_id" }
         )

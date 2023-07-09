@@ -2,7 +2,6 @@
 import {
   features,
   pricingPlans,
-  pricingPlansArray,
 } from "@/app/_lib/stripe/constants";
 import { classNames } from "@/app/_utils/classNames";
 import {
@@ -31,8 +30,7 @@ export default function BillingPage() {
 
   if (!org) {return <Loader />};
 
-
-  const current_plan = pricingPlansArray.find((val) => {return val.price_id === org.stripe_price_plan})?.price_plan ?? 'Free';
+  const current_plan = org.stripe_product_plan ?? 'Free';
 
   const handlePlan = async () => {
     const stripePromise = new Promise(async (resolve, reject) => {

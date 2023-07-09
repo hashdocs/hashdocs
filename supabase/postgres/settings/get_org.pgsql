@@ -47,6 +47,7 @@ BEGIN
 			tbl_org.org_id,
 			tbl_org.org_name,
 			tbl_org.stripe_price_plan,
+			tbl_org.stripe_product_plan,
 			tbl_org.stripe_customer_id,
 			tbl_org.subscription_status,
 			tbl_org.billing_cycle_start,
