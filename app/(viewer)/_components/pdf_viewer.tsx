@@ -34,6 +34,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
   const [hasScrolled, setHasScrolled] = useState(false);
   const scrollableElementRef = useRef<HTMLDivElement>(null);
   const [threshold, setThreshold] = useState(0.5);
+  const pageTimesRef = useRef(pageTimes);
 
   const { link_id } = useParams();
 
@@ -141,10 +142,15 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     };
   }, [pageRefs, activePage, hasScrolled, threshold]);
 
+
+  useEffect(() => {
+    pageTimesRef.current = pageTimes;
+  }, [pageTimes]);
+
   useEffect(() => {
     const interval = setInterval(async () => {
       if (!document.hidden) {
-        const flatPageTimes = pageTimes;
+        const flatPageTimes = pageTimesRef.current;
         if (flatPageTimes[flatPageTimes.length - 1]) {
           flatPageTimes[flatPageTimes.length - 1].exitTime = Date.now();
         }
@@ -161,7 +167,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
     return () => {
       clearInterval(interval);
     };
-  }, [pageTimes]);
+  }, []);
 
   /* --------------------------------- RENDER --------------------------------- */
 
