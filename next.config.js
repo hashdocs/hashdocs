@@ -29,7 +29,7 @@ const nextConfig = {
       },
       {
         source: "/settings",
-        destination: "/settings/profile", // Matched parameters can be used in the destination
+        destination: "/settings/billing", // Matched parameters can be used in the destination
         permanent: true,
       },
     ];

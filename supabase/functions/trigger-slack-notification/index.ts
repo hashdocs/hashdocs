@@ -1,45 +1,33 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-type InsertPayload = {
-  type: "INSERT";
-  table: string;
-  schema: string;
-  record: Record<string, unknown>;
-  old_record: null;
-};
+import { InsertPayload } from "../_shared/supabaseClient.ts";
 
 async function new_user_notification(payload: Record<string, unknown>) {
   const { email, raw_app_meta_data, id } = payload;
 
   const template = `{
-    "attachments": [
+    "blocks": [
       {
-        "color": "#0010FF",
-        "blocks": [
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "👤New user - *${email}*"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
           {
-            "type": "section",
-            "text": {
-              "type": "mrkdwn",
-              "text": "👤New user - *${email}*"
-            }
+            "type": "plain_text",
+            "text": "user_id: ${id}",
+            "emoji": true
           },
           {
-            "type": "context",
-            "elements": [
-              {
-                "type": "plain_text",
-                "text": "user_id: ${id}",
-                "emoji": true
-              },
-              {
-                "type": "plain_text",
-                "text": "provider: ${(raw_app_meta_data as any)["provider"]}",
-                "emoji": true
-              }
-            ]
+            "type": "plain_text",
+            "text": "provider: ${(raw_app_meta_data as any)["provider"]}",
+            "emoji": true
           }
         ]
-      }
+      },
     ]
   }`;
 

@@ -2,7 +2,6 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { errorHandler } from "../_shared/errorHandler.ts";
 import { supabase, supabaseAdmin } from "../_shared/supabaseClient.ts";
 import { Database } from "../../../types/supabase.types.ts";
-import * as mod from "https://deno.land/std@0.193.0/datetime/mod.ts";
 
 type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &
   Database["public"]["Tables"]["tbl_documents"]["Row"] &
@@ -184,11 +183,7 @@ serve(async (req) => {
   if (is_expiration_enabled && expiration_date) {
     const expiration_date_obj = new Date(expiration_date);
 
-    const diff = mod.difference(new Date(), expiration_date_obj, {
-      units: ["days"],
-    });
-
-    if (diff.days ?? -1 < 0) {
+    if (new Date() > expiration_date_obj) {
       return errorHandler(Error("Link expired"));
     }
   }

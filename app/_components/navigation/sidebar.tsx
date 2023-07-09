@@ -45,7 +45,9 @@ export default function Sidebar() {
     [activeNav]
   );
 
-  const user = useContext(UserContext);
+  const _userContext = useContext(UserContext);
+
+  const { user } = _userContext!;
 
   const handleLogout = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {

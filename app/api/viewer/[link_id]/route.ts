@@ -14,6 +14,9 @@ export async function POST(
 
   const { email, password } = await request.json();
 
+  const ip = request.headers.get("ip");
+  const geo = request.headers.get("geo");
+
   const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
     "authorize-viewer",
     {
@@ -21,8 +24,8 @@ export async function POST(
         link_id_input: link_id,
         email_input: email,
         password_input: password,
-        ip: request.ip,
-        geo: request.geo,
+        ip,
+        geo,
         ua: userAgent(request),
       },
     }

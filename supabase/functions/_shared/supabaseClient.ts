@@ -5,7 +5,12 @@ export const supabase = createClient<Database>(
   // Supabase API URL - env var exported by default.
   Deno.env.get("SUPABASE_URL")!,
   // Supabase API ANON KEY - env var exported by default.
-  Deno.env.get("SUPABASE_ANON_KEY")!
+  Deno.env.get("SUPABASE_ANON_KEY")!,
+  {
+    auth:{
+      persistSession: false,
+    }
+  }
 );
 
 
@@ -13,7 +18,12 @@ export const supabaseAdmin = createClient<Database>(
   // Supabase API URL - env var exported by default.
   Deno.env.get("SUPABASE_URL")!,
   // Supabase API ANON KEY - env var exported by default.
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+  {
+    auth:{
+      persistSession: false,
+    }
+  }
 );
 
 
@@ -27,6 +37,11 @@ export type LinkType = Database["public"]["Tables"]["tbl_links"]["Row"] & {
   views: ViewType[];
 };
 
+export type OrgType = Database["public"]["Tables"]["tbl_org"]["Row"] & {
+  users: (Database["public"]["Tables"]["tbl_org_members"]["Row"] & {email:string}) [];
+};
+
+
 export type DocumentType =
   Database["public"]["Tables"]["tbl_documents"]["Row"] & {
     total_view_count: number;
@@ -34,3 +49,12 @@ export type DocumentType =
     links: LinkType[];
     document_version: number;
   };
+
+  export type InsertPayload = {
+    type: "INSERT";
+    table: string;
+    schema: string;
+    record: Record<string, any>;
+    old_record: null;
+  };
+  
