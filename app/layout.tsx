@@ -3,7 +3,6 @@ import { Analytics } from "@vercel/analytics/react";
 import "../globals.css";
 import Script from "next/script";
 import { Metadata } from "next";
-import PHProvider from "@/app/(application)/_components/posthog";
 
 export const metadata: Metadata = {
   title: {
@@ -74,6 +73,17 @@ export default function RootLayout({
           src="https://accounts.google.com/gsi/client"
           strategy="beforeInteractive"
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QKEK5NGXV4"
+          async
+        />
+        <Script id="google-analytics">
+          {`window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'G-QKEK5NGXV4');`}
+        </Script>
       </body>
     </html>
   );

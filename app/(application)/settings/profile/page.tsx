@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { UserContext } from "../../_components/userProvider";
 import { formatDate } from "@/app/_utils/dateFormat";
+import Loader from "@/app/_components/navigation/loader";
 
 /*=========================================== TYPES ===========================================*/
 
@@ -19,7 +20,11 @@ export default function AnalyticsPage() {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
-  const user = useContext(UserContext);
+  const _userContext = useContext(UserContext);
+
+  if(!_userContext) {return <Loader />}
+
+  const { user } = _userContext;
 
   const handleLogout = async (e: any) => {
     const loginPromise = new Promise(async (resolve, reject) => {

@@ -192,26 +192,68 @@ export interface Database {
       }
       tbl_org: {
         Row: {
+          billing_cycle_end: string | null
+          billing_cycle_start: string | null
+          created_at: string | null
           org_id: string
           org_name: string | null
-          role: string
-          user_id: string | null
+          stripe_customer_id: string | null
+          stripe_price_plan: string | null
+          stripe_product_plan: Database["public"]["Enums"]["pricing_plans"]
+          subscription_status: string | null
         }
         Insert: {
+          billing_cycle_end?: string | null
+          billing_cycle_start?: string | null
+          created_at?: string | null
           org_id?: string
           org_name?: string | null
-          role: string
-          user_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_price_plan?: string | null
+          stripe_product_plan?: Database["public"]["Enums"]["pricing_plans"]
+          subscription_status?: string | null
+        }
+        Update: {
+          billing_cycle_end?: string | null
+          billing_cycle_start?: string | null
+          created_at?: string | null
+          org_id?: string
+          org_name?: string | null
+          stripe_customer_id?: string | null
+          stripe_price_plan?: string | null
+          stripe_product_plan?: Database["public"]["Enums"]["pricing_plans"]
+          subscription_status?: string | null
+        }
+        Relationships: []
+      }
+      tbl_org_members: {
+        Row: {
+          org_id: string
+          org_member_seq: number
+          user_id: string
+          user_role: Database["public"]["Enums"]["org_role"]
+        }
+        Insert: {
+          org_id: string
+          org_member_seq?: number
+          user_id: string
+          user_role?: Database["public"]["Enums"]["org_role"]
         }
         Update: {
           org_id?: string
-          org_name?: string | null
-          role?: string
-          user_id?: string | null
+          org_member_seq?: number
+          user_id?: string
+          user_role?: Database["public"]["Enums"]["org_role"]
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_org_user_id_fkey"
+            foreignKeyName: "tbl_org_members_org_id_fkey"
+            columns: ["org_id"]
+            referencedRelation: "tbl_org"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "tbl_org_members_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -323,6 +365,12 @@ export interface Database {
         }
         Returns: Json
       }
+      get_org: {
+        Args: {
+          org_id_input?: string
+        }
+        Returns: Json
+      }
       get_views: {
         Args: {
           document_id_input?: string
@@ -344,7 +392,8 @@ export interface Database {
       }
     }
     Enums: {
-      [_ in never]: never
+      org_role: "OWNER"
+      pricing_plans: "Free" | "Pro" | "Enterprise"
     }
     CompositeTypes: {
       [_ in never]: never

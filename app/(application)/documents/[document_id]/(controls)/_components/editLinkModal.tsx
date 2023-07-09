@@ -14,6 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from "next/navigation";
 import { DocumentsContext } from "../../../_components/documentsProvider";
 import dayjs from "dayjs";
+import { UserContext } from "@/app/(application)/_components/userProvider";
 
 interface EditLinkModalProps extends DocumentType {
   isOpen: boolean;
@@ -66,19 +67,19 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const maxHeight = 128;
   const [height, setHeight] = useState<number>(32);
   const [isSaved, setIsSaved] = useState<boolean>(false);
-  
+
   /*-------------------------------- SET STATE VARIABLES FOR PROPS (9 + INHERITED ACTIVE) ------------------------------*/
-  
+
   const [isEmailRequired, setIsEmailRequired] =
-  useState<boolean>(is_email_required);
+    useState<boolean>(is_email_required);
   const [isVerifyEmail, setIsVerifyEmail] = useState<boolean>(
     is_verification_required
-    );
-    const [isDomainRestricted, setIsDomainRestricted] =
+  );
+  const [isDomainRestricted, setIsDomainRestricted] =
     useState<boolean>(is_domain_restricted);
   const [isPasswordRequired, setIsPasswordRequired] =
     useState<boolean>(is_password_required);
-    const [isDownloadAllowed, setIsDownloadAllowed] =
+  const [isDownloadAllowed, setIsDownloadAllowed] =
     useState<boolean>(is_download_allowed);
   const [isWatermarked, setIsWatermarked] = useState<boolean>(is_watermarked);
   const [domains, setDomains] = useState<string | null>(restricted_domains);
@@ -86,11 +87,14 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   const [linkName, setLinkName] = useState<string | null>(link_name);
   const [isExpirationEnabled, setIsExpirationEnabled] = useState<boolean>(
     is_expiration_enabled
-    );
-  const [expirationDate, setExpirationDate] = useState<Date | null>(expiration_date ? new Date(expiration_date) : null);
+  );
+  const [expirationDate, setExpirationDate] = useState<Date | null>(
+    expiration_date ? new Date(expiration_date) : null
+  );
   const router = useRouter();
 
   const _documentsContext = useContext(DocumentsContext);
+  const _userContext = useContext(UserContext);
 
   /*-------------------------------- RESET STATE ON CLOSE ------------------------------*/
 
@@ -126,18 +130,44 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   }, [defaultHeight]);
 
   if (!_documentsContext) return null;
+  if (!_userContext) return null;
 
-  const { setDocuments } = _documentsContext;
+  const { documents, setDocuments } = _documentsContext;
+  const { user, org } = _userContext;
 
   /*-------------------------------- HANDLE SAVE BUTTON ------------------------------*/
 
   const handleSave = async () => {
     if (
+      !link_id &&
+      org?.stripe_product_plan === "Free" &&
+      ((documents ?? []).find((doc) => doc.document_id === props.document_id)
+        ?.total_links_count ??
+        0 >= 3)
+    ) {
+      toast.error(
+        <p>
+          You have reached the maximum number of links (3) for the free plan.
+          Please{" "}
+          <Link
+            className="text-stratos-default underline"
+            href={"/settings/billing"}
+          >
+            upgrade
+          </Link>{" "}
+          to our Pro plan for unlimited links.
+        </p>
+      );
+      return;
+    }
+
+    if (
       !linkName ||
       (isDomainRestricted && !(domains && domains.length > 0)) ||
       (isPasswordRequired && !(password && password.length > 0))
     ) {
-      return toast.error("Please fill in all required fields");
+      toast.error("Please fill in all required fields");
+      return;
     }
 
     const toastPromise = new Promise(async (resolve, reject) => {
@@ -150,7 +180,9 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
         link_name: linkName!,
         link_password: password,
         restricted_domains: domains,
-        expiration_date: expirationDate ? dayjs(expirationDate).endOf('day').toISOString() : null,
+        expiration_date: expirationDate
+          ? dayjs(expirationDate).endOf("day").toISOString()
+          : null,
         is_active: isActive,
         is_email_required: isEmailRequired,
         is_password_required: isPasswordRequired,
@@ -515,7 +547,12 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                             calendarClassName="font-inter text-shade-disabled rounded-sm"
                             // minDate={new Date()}
                           />
-                          {dayjs().diff(dayjs(expirationDate), "d") > 0 && <p className="text-red-500 text-xs">Warning! Link is inactive because date is in the past</p>}
+                          {dayjs().diff(dayjs(expirationDate), "d") > 0 && (
+                            <p className="text-xs text-red-500">
+                              Warning! Link is inactive because date is in the
+                              past
+                            </p>
+                          )}
                         </div>
                       }
                     </AnimatePresence>
@@ -592,7 +629,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
                     </button>
                     <button
                       type="button"
-                      className="bg-stratos-default hover:bg-stratos-default/80 disabled:bg-stratos-default/50 inline-flex justify-center rounded-md px-3 py-2 font-semibold text-white shadow-sm"
+                      className="inline-flex justify-center rounded-md bg-stratos-default px-3 py-2 font-semibold text-white shadow-sm hover:bg-stratos-default/80 disabled:bg-stratos-default/50"
                       onClick={handleSave}
                       disabled={linkName ? false : true}
                     >

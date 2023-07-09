@@ -41,12 +41,12 @@ To develop locally:
     - Docker Desktop
     - Supabase CLI
 
-5. Set up your `.env` file:
+6. Set up your `.env` file:
 
    - Duplicate `.env.example` to `.env`.
    - Enter your supabase credentials in the `.env` file.
 
-6. Start developing and watch for code changes:
+7. Start developing and watch for code changes:
 
    ```sh
    yarn dev

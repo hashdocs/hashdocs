@@ -69,7 +69,7 @@ export default function Footer() {
             {navigation.product.map((item) => (
               <Link
                 href={item.href}
-                key={`footer-product-${item.href}`}
+                key={`footer-product-${item.name}`}
                 className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
               >
                 {item.name}
@@ -81,7 +81,7 @@ export default function Footer() {
             {navigation.company.map((item) => (
               <Link
                 href={item.href}
-                key={`footer-company-${item.href}`}
+                key={`footer-company-${item.name}`}
                 className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
               >
                 {item.name}

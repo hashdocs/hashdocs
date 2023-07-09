@@ -15,9 +15,9 @@ import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 const tabs = [
+  { name: "Billing", href: "billing", icon: CreditCardIcon },
   { name: "Profile", href: "profile", icon: UserIcon },
   { name: "Organization", href: "organization", icon: BuildingOfficeIcon },
-  { name: "Billing", href: "billing", icon: CreditCardIcon },
   { name: "Integrations", href: "integrations", icon: PuzzlePieceIcon },
   { name: "Branding", href: "branding", icon: CheckBadgeIcon },
 ];

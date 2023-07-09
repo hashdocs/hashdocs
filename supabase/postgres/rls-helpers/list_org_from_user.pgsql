@@ -1,4 +1,4 @@
-DROP FUNCTION IF EXISTS list_org_from_user;
+-- DROP FUNCTION IF EXISTS list_org_from_user;
 
 CREATE OR REPLACE FUNCTION list_org_from_user()
 	RETURNS uuid
@@ -10,7 +10,7 @@ BEGIN
 		SELECT
 			org_id
 		FROM
-			tbl_org
+			tbl_org_members
 		WHERE
 			user_id = auth.uid());
 END

@@ -25,7 +25,7 @@ jobs:
       - run: |
           supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
           supabase db push
-          supabase functions deploy --legacy-bundle
+          supabase functions deploy --legacy-bundle --no-verify-jwt
 
   
   slackNotification:

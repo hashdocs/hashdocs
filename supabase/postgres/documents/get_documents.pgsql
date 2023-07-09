@@ -42,6 +42,7 @@ links AS (
 		tbl_links.is_active,
 		tbl_links.document_id,
 		tbl_links.created_by,
+		tbl_links.expiration_date,
 		tbl_links.is_email_required,
 		tbl_links.is_password_required,
 		tbl_links.is_verification_required,
@@ -49,6 +50,7 @@ links AS (
 		tbl_links.is_download_allowed,
 		tbl_links.is_watermarked,
 		tbl_links.restricted_domains,
+		tbl_links.is_expiration_enabled,
 		tbl_links.link_password,
 		coalesce(count(DISTINCT views.view_id), 0) AS view_count,
 		CASE WHEN count(DISTINCT views.view_id) = 0 THEN
@@ -75,6 +77,7 @@ links AS (
 		tbl_links.is_active,
 		tbl_links.document_id,
 		tbl_links.created_by,
+		tbl_links.expiration_date,
 		tbl_links.is_email_required,
 		tbl_links.is_password_required,
 		tbl_links.is_verification_required,
@@ -82,6 +85,7 @@ links AS (
 		tbl_links.is_download_allowed,
 		tbl_links.is_watermarked,
 		tbl_links.restricted_domains,
+		tbl_links.is_expiration_enabled,
 		tbl_links.link_password
 	ORDER BY
 		tbl_links.link_seq DESC
