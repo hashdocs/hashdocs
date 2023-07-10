@@ -51,7 +51,9 @@ export default function ViewRow(view: ViewTableType, idx: number) {
             ButtonText={""}
             ButtonIcon={ChartBarIcon}
             ButtonSize={4}
-            onClick={() => setShowViewAnalyticsModal(view.view_id)}
+            onClick={() => {
+              setShowViewAnalyticsModal(view.view_id);
+            }}
           />
         </div>
       </div>

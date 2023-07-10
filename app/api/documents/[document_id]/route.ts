@@ -21,10 +21,10 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url);
-  return NextResponse.json(null, { status: 500 });
+    //   const url = request.nextUrl.clone();
+    //   url.pathname = '/login'
+    //   return NextResponse.redirect(url);
+    return NextResponse.json(null, { status: 500 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -158,14 +158,18 @@ export async function GET(
 
   if (document_error || !document_data || !document_data[0]) {
     const url = request.nextUrl.clone();
-    url.pathname = '/documents'
-    return NextResponse.json(null, { status: 500 })
+    url.pathname = "/documents";
+    return NextResponse.json(null, { status: 500 });
   }
+
+  const document_version = document_data[0].versions.find((version) => {
+    version.is_enabled == true;
+  })?.document_version;
 
   const { data, error } = await supabase.storage
     .from("documents")
     .createSignedUrl(
-      `${document_data[0].document_id}/${document_data[0].document_version}.pdf`,
+      `${document_data[0].document_id}/${document_version}.pdf`,
       60,
       {
         download: document_data[0].document_name,

@@ -2,7 +2,6 @@
 import {
   DocumentsContextType,
   DocumentType,
-  GetViewLogs,
   ViewType,
 } from "@/types/documents.types";
 import { createContext, useEffect, useState } from "react";
@@ -28,14 +27,15 @@ async function getDocuments(): Promise<DocumentType[]> {
 
 export default function DocumentsProvider({
   children,
+  documents_data,
 }: {
   children: React.ReactNode;
+  documents_data: DocumentType[];
 }) {
-  const [documents, setDocuments] = useState<DocumentType[] | null>(null);
+  const [documents, setDocuments] = useState<DocumentType[]>(documents_data);
   const [showViewAnalyticsModal, setShowViewAnalyticsModal] = useState<
     string | null
   >(null);
-  const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
 
   useEffect(() => {
     getDocuments()
@@ -54,8 +54,6 @@ export default function DocumentsProvider({
         setDocuments,
         showViewAnalyticsModal,
         setShowViewAnalyticsModal,
-        viewLogs,
-        setViewLogs,
       }}
     >
       {children}

@@ -1,17 +1,22 @@
+"use client";
 import EmptyLinks from "./_components/emptyLinks";
 import LinkRow from "./_components/linkRow";
-import { getDocument } from "../layout";
+import { getDocuments } from "../layout";
+import { useContext } from "react";
+import { DocumentIdContext } from "../_components/documentHeader";
 
 /*=========================================== COMPONENT ===========================================*/
 
-export default async function LinksPage({
+export default function LinksPage({
   params: { document_id }, // will be a page or nested layout
 }: {
   params: { document_id: string };
 }) {
-  const document = await getDocument(document_id);
+  const _documentIdContext = useContext(DocumentIdContext);
 
-  if (!document) return null;
+  if (!_documentIdContext) return null;
+
+  const { document } = _documentIdContext;
 
   return document.links.length > 0 ? (
     <ul role="list" className="flex flex-col py-4">

@@ -24,13 +24,13 @@ async function getSignedURL(document_id: string) {
   }
 
   const document_props = document_data[0];
+  const document_version = document_props.versions.find((version) => {
+    version.is_enabled == true;
+  })?.document_version;
 
   const { data, error } = await supabase.storage
     .from("documents")
-    .createSignedUrl(
-      `${document_id}/${document_props.document_version}.pdf`,
-      10
-    );
+    .createSignedUrl(`${document_id}/${document_version}.pdf`, 10);
 
   if (error || !data) return null;
 

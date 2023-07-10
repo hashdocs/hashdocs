@@ -17,65 +17,65 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
 import EditLinkModal from "./editLinkModal";
-import { DocumentType, GetViewLogs } from "@/types/documents.types";
+import {
+  DocumentIdContextType,
+  DocumentType,
+  SignedUrlType,
+} from "@/types/documents.types";
 import DocumentTabs from "./documentTabs";
 import { formatDate } from "@/app/_utils/dateFormat";
 import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import UploadDocumentModal from "../../../_components/uploadDocument";
 import PopOver from "@/app/_components/shared/popover";
 import UploadThumbnailModal from "../../../_components/uploadThumbnail";
 import { DocumentsContext } from "../../../_components/documentsProvider";
-import Loader from "@/app/_components/navigation/loader";
 import AnalyticsModal from "../analytics/_components/analyticsModal";
+
+export const DocumentIdContext = createContext<DocumentIdContextType | null>(
+  null
+);
 
 export default function DocumentHeader({
   children,
-  document, // will be a page or nested layout
+  document,
+  signed_urls,
 }: {
   children: React.ReactNode;
   document: DocumentType;
-  viewLogs: GetViewLogs;
+  signed_urls: SignedUrlType[];
 }) {
-  const _documents = useContext(DocumentsContext);
-
-  if (!_documents) throw Error("Error in fetching documents");
-
-  const {
-    setDocuments,
-    setViewLogs,
-    showViewAnalyticsModal,
-    setShowViewAnalyticsModal,
-  } = _documents;
-
-  const {
-    document_id,
-    image,
-    is_enabled,
-    document_name,
-    source_path,
-    source_type,
-    document_version,
-    links,
-    created_at,
-    created_by,
-    updated_at,
-  } = document;
-
   const router = useRouter();
+  const { document_id } = useParams();
 
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(is_enabled);
+  const [isEnabled, setIsEnabled] = useState(document.is_enabled);
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(document_name ?? ".");
+  const [name, setName] = useState(document.document_name);
   const [showUpdateDocumentModal, setShowUpdateDocumentModal] = useState(false);
   const [showUpdateThumbnailModal, setShowUpdateThumbnailModal] =
     useState(false);
+
+  const _documents = useContext(DocumentsContext);
+
+  if (!_documents) return null;
+
+  const { setDocuments, showViewAnalyticsModal, setShowViewAnalyticsModal } =
+    _documents!;
+
+  const { image, is_enabled, document_name, source_path, source_type, links } =
+    document;
+
+  const document_version =
+    document.versions.find((version) => version.is_enabled)?.document_version ??
+    0;
+  const updated_at =
+    document.versions.find((version) => version.is_enabled)?.created_at ?? "";
 
   /* -------------------------------- FUNCTIONS ------------------------------- */
 
@@ -86,8 +86,7 @@ export default function DocumentHeader({
   // Optimistically set name after change
   const handleBlur = () => {
     setIsEditing(false);
-    setDocuments((prevDocuments: DocumentType[] | null) => {
-      if (!prevDocuments) return null;
+    setDocuments((prevDocuments: DocumentType[]) => {
       const newDocuments = prevDocuments;
       const index = newDocuments.findIndex(
         (document) => document.document_id === document_id
@@ -105,8 +104,7 @@ export default function DocumentHeader({
       if (res.ok) {
         resolve(res.status);
       } else {
-        setDocuments((prevDocuments: DocumentType[] | null) => {
-          if (!prevDocuments) return null;
+        setDocuments((prevDocuments: DocumentType[]) => {
           const newDocuments = prevDocuments;
           const index = newDocuments.findIndex(
             (document) => document.document_id === document_id
@@ -128,7 +126,7 @@ export default function DocumentHeader({
   // Refresh document
   const handleRefresh = async () => {
     const refreshPromise = new Promise(async (resolve, reject) => {
-      const docPromise = fetch(`/api/documents`)
+      await fetch(`/api/documents`)
         .then(async (res) => {
           if (res.ok) {
             const data = await res.json();
@@ -138,21 +136,8 @@ export default function DocumentHeader({
         })
         .catch((err) => {
           reject(Error("Error refreshing doc"));
+          return;
         });
-
-      const viewPromise = fetch(`/api/documents/${document_id}/views`)
-        .then(async (res) => {
-          if (res.ok) {
-            resolve(res.status);
-            const data = await res.json();
-            setViewLogs(data);
-          }
-        })
-        .catch((err) => {
-          reject(Error("Error refreshing doc"));
-        });
-
-      await Promise.all([docPromise, viewPromise]);
       resolve("success");
     });
 
@@ -165,8 +150,7 @@ export default function DocumentHeader({
 
   // Optimistically toggle the document
   const handleToggle = async (checked: boolean) => {
-    setDocuments((prevDocuments: DocumentType[] | null) => {
-      if (!prevDocuments) return null;
+    setDocuments((prevDocuments: DocumentType[]) => {
       const newDocuments = prevDocuments;
       const index = newDocuments.findIndex(
         (document) => document.document_id === document_id
@@ -190,8 +174,7 @@ export default function DocumentHeader({
           }
         })
         .catch((err) => {
-          setDocuments((prevDocuments: DocumentType[] | null) => {
-            if (!prevDocuments) return null;
+          setDocuments((prevDocuments: DocumentType[]) => {
             const newDocuments = prevDocuments;
             const index = newDocuments.findIndex(
               (document) => document.document_id === document_id
@@ -215,8 +198,8 @@ export default function DocumentHeader({
         .then((res) => {
           if (res.ok) {
             resolve(res.status);
-            setDocuments((prevDocuments: DocumentType[] | null) => {
-              if (!prevDocuments) return null;
+            router.push("/documents");
+            setDocuments((prevDocuments: DocumentType[]) => {
               let newDocuments = prevDocuments;
               const index = newDocuments.findIndex(
                 (document) => document.document_id === document_id
@@ -236,7 +219,6 @@ export default function DocumentHeader({
       success: "Successfully deleted document",
       error: "Error in deleting document. Please try again",
     });
-    router.push("/documents");
   };
 
   // Download document
@@ -286,188 +268,194 @@ export default function DocumentHeader({
 
   return (
     <section>
-      <div className="flex flex-col">
-        <Link href="/documents" className="pointer-events-none">
-          <div className="pointer-events-auto inline-flex  items-center gap-x-2 text-shade-disabled hover:text-stratos-default hover:underline">
-            <ArrowLongLeftIcon className="my-1 h-7 w-7" />
-            <p>all documents</p>
-          </div>
-        </Link>
-        <div className="mb-4 flex flex-row items-center justify-between gap-x-2">
-          <div className="flex w-1/2 flex-row gap-x-4 overflow-hidden text-shade-pencil-black">
-            <ThumbnailImage src={image} document_id={document_id} />
-            <div className="flex flex-col space-y-1 overflow-hidden">
-              {isEditing ? (
-                <input
-                  className="truncate rounded-sm px-1 py-0 text-lg font-semibold text-shade-pencil-black focus:ring-2 focus:ring-stratos-default"
-                  type="text"
-                  value={name}
-                  onChange={handleNameChange}
-                  onBlur={handleBlur}
-                  autoFocus
-                />
-              ) : (
-                <h3
-                  className="cursor-text truncate text-lg font-semibold  text-shade-pencil-black hover:underline"
-                  onClick={handleClick}
-                >
-                  {name}
-                </h3>
-              )}
-              <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
-                {source_type === "LOCAL" ? (
-                  <FiHardDrive className="h-4 w-4" />
-                ) : null}
-                {source_type === "GDRIVE" ? (
-                  <DiGoogleDrive className="h-4 w-4" />
-                ) : null}
-                <p className="flex-nowrap truncate text-xs ">
-                  {source_path ?? "."}
-                </p>
-              </div>
-              <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
-                <CalendarDaysIcon className="h-4 w-4" />
-                <p className="flex-nowrap truncate text-xs ">{`Version ${document_version} | Updated on ${formatDate(
-                  updated_at,
-                  "MMM D YYYY"
-                )}`}</p>
+      <DocumentIdContext.Provider value={{ document, urls: signed_urls }}>
+        <div className="flex flex-col">
+          <Link href="/documents" className="pointer-events-none">
+            <div className="pointer-events-auto inline-flex  items-center gap-x-2 text-shade-disabled hover:text-stratos-default hover:underline">
+              <ArrowLongLeftIcon className="my-1 h-7 w-7" />
+              <p>all documents</p>
+            </div>
+          </Link>
+          <div className="mb-4 flex flex-row items-center justify-between gap-x-2">
+            <div className="flex w-1/2 flex-row gap-x-4 overflow-hidden text-shade-pencil-black">
+              <ThumbnailImage src={image} document_id={document_id} />
+              <div className="flex flex-col space-y-1 overflow-hidden">
+                {isEditing ? (
+                  <input
+                    className="truncate rounded-sm px-1 py-0 text-lg font-semibold text-shade-pencil-black focus:ring-2 focus:ring-stratos-default"
+                    type="text"
+                    value={document.document_name}
+                    onChange={handleNameChange}
+                    onBlur={handleBlur}
+                    autoFocus
+                  />
+                ) : (
+                  <h3
+                    className="cursor-text truncate text-lg font-semibold  text-shade-pencil-black hover:underline"
+                    onClick={handleClick}
+                  >
+                    {document.document_name}
+                  </h3>
+                )}
+                <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
+                  {source_type === "LOCAL" ? (
+                    <FiHardDrive className="h-4 w-4" />
+                  ) : null}
+                  {source_type === "GDRIVE" ? (
+                    <DiGoogleDrive className="h-4 w-4" />
+                  ) : null}
+                  <p className="flex-nowrap truncate text-xs ">
+                    {source_path ?? "."}
+                  </p>
+                </div>
+                <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
+                  <CalendarDaysIcon className="h-4 w-4" />
+                  <p className="flex-nowrap truncate text-xs ">{`Version ${document_version} | Updated on ${formatDate(
+                    updated_at,
+                    "MMM D YYYY"
+                  )}`}</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex flex-row items-center space-x-2">
-            <Toggle
-              toggleId={`${document_id}-toggle`}
-              SuccessToastText={
-                document.is_enabled ? (
-                  <p>
-                    {document_name} is now{" "}
-                    {<span className="text-shade-pencil-light">DISABLED</span>}
-                  </p>
-                ) : (
-                  <p>
-                    {document_name} is now{" "}
-                    {<span className="text-stratos-default">ENABLED</span>}
-                  </p>
-                )
-              }
-              isChecked={isEnabled}
-              setIsChecked={setIsEnabled}
-              onToggle={handleToggle}
-              EnabledHoverText="Disable all links"
-              DisabledHoverText="Enable links"
-              LoadingToastText={<p>Updating {document_name}...</p>}
-              ErrorToastText={
-                <p>Error in updating {document_name}. Please try again!</p>
-              }
-              Label={
-                document.is_enabled
-                  ? `${
-                      links.filter((link) => link.is_active === true).length ??
-                      0
-                    } links are enabled`
-                  : "All links are disabled"
-              }
-            />
-            <Link href={`/preview/${document_id}`} target="_blank">
-              <IconButton
-                key={`${document_id}-preview`}
-                ButtonId={`${document_id}-preview`}
-                ButtonText={"Preview document"}
-                ButtonIcon={PresentationChartBarIcon}
+            <div className="flex flex-row items-center space-x-2">
+              <Toggle
+                toggleId={`${document_id}-toggle`}
+                SuccessToastText={
+                  document.is_enabled ? (
+                    <p>
+                      {document_name} is now{" "}
+                      {
+                        <span className="text-shade-pencil-light">
+                          DISABLED
+                        </span>
+                      }
+                    </p>
+                  ) : (
+                    <p>
+                      {document_name} is now{" "}
+                      {<span className="text-stratos-default">ENABLED</span>}
+                    </p>
+                  )
+                }
+                isChecked={isEnabled}
+                setIsChecked={setIsEnabled}
+                onToggle={handleToggle}
+                EnabledHoverText="Disable all links"
+                DisabledHoverText="Enable links"
+                LoadingToastText={<p>Updating {document_name}...</p>}
+                ErrorToastText={
+                  <p>Error in updating {document_name}. Please try again!</p>
+                }
+                Label={
+                  document.is_enabled
+                    ? `${
+                        links.filter((link) => link.is_active === true)
+                          .length ?? 0
+                      } links are enabled`
+                    : "All links are disabled"
+                }
               />
-            </Link>
-            <IconButton
-              key={`${document_id}-update`}
-              ButtonId={`${document_id}-update`}
-              ButtonText={"Update document"}
-              ButtonIcon={DocumentArrowUpIcon}
-              onClick={() => setShowUpdateDocumentModal(true)}
-            />
-            <IconButton
-              key={`${document_id}-refresh`}
-              ButtonId={`${document_id}-refresh`}
-              ButtonText={"Refresh"}
-              ButtonIcon={ArrowPathIcon}
-              onClick={handleRefresh}
-            />
-            <PopOver
-              options={[
-                {
-                  name: "Edit name",
-                  icon: PencilIcon,
-                  optionClick: () => {
-                    setIsEditing(true);
+              <Link href={`/preview/${document_id}`} target="_blank">
+                <IconButton
+                  key={`${document_id}-preview`}
+                  ButtonId={`${document_id}-preview`}
+                  ButtonText={"Preview document"}
+                  ButtonIcon={PresentationChartBarIcon}
+                />
+              </Link>
+              <IconButton
+                key={`${document_id}-update`}
+                ButtonId={`${document_id}-update`}
+                ButtonText={"Update document"}
+                ButtonIcon={DocumentArrowUpIcon}
+                onClick={() => setShowUpdateDocumentModal(true)}
+              />
+              <IconButton
+                key={`${document_id}-refresh`}
+                ButtonId={`${document_id}-refresh`}
+                ButtonText={"Refresh"}
+                ButtonIcon={ArrowPathIcon}
+                onClick={handleRefresh}
+              />
+              <PopOver
+                options={[
+                  {
+                    name: "Edit name",
+                    icon: PencilIcon,
+                    optionClick: () => {
+                      setIsEditing(true);
+                    },
                   },
-                },
-                {
-                  name: "Change thumbnail",
-                  icon: PhotoIcon,
-                  optionClick: () => {
-                    setShowUpdateThumbnailModal(true);
+                  {
+                    name: "Change thumbnail",
+                    icon: PhotoIcon,
+                    optionClick: () => {
+                      setShowUpdateThumbnailModal(true);
+                    },
                   },
-                },
-                {
-                  name: "Download",
-                  icon: ArrowDownTrayIcon,
-                  optionClick: handleDownload,
-                },
-                {
-                  name: "Version history",
-                  icon: BackwardIcon,
-                  optionClick: () => {
-                    toast.success("Version history is coming soon", {
-                      icon: <WrenchScrewdriverIcon className="h-4 w-4" />,
-                    });
+                  {
+                    name: "Download",
+                    icon: ArrowDownTrayIcon,
+                    optionClick: handleDownload,
                   },
-                },
-                {
-                  name: "Delete",
-                  icon: TrashIcon,
-                  optionClick: handleDelete,
-                  optionClassName: "text-red-500",
-                },
-              ]}
+                  {
+                    name: "Version history",
+                    icon: BackwardIcon,
+                    optionClick: () => {
+                      toast.success("Version history is coming soon", {
+                        icon: <WrenchScrewdriverIcon className="h-4 w-4" />,
+                      });
+                    },
+                  },
+                  {
+                    name: "Delete",
+                    icon: TrashIcon,
+                    optionClick: handleDelete,
+                    optionClassName: "text-red-500",
+                  },
+                ]}
+              />
+              <LargeButton
+                ButtonText={"New Link"}
+                ButtonIcon={LinkIcon}
+                ButtonId={`${document_id}-newlink`}
+                ButtonClassName={
+                  document.is_enabled
+                    ? `bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
+                    : `bg-shade-disabled cursor-not-allowed`
+                }
+                disabled={!document.is_enabled}
+                onClick={() => setShowNewLinkModal(true)}
+              />
+            </div>
+            <EditLinkModal
+              isOpen={showNewLinkModal}
+              setIsOpen={setShowNewLinkModal}
+              link_id={null}
+              {...document}
             />
-            <LargeButton
-              ButtonText={"New Link"}
-              ButtonIcon={LinkIcon}
-              ButtonId={`${document_id}-newlink`}
-              ButtonClassName={
-                document.is_enabled
-                  ? `bg-stratos-gradient hover:bg-stratos-gradient/80 text-white`
-                  : `bg-shade-disabled cursor-not-allowed`
-              }
-              onClick={() => setShowNewLinkModal(true)}
+            <UploadDocumentModal
+              isOpen={showUpdateDocumentModal}
+              setIsOpen={setShowUpdateDocumentModal}
+              document_id={document_id}
+              document_name={document_name}
+            />
+            <UploadThumbnailModal
+              isOpen={showUpdateThumbnailModal}
+              setIsOpen={setShowUpdateThumbnailModal}
+              document_id={document_id}
+              document_name={document_name}
+              image={image}
+            />
+            <AnalyticsModal
+              viewId={showViewAnalyticsModal}
+              setViewId={setShowViewAnalyticsModal}
             />
           </div>
-          <EditLinkModal
-            isOpen={showNewLinkModal}
-            setIsOpen={setShowNewLinkModal}
-            link_id={null}
-            {...document}
-          />
-          <UploadDocumentModal
-            isOpen={showUpdateDocumentModal}
-            setIsOpen={setShowUpdateDocumentModal}
-            document_id={document_id}
-            document_name={document_name}
-          />
-          <UploadThumbnailModal
-            isOpen={showUpdateThumbnailModal}
-            setIsOpen={setShowUpdateThumbnailModal}
-            document_id={document_id}
-            document_name={document_name}
-            image={image}
-          />
-          <AnalyticsModal
-            viewId={showViewAnalyticsModal}
-            setViewId={setShowViewAnalyticsModal}
-            document_id={document_id}
-          />
+          <DocumentTabs {...document} />
         </div>
-        <DocumentTabs {...document} />
-      </div>
-      {children}
+        {children}
+      </DocumentIdContext.Provider>
     </section>
   );
 }

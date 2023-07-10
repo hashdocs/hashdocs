@@ -5,19 +5,18 @@ import { DocumentPlusIcon } from "@heroicons/react/20/solid";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
 import EditLinkModal from "../../_components/editLinkModal";
+import { DocumentIdContext } from "../../_components/documentHeader";
+import { DocumentType } from "@/types/documents.types";
 
 export default function EmptyLinks({ document_id }: { document_id: string }) {
-  const _documents = useContext(DocumentsContext);
+
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
 
-  if (!_documents) throw Error("Error in fetching documents");
+  const _documentIdContext = useContext(DocumentIdContext);
 
-  const { documents } = _documents;
+  if (!_documentIdContext) return null;
 
-  const document =
-    documents?.find((document) => document.document_id === document_id) ?? null;
-
-  if (!document) throw Error("Error in fetching document data");
+  const { document } = _documentIdContext;
 
   return (
     <div className="my-4 flex flex-col items-center gap-y-4 border-2 border-dashed border-shade-line pb-16 pt-12 text-center">
