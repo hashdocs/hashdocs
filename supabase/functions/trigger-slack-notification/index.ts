@@ -162,6 +162,56 @@ async function new_view_notification(
   });
 }
 
+async function new_feedback_notification(
+  payload: Database["public"]["Tables"]["tbl_feedback"]["Row"]
+) {
+  const { feedback_text, user_email, org_id, pathname, feedback_seq } = payload;
+
+  const template = `{
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "📄New feedback from - *${user_email}*"
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "${feedback_text}"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "plain_text",
+            "text": "#: ${feedback_seq}",
+            "emoji": true
+          },
+          {
+            "type": "plain_text",
+            "text": "path: ${pathname}",
+            "emoji": true
+          },
+          {
+            "type": "plain_text",
+            "text": "org_id: ${org_id}",
+            "emoji": true
+          },
+        ]
+      },
+    ]
+  }`;
+
+  await fetch(Deno.env.get("SLACK_MONITOR")!, {
+    method: "POST",
+    body: template,
+  });
+}
+
 serve(async (req) => {
   const data = (await req.json()) as InsertPayload;
 
@@ -185,6 +235,12 @@ serve(async (req) => {
     case "tbl_views":
       await new_view_notification(
         data.record as Database["public"]["Tables"]["tbl_views"]["Row"]
+      );
+      break;
+
+    case "tbl_feedback":
+      await new_feedback_notification(
+        data.record as Database["public"]["Tables"]["tbl_feedback"]["Row"]
       );
       break;
 

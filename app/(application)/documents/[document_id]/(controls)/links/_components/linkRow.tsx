@@ -51,8 +51,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
 
   // Handler for the toggle
   const handleToggle = async (checked: boolean) => {
-    setDocuments((prevDocuments: DocumentType[] | null) => {
-      if (!prevDocuments) return null;
+    setDocuments((prevDocuments: DocumentType[]) => {
       const newDocuments = prevDocuments;
       const index = newDocuments.findIndex(
         (document) => document.document_id === link.document_id
@@ -76,8 +75,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
       );
 
       if (res.status !== 200) {
-        setDocuments((prevDocuments: DocumentType[] | null) => {
-          if (!prevDocuments) return null;
+        setDocuments((prevDocuments: DocumentType[]) => {
           const newDocuments = prevDocuments;
           const index = newDocuments.findIndex(
             (document) => document.document_id === link.document_id

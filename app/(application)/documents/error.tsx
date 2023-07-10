@@ -30,7 +30,7 @@ export default function Error({
 
         <button
           type="button"
-          onClick={() => router.refresh()}
+          onClick={() => router.push("/documents")}
           className="mt-6 inline-block rounded bg-stratos-default px-5 py-3 text-sm font-medium text-white hover:bg-stratos-default/80 focus:outline-none focus:ring"
         >
           Retry

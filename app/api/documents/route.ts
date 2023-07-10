@@ -80,7 +80,9 @@ export async function POST(request: NextRequest) {
   }
 
   document_id = new_document_data[0].document_id;
-  const document_version = new_document_data[0].document_version;
+  const document_version = new_document_data[0].versions.find(
+    (version) => version.is_enabled == true
+  )?.document_version;
 
   //STEP 4 - Store document in supabase storage
   const { data: _document_upload_path, error: document_upload_error } =

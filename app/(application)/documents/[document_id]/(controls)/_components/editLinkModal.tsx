@@ -138,9 +138,11 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   /*-------------------------------- HANDLE SAVE BUTTON ------------------------------*/
 
   const handleSave = async () => {
-    const link_count =
-      (documents ?? []).find((doc) => doc.document_id === props.document_id)
-        ?.total_links_count ?? 0;
+
+    let link_count = 0;
+    documents?.forEach((doc) => {
+      link_count += doc.links.length ?? 0;
+    });
 
     if (!link_id && org?.stripe_product_plan === "Free" && link_count >= 3) {
       toast.error(
@@ -204,8 +206,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       if (res.ok) {
         setIsSaved(true);
 
-        setDocuments((prevDocuments: DocumentType[] | null) => {
-          if (!prevDocuments) return null;
+        setDocuments((prevDocuments: DocumentType[]) => {
           const newDocuments = prevDocuments;
           const index = newDocuments.findIndex(
             (document) => document.document_id === props.document_id
@@ -290,8 +291,7 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
       if (!document) reject("error");
       if (res.ok) {
         setIsSaved(true);
-        setDocuments((prevDocuments: DocumentType[] | null) => {
-          if (!prevDocuments) return null;
+        setDocuments((prevDocuments: DocumentType[]) => {
           const newDocuments = prevDocuments;
           const index = newDocuments.findIndex(
             (document) => document.document_id === props.document_id

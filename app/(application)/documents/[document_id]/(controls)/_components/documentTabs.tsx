@@ -16,8 +16,15 @@ let documentTabs: documentTabType[] = [
 /*=========================================== COMPONENT ===========================================*/
 
 export default function DocumentTabs(document: DocumentType) {
-  documentTabs[0].stats = document.total_links_count;
-  documentTabs[1].stats = document.total_view_count;
+  const total_links_count = document.links.length ?? 0;
+  let total_views_count = 0;
+
+  document.links.forEach((link) => {
+    total_views_count += link.views.length ?? 0;
+  });
+
+  documentTabs[0].stats = total_links_count;
+  documentTabs[1].stats = total_views_count;
 
   const activeTab = useSelectedLayoutSegment();
 

@@ -1,6 +1,6 @@
 import { Fragment, useContext, useEffect, useMemo, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { DocumentType, GetViewLogs } from "@/types/documents.types";
+import { DocumentType } from "@/types/documents.types";
 import {
   Bar,
   BarChart,
@@ -17,11 +17,12 @@ import Loader from "@/app/_components/navigation/loader";
 import { classNames } from "@/app/_utils/classNames";
 import dynamic from "next/dynamic";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import { useParams } from "next/navigation";
+import { DocumentIdContext } from "../../_components/documentHeader";
 
 interface AnalyticsModalProps {
   viewId: string | null;
   setViewId: (state: string | null) => void;
-  document_id: string;
 }
 
 const ChartViewer = dynamic(() => import("./chart_viewer"), {
@@ -61,51 +62,15 @@ const CustomLabel = ({ x, y, width, height, value }: any) => {
 const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   props: AnalyticsModalProps
 ) => {
-  const { viewId, setViewId, document_id } = props;
-  const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
+  const { viewId, setViewId } = props;
 
-  const [signedUrl, setSignedUrl] = useState<
-    {
-      version: number;
-      path: string;
-      signed_url: string;
-    }[]
-  >([]);
+  const _documentIdContext = useContext(DocumentIdContext);
 
-  useMemo(() => {
-    const getViewLogs = async () => {
-      const res = await fetch(`/api/documents/${document_id}/views`);
-      if (!res.ok) {
-        return;
-      }
-      if (res.status === 200) {
-        const data = (await res.json()) as GetViewLogs;
-        setViewLogs(data);
-      }
-    };
+  if (!_documentIdContext) return null;
 
-    const getSignedUrl = async () => {
-      const res = await fetch(`/api/documents/${document_id}/views/signedUrl`);
-      if (!res.ok) {
-        return;
-      }
-      if (res.status === 200) {
-        const data = (await res.json()) as {
-          version: number;
-          path: string;
-          signed_url: string;
-        }[];
-        setSignedUrl(data);
-      }
-    };
+  const { document, urls } = _documentIdContext;
 
-    getViewLogs();
-    getSignedUrl();
-  }, [document_id]);
-
-  if (!viewLogs) return null;
-
-  const { links, document_name } = viewLogs;
+  const { links } = document;
 
   const link = links?.find(
     (link) => link.link_id && viewId?.includes(link.link_id)
@@ -313,7 +278,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                         content={
                           <CustomTooltip
                             signed_url={
-                              signedUrl.find(
+                              urls.find(
                                 (url) => url.version == view.document_version
                               )?.signed_url
                             }

@@ -49,7 +49,11 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   const handleBeforeUpload = (files: {
     [key: string]: UppyFile<Record<string, unknown>, Record<string, unknown>>;
   }) => {
-    if (!document_id && org?.stripe_product_plan === "Free" && (documents ?? []).length > 0) {
+    if (
+      !document_id &&
+      org?.stripe_product_plan === "Free" &&
+      (documents ?? []).length > 0
+    ) {
       toast.error(
         <p>
           You have reached the maximum number of documents for the free plan.
@@ -118,8 +122,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
         const new_document = (await res.json()) as DocumentType;
 
         resolve(new_document);
-        setDocuments((prevDocuments: DocumentType[] | null) => {
-          if (!prevDocuments) return null;
+        setDocuments((prevDocuments: DocumentType[]) => {
           const docIndex = prevDocuments.findIndex((doc) => {
             return doc.document_id === new_document.document_id;
           });

@@ -1,22 +1,16 @@
 "use client";
-import Image from "next/image";
-import dynamic from "next/dynamic";
 import {
   LinkIcon,
-  EllipsisHorizontalIcon,
   EyeIcon,
   PresentationChartBarIcon,
-  CloudArrowUpIcon,
-  ArrowPathIcon,
   PencilIcon,
-  PhotoIcon,
   TrashIcon,
   DocumentArrowUpIcon,
 } from "@heroicons/react/24/outline";
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import Link from "next/link";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { useContext, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { DocumentType } from "@/types/documents.types";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "../[document_id]/(controls)/_components/editLinkModal";
@@ -24,7 +18,6 @@ import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
 import UploadDocumentModal from "./uploadDocument";
 import PopOver from "@/app/_components/shared/popover";
 import { ChartBarIcon } from "@heroicons/react/24/solid";
-import { GrDocumentUpdate } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { classNames } from "@/app/_utils/classNames";
@@ -33,15 +26,7 @@ import { DocumentsContext } from "./documentsProvider";
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
 
 const DocumentRow: React.FC<DocumentType> = (props) => {
-  const {
-    document_id,
-    document_name,
-    image,
-    is_enabled,
-    total_view_count,
-    total_links_count,
-    links,
-  } = props;
+  const { document_id, document_name, image, is_enabled, links } = props;
 
   const [isEnabled, setIsEnabled] = useState<boolean>(is_enabled);
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
@@ -58,12 +43,18 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
   const active_links_count =
     links.filter((link) => link.is_active === true).length ?? 0;
 
+  const total_links_count = links.length ?? 0;
+  let total_views_count = 0;
+
+  links.forEach((link) => {
+    total_views_count += link.views.length ?? 0;
+  });
+
   /* -------------------------------- FUNCTIONS ------------------------------- */
 
   // Optimistically set document on toggle
   const handleToggle = async (checked: boolean) => {
-    setDocuments((prevDocuments: DocumentType[] | null) => {
-      if (!prevDocuments) return null;
+    setDocuments((prevDocuments: DocumentType[]) => {
       const newDocuments = prevDocuments;
       const index = newDocuments.findIndex(
         (document) => document.document_id === document_id
@@ -87,8 +78,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         })
         .catch((err) => {
           reject(Error("Error updating doc status"));
-          setDocuments((prevDocuments: DocumentType[] | null) => {
-            if (!prevDocuments) return null;
+          setDocuments((prevDocuments: DocumentType[]) => {
             const newDocuments = prevDocuments;
             const index = newDocuments.findIndex(
               (document) => document.document_id === document_id
@@ -111,15 +101,14 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
         .then((res) => {
           if (res.ok) {
             resolve(res.status);
-            setDocuments((prevDocuments: DocumentType[] | null) => {
-              if (!prevDocuments) return null;
+            setDocuments((prevDocuments: DocumentType[]) => {
               let newDocuments = prevDocuments;
               const index = newDocuments.findIndex(
                 (document) => document.document_id === document_id
               );
               newDocuments = newDocuments.filter((item, i) => i !== index);
               return newDocuments;
-            });     
+            });
             router.refresh();
           }
         })
@@ -160,7 +149,7 @@ const DocumentRow: React.FC<DocumentType> = (props) => {
             />
             <MediumButton
               ButtonId={`${document_id}-views`}
-              ButtonText={`${total_view_count} views`}
+              ButtonText={`${total_views_count} views`}
               ButtonIcon={EyeIcon}
               ButtonSize={3}
               ButtonHref={`/documents/${document_id}/views`}

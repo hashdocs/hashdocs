@@ -26,8 +26,7 @@ export async function POST(
     });
   
     const {document_id, document_version, source_path} = await request.json();
-  
-    console.log(document_id, document_version, source_path);
+
   
     const { data, error } = await supabase.storage
       .from("documents")

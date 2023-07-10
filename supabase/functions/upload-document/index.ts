@@ -15,21 +15,23 @@ serve(async (req) => {
     return errorHandler(document_error);
   }
 
-  const doc = document_data[0];
+  const document_version = document_data[0].versions.find(
+    (v) => v.is_enabled
+  )?.document_version;
 
   console.info(
-    `${doc.document_id}: Creating URL for ${doc.document_id}/${doc.document_version}.pdf`
+    `${document_id}: Creating URL for ${document_id}/${document_version}.pdf`
   );
 
   const { data, error } = await supabaseAdmin.storage
     .from("documents")
-    .createSignedUrl(`${doc.document_id}/${doc.document_version}.pdf`, 60);
+    .createSignedUrl(`${document_id}/${document_version}.pdf`, 60);
 
   if (error || !data || !data.signedUrl) {
     return errorHandler(error);
   }
 
-  console.info(`${doc.document_id}: Created a signed url - ${data.signedUrl}`);
+  console.info(`${document_id}: Created a signed url - ${data.signedUrl}`);
 
   const arrayBuffer = await fetch(data.signedUrl).then((res) =>
     res.arrayBuffer()
@@ -40,7 +42,9 @@ serve(async (req) => {
 
   try {
     const res = await fetch(
-      `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=${Deno.env.get('CONVERTAPI_SECRET')}`,
+      `https://v2.convertapi.com/convert/pdf/to/jpg?Secret=${Deno.env.get(
+        "CONVERTAPI_SECRET"
+      )}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,7 +81,7 @@ serve(async (req) => {
       await supabaseAdmin.storage
         .from("thumbnails")
         .upload(
-          `${doc.document_id}/${randomInt({ start: 100000, end: 999999 })}.jpg`,
+          `${document_id}/${randomInt({ start: 100000, end: 999999 })}.jpg`,
           thumbnail_arrayBuffer,
           {
             contentType: "image/jpeg",
@@ -96,22 +100,24 @@ serve(async (req) => {
     const { error: update_error } = await supabaseAdmin
       .from("tbl_documents")
       .update({ image: publicUrl })
-      .eq("document_id", doc.document_id);
+      .eq("document_id", document_id);
 
     if (update_error) {
       throw Error(JSON.stringify(update_error));
     }
   } catch (e) {
-    console.error(`${doc.document_id}: Could not update image - ${e}`);
+    console.error(`${document_id}: Could not update image - ${e}`);
   }
 
   const { error: page_update_error } = await supabaseAdmin
     .from("tbl_document_versions")
     .update({ page_count: numPages })
-    .eq("document_id", doc.document_id)
-    .eq("document_version", doc.document_version);
+    .eq("document_id", document_id)
+    .eq("document_version", document_version);
 
-  console.log(`${doc.document_id}: Updated document version to ${doc.document_version} with ${numPages} pages`)
+  console.log(
+    `${document_id}: Updated document version to ${document_version} with ${numPages} pages`
+  );
 
   if (page_update_error) {
     return errorHandler(page_update_error);

@@ -1,11 +1,14 @@
 "use client";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { LinkType, ViewType } from "@/types/documents.types";
 import {
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+  Fragment,
+  use,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { LinkType, ViewType } from "@/types/documents.types";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   ChevronUpDownIcon,
   EyeSlashIcon,
@@ -19,23 +22,23 @@ import { classNames } from "@/app/_utils/classNames";
 import { ViewsHeader } from "./viewsHeader";
 import ViewRow from "./viewRow";
 import { DocumentType } from "@/types/documents.types";
+import { DocumentIdContext } from "../../_components/documentHeader";
 
 export type ViewTableType = ViewType & { link_name: string };
 
 /*=========================================== COMPONENT ===========================================*/
 
-export default function ViewsFilter(document: DocumentType) {
+export default function ViewsFilter() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-
-  const link_id = searchParams.get("id");
-  const defaultLink =
-    document?.links?.find((link) => link.link_id == link_id) ?? null;
-
   const [searchValue, setSearchValue] = useState<string>("");
   let [views, setViews] = useState<ViewTableType[]>([]);
+  let viewData: ViewTableType[] = [];
+
+  const link_id = searchParams.get("id");
+  let document: DocumentType | null = null;
 
   /*================================ COMBOBOX ==============================*/
 
@@ -49,17 +52,8 @@ export default function ViewsFilter(document: DocumentType) {
     [searchParams]
   );
 
-  const [selectedLink, setSelectedLink] = useState<LinkType | null>(
-    defaultLink
-  );
+  const [selectedLink, setSelectedLink] = useState<LinkType | null>(null);
   const [linkQuery, setLinkQuery] = useState("");
-
-  const filteredLinks =
-    linkQuery === ""
-      ? document?.links
-      : document?.links.filter((link) =>
-          link.link_name.toLowerCase().includes(linkQuery.toLowerCase())
-        );
 
   const handleComboboxChange = (link_name: any) => {
     const _link = link_name
@@ -74,32 +68,58 @@ export default function ViewsFilter(document: DocumentType) {
   };
 
   useEffect(() => {
-    views = [];
-
     document?.links?.forEach((link) => {
       if (selectedLink && link.link_id !== selectedLink.link_id) {
       } else {
         link.views?.forEach((view) => {
-          views.push({ link_name: link.link_name, ...view });
+          viewData.push({ link_name: link.link_name, ...view });
         });
       }
     });
 
-    views =
+    viewData =
       searchValue.length > 0
-        ? views.filter((view) => {
+        ? viewData.filter((view) => {
             return view.viewer
               .toLowerCase()
               .includes(searchValue.toLowerCase());
           })
-        : views;
+        : viewData;
 
-    views.sort((a, b) => {
+    viewData = Array.from(
+      viewData
+        .reduce(
+          (map, item) => map.set(item.view_id, item),
+          new Map<string | null, ViewTableType>()
+        )
+        .values()
+    );
+
+    viewData.sort((a, b) => {
       return b.view_seq - a.view_seq;
     });
 
-    setViews(views);
+    setViews(viewData);
   }, [selectedLink, searchValue]);
+
+  useEffect(() => {
+    const defaultLink =
+      document?.links?.find((link) => link.link_id == link_id) ?? null;
+    setSelectedLink(defaultLink);
+  }, [document, link_id]);
+
+  const _documentIdContext = useContext(DocumentIdContext);
+
+  if (!_documentIdContext) return null;
+
+  document = _documentIdContext.document;
+
+  const filteredLinks =
+    linkQuery === ""
+      ? document?.links
+      : document?.links.filter((link) =>
+          link.link_name.toLowerCase().includes(linkQuery.toLowerCase())
+        );
 
   return (
     <section className="flex flex-1 flex-col space-y-4 py-4 ">

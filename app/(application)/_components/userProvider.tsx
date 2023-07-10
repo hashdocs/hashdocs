@@ -13,30 +13,21 @@ export const UserContext = createContext<UserContextType | null>(null);
 export default function UserProvider({
   children,
   user,
+  org,
 }: {
   children: React.ReactNode;
   user: User;
+  org: OrgType | null;
 }) {
   const posthog = usePostHog();
-  const supabase = createClientComponentClient<Database>();
-  const [org, setOrg] = useState<OrgType | null>(null);
 
   useEffect(() => {
-    async function getOrg() {
-      posthog.identify(user.id, user);
-      const { data: org } = await supabase
-        .rpc("get_org")
-        .returns<OrgType[]>()
-        .maybeSingle();
-
-      if (org) {
-        setOrg(org);
-      }
-    }
-    getOrg();
+    posthog.identify(user.id, user);
   }, []);
 
   return (
-    <UserContext.Provider value={{user, org}} >{children}</UserContext.Provider>
+    <UserContext.Provider value={{ user, org }}>
+      {children}
+    </UserContext.Provider>
   );
 }
