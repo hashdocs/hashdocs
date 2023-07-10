@@ -138,13 +138,11 @@ const EditLinkModal: React.FC<EditLinkModalProps> = (
   /*-------------------------------- HANDLE SAVE BUTTON ------------------------------*/
 
   const handleSave = async () => {
-    if (
-      !link_id &&
-      org?.stripe_product_plan === "Free" &&
-      ((documents ?? []).find((doc) => doc.document_id === props.document_id)
-        ?.total_links_count ??
-        0 >= 3)
-    ) {
+    const link_count =
+      (documents ?? []).find((doc) => doc.document_id === props.document_id)
+        ?.total_links_count ?? 0;
+
+    if (!link_id && org?.stripe_product_plan === "Free" && link_count >= 3) {
       toast.error(
         <p>
           You have reached the maximum number of links (3) for the free plan.
