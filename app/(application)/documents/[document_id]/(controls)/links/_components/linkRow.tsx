@@ -11,10 +11,8 @@ import {
 import Toggle from "@/app/_components/shared/buttons/toggle";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
 import { AnimatePresence, motion } from "framer-motion";
-import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
-import { formatDate, formatTime } from "@/app/_utils/dateFormat";
+import { formatDate } from "@/app/_utils/dateFormat";
 import { LinkType, DocumentType } from "@/types/documents.types";
-import { ChartBarIcon } from "@heroicons/react/24/solid";
 import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "@/app/(application)/documents/[document_id]/(controls)/_components/editLinkModal";
 import { CopyLinkToClipboard } from "@/app/_utils/common";
@@ -22,26 +20,29 @@ import { DocumentsContext } from "@/app/(application)/documents/_components/docu
 import { ViewsHeader } from "../../views/_components/viewsHeader";
 import ViewRow from "../../views/_components/viewRow";
 
+type LinkDocumentProps = {
+  link:LinkType;
+  document:DocumentType
+}
+
+
 /*=========================================== COMPONENT ===========================================*/
 
-const LinkRow: React.FC<LinkType> = (props) => {
+const LinkRow: React.FC<LinkDocumentProps> = (props) => {
+
+  const { link, document } = props;
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isActive, setIsActive] = useState<boolean>(props.is_active);
+  const [isActive, setIsActive] = useState<boolean>(link.is_active);
   const [showUpdateLinkModal, setShowUpdateLinkModal] = useState(false);
 
   const _documentsContext = useContext(DocumentsContext);
 
   if (!_documentsContext) return null;
 
-  const { documents, setDocuments } = _documentsContext;
+  const { setDocuments } = _documentsContext;
 
-  const document =
-    documents?.find((document) => document.document_id === props.document_id) ??
-    null;
-
-  if (!document) throw Error("Error in fetching document data");
-
-  const { link_id, link_name, created_at, views } = props;
+  const { link_id, link_name, created_at, views } = link;
 
   
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
@@ -54,10 +55,10 @@ const LinkRow: React.FC<LinkType> = (props) => {
       if (!prevDocuments) return null;
       const newDocuments = prevDocuments;
       const index = newDocuments.findIndex(
-        (document) => document.document_id === props.document_id
+        (document) => document.document_id === link.document_id
       );
       const linkIndex = newDocuments[index].links.findIndex(
-        (link) => link.link_id === props.link_id
+        (link) => link.link_id === link.link_id
       );
 
       newDocuments[index].links[linkIndex].is_active = checked;
@@ -65,7 +66,7 @@ const LinkRow: React.FC<LinkType> = (props) => {
     });
     return new Promise(async (resolve, reject) => {
       const res = await fetch(
-        `/api/documents/${props.document_id}/${link_id}`,
+        `/api/documents/${link.document_id}/${link_id}`,
         {
           method: "PUT",
           body: JSON.stringify({
@@ -79,10 +80,10 @@ const LinkRow: React.FC<LinkType> = (props) => {
           if (!prevDocuments) return null;
           const newDocuments = prevDocuments;
           const index = newDocuments.findIndex(
-            (document) => document.document_id === props.document_id
+            (document) => document.document_id === link.document_id
           );
           const linkIndex = newDocuments[index].links.findIndex(
-            (link) => link.link_id === props.link_id
+            (link) => link.link_id === link.link_id
           );
 
           newDocuments[index].links[linkIndex].is_active = !checked;

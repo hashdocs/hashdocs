@@ -17,7 +17,7 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
 import EditLinkModal from "./editLinkModal";
@@ -32,6 +32,7 @@ import PopOver from "@/app/_components/shared/popover";
 import UploadThumbnailModal from "../../../_components/uploadThumbnail";
 import { DocumentsContext } from "../../../_components/documentsProvider";
 import Loader from "@/app/_components/navigation/loader";
+import AnalyticsModal from "../analytics/_components/analyticsModal";
 
 export default function DocumentHeader({
   children,
@@ -39,12 +40,18 @@ export default function DocumentHeader({
 }: {
   children: React.ReactNode;
   document: DocumentType;
+  viewLogs: GetViewLogs;
 }) {
   const _documents = useContext(DocumentsContext);
 
   if (!_documents) throw Error("Error in fetching documents");
 
-  const { setDocuments, setViewLogs } = _documents;
+  const {
+    setDocuments,
+    setViewLogs,
+    showViewAnalyticsModal,
+    setShowViewAnalyticsModal,
+  } = _documents;
 
   const {
     document_id,
@@ -451,6 +458,11 @@ export default function DocumentHeader({
             document_id={document_id}
             document_name={document_name}
             image={image}
+          />
+          <AnalyticsModal
+            viewId={showViewAnalyticsModal}
+            setViewId={setShowViewAnalyticsModal}
+            document_id={document_id}
           />
         </div>
         <DocumentTabs {...document} />

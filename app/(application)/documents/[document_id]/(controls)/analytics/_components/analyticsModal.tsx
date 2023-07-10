@@ -62,8 +62,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   props: AnalyticsModalProps
 ) => {
   const { viewId, setViewId, document_id } = props;
-
-  const _documents = useContext(DocumentsContext);
+  const [viewLogs, setViewLogs] = useState<GetViewLogs | null>(null);
 
   const [signedUrl, setSignedUrl] = useState<
     {
@@ -74,6 +73,17 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
   >([]);
 
   useMemo(() => {
+    const getViewLogs = async () => {
+      const res = await fetch(`/api/documents/${document_id}/views`);
+      if (!res.ok) {
+        return;
+      }
+      if (res.status === 200) {
+        const data = (await res.json()) as GetViewLogs;
+        setViewLogs(data);
+      }
+    };
+
     const getSignedUrl = async () => {
       const res = await fetch(`/api/documents/${document_id}/views/signedUrl`);
       if (!res.ok) {
@@ -89,12 +99,9 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
       }
     };
 
+    getViewLogs();
     getSignedUrl();
   }, [document_id]);
-
-  if (!_documents) return null;
-
-  const { viewLogs } = _documents;
 
   if (!viewLogs) return null;
 

@@ -1,48 +1,55 @@
-"use client";
 import DocumentHeader from "@/app/(application)/documents/[document_id]/(controls)/_components/documentHeader";
 import { useContext, useMemo } from "react";
 import { DocumentsContext } from "../../_components/documentsProvider";
 import Loader from "@/app/_components/navigation/loader";
-import { GetViewLogs } from "@/types/documents.types";
+import { GetViewLogs, DocumentType } from "@/types/documents.types";
+
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { Database } from "@/types/supabase.types";
+
+export async function getDocument(document_id: string) {
+  const supabase = createServerComponentClient<Database>({ cookies });
+
+  const { data: document_id_data, error: document_id_error } = await supabase
+    .rpc("get_documents")
+    .returns<DocumentType[]>();
+
+  const document =
+    document_id_data?.find((doc) => doc.document_id === document_id) ?? null;
+
+  return document;
+}
+
+async function getViewLogs(document_id: string) {
+  const supabase = createServerComponentClient<Database>({ cookies });
+
+  const { data: view_logs, error: document_id_error } = await supabase
+    .rpc("get_views", { document_id_input: document_id })
+    .returns<GetViewLogs>();
+
+  return view_logs;
+}
 
 /*=========================================== COMPONENT ===========================================*/
 
-export default function DocumentIdLayout({
+export default async function DocumentIdLayout({
   children,
   params: { document_id }, // will be a page or nested layout
 }: {
   children: React.ReactNode;
   params: { document_id: string };
 }) {
-  const _documents = useContext(DocumentsContext);
+  const [document, viewLogs] = await Promise.all([
+    getDocument(document_id),
+    getViewLogs(document_id),
+  ]);
 
-  if (!_documents) throw Error("Error in fetching documents");
-
-  const { documents, setViewLogs } = _documents;
-
-  const document =
-    documents?.find((document) => document.document_id === document_id) ?? null;
-
-  useMemo(() => {
-    const getViewLogs = async () => {
-      const res = await fetch(`/api/documents/${document_id}/views`, {
-        next: { revalidate: 60 },
-      });
-      if (!res.ok) {
-        return;
-      }
-      if (res.status === 200) {
-        const data = (await res.json()) as GetViewLogs;
-        setViewLogs(data);
-      }
-    };
-
-    getViewLogs();
-  }, [document_id]);
-
-  return !document ? (
+  return !document || !viewLogs ? (
     <Loader />
   ) : (
-    <DocumentHeader document={document}>{children}</DocumentHeader>
+    <DocumentHeader document={document} viewLogs={viewLogs}>
+      {children}
+    </DocumentHeader>
   );
 }
