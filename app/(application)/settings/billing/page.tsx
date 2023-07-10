@@ -144,7 +144,7 @@ export default function BillingPage() {
                          * specify the rootElement property to ensure that the modal is inserted into the correct domNode.
                          */
                         rootElement={document.getElementById("app")!}
-                        text="Click here to schedule!"
+                        text="Contact us"
                       />
                     ) : (
                       <button
