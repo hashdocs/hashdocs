@@ -169,7 +169,7 @@ export default function Sidebar() {
         </ul>
       </div>
       <div className="flex flex-col gap-y-6">
-        {org?.stripe_product_plan === 'Free' && <Link href={'/settings/billing'} className="flex gap-x-2 px-2 py-3 rounded-md hover:bg-stratos-default hover:text-white border border-dashed border-stratos-default text-stratos-default font-semibold items-center">
+        {org?.stripe_product_plan === 'Free' && <Link href={'/settings/billing'} className="flex gap-x-2 px-2 py-2 bg-white rounded-md hover:bg-stratos-default hover:text-white border shadow-inner border-stratos-default text-stratos-default font-semibold items-center">
           <BoltIcon className="h-5 w-5" /><p>Upgrade to Pro</p>
         </Link>}
         {user && (

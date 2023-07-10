@@ -117,6 +117,49 @@ export interface Database {
           }
         ]
       }
+      tbl_feedback: {
+        Row: {
+          created_at: string | null
+          feedback_seq: number
+          feedback_text: string | null
+          org_id: string | null
+          pathname: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          feedback_seq?: number
+          feedback_text?: string | null
+          org_id?: string | null
+          pathname?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          feedback_seq?: number
+          feedback_text?: string | null
+          org_id?: string | null
+          pathname?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tbl_feedback_org_id_fkey"
+            columns: ["org_id"]
+            referencedRelation: "tbl_org"
+            referencedColumns: ["org_id"]
+          },
+          {
+            foreignKeyName: "tbl_feedback_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       tbl_links: {
         Row: {
           created_at: string | null
