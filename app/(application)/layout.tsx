@@ -34,7 +34,7 @@ export default async function ApplicationLayout({
   return (
     <PHProvider>
       <UserProvider user={user}>
-        <div className="hidden max-h-screen w-full flex-1 overflow-hidden lg:flex">
+        <div className="hidden max-h-screen w-full flex-1 overflow-hidden lg:flex" id="app">
           <Sidebar />
           <main className="flex h-screen w-full flex-1 flex-col items-center overflow-x-auto">
             <div className="sticky top-0 z-10 w-full">

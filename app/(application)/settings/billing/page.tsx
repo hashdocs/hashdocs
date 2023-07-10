@@ -1,8 +1,5 @@
 "use client";
-import {
-  features,
-  pricingPlans,
-} from "@/app/_lib/stripe/constants";
+import { features, pricingPlans } from "@/app/_lib/stripe/constants";
 import { classNames } from "@/app/_utils/classNames";
 import {
   CheckCircleIcon,
@@ -15,7 +12,7 @@ import { UserContext } from "../../_components/userProvider";
 import { useContext } from "react";
 import Loader from "@/app/_components/navigation/loader";
 import { formatDate } from "@/app/_utils/dateFormat";
-
+import { PopupButton, PopupWidget } from "react-calendly";
 
 /*=========================================== CONSTANTS ===========================================*/
 
@@ -24,18 +21,22 @@ export default function BillingPage() {
 
   const _userContext = useContext(UserContext);
 
-  if(!_userContext) {return <Loader />}
+  if (!_userContext) {
+    return <Loader />;
+  }
 
-  const {  org } = _userContext;
+  const { org, user } = _userContext;
 
-  if (!org) {return <Loader />};
+  if (!org) {
+    return <Loader />;
+  }
 
-  const current_plan = org.stripe_product_plan ?? 'Free';
+  const current_plan = org.stripe_product_plan ?? "Free";
 
   const handlePlan = async () => {
     const stripePromise = new Promise(async (resolve, reject) => {
       const res = await fetch("/api/stripe", {
-        method: current_plan === 'Free' ? "POST" : "PUT",
+        method: current_plan === "Free" ? "POST" : "PUT",
         body: JSON.stringify({
           lookup_key: "pro_monthly",
           quantity: 1,
@@ -66,7 +67,7 @@ export default function BillingPage() {
   };
 
   return (
-    <main className="mb-8 flex flex-col space-y-2">
+    <main className="mb-8 flex flex-col space-y-2" id="billing">
       <div className="font-semibold uppercase text-shade-pencil-light">
         Preferences
       </div>
@@ -84,7 +85,11 @@ export default function BillingPage() {
             Billing cycle
           </div>
           <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
-            {org.billing_cycle_start && formatDate(org.billing_cycle_start,'MMM DD')} - {org.billing_cycle_end && formatDate(org.billing_cycle_end, 'MMM DD')}
+            {org.billing_cycle_start &&
+              formatDate(org.billing_cycle_start, "MMM DD")}{" "}
+            -{" "}
+            {org.billing_cycle_end &&
+              formatDate(org.billing_cycle_end, "MMM DD")}
           </div>
         </div>
         <div className="flex w-full flex-1 flex-row items-center">
@@ -126,7 +131,22 @@ export default function BillingPage() {
                     <p className="text-shade-pencil-light">{meter}</p>
                   </div>
                   <div className="p-5">
-                    {
+                    {plan === "Enterprise" ? (
+                      <PopupButton
+                        url="https://calendly.com/swapnika/hashdocs"
+                        prefill={{
+                          name: user?.user_metadata?.name ?? "",
+                          email: user?.email,
+                        }}
+                        className="bg-shade-gradient text-white block w-full rounded-full border border-shade-line py-2 font-medium transition-all"
+                        /*
+                         * react-calendly uses React's Portal feature (https://reactjs.org/docs/portals.html) to render the popup modal. As a result, you'll need to
+                         * specify the rootElement property to ensure that the modal is inserted into the correct domNode.
+                         */
+                        rootElement={document.getElementById("app")!}
+                        text="Click here to schedule!"
+                      />
+                    ) : (
                       <button
                         onClick={handlePlan}
                         className={`${
@@ -141,7 +161,7 @@ export default function BillingPage() {
                       >
                         {plan === current_plan ? "Current plan" : billing_cta}
                       </button>
-                    }
+                    )}
                   </div>
                   <ul className="my-6 flex flex-col gap-y-2 px-8">
                     {features.map((feature) => (

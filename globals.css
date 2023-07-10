@@ -58,3 +58,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.calendly-popup {
+  min-height: 700px !important;
+}
