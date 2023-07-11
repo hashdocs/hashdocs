@@ -1,14 +1,18 @@
 "use client";
 import {
   Fragment,
-  use,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { LinkType, ViewType } from "@/types/documents.types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import {
   ChevronUpDownIcon,
   EyeSlashIcon,
@@ -22,7 +26,7 @@ import { classNames } from "@/app/_utils/classNames";
 import { ViewsHeader } from "./viewsHeader";
 import ViewRow from "./viewRow";
 import { DocumentType } from "@/types/documents.types";
-import { DocumentIdContext } from "../../_components/documentHeader";
+import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
 
 export type ViewTableType = ViewType & { link_name: string };
 
@@ -32,6 +36,7 @@ export default function ViewsFilter() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { document_id } = useParams();
 
   const [searchValue, setSearchValue] = useState<string>("");
   let [views, setViews] = useState<ViewTableType[]>([]);
@@ -108,11 +113,17 @@ export default function ViewsFilter() {
     setSelectedLink(defaultLink);
   }, [document, link_id]);
 
-  const _documentIdContext = useContext(DocumentIdContext);
+  const _documentsContext = useContext(DocumentsContext);
 
-  if (!_documentIdContext) return null;
+  if (!_documentsContext) return null;
 
-  document = _documentIdContext.document;
+  const { documents } = _documentsContext;
+
+  document = documents.find((doc) => doc.document_id === document_id) ?? null;
+
+  if (!document) {
+    return null;
+  }
 
   const filteredLinks =
     linkQuery === ""

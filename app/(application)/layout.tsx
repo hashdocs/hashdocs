@@ -5,28 +5,31 @@ import PHProvider from "./_components/posthog";
 import Link from "next/link";
 import Image from "next/image";
 import { BackwardIcon } from "@heroicons/react/24/outline";
-import { User, createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  User,
+  createServerComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { OrgType } from "@/types/settings.types";
 
 async function getUser() {
-  const supabase = createServerComponentClient({cookies});
+  const supabase = createServerComponentClient({ cookies });
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { data: org } = await supabase
-  .rpc("get_org")
-  .returns<OrgType[]>()
-  .maybeSingle();
+    .rpc("get_org")
+    .returns<OrgType[]>()
+    .maybeSingle();
 
   if (!user) {
     await supabase.auth.signOut();
-    redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`)
+    redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`);
   }
 
-  return {user, org};
+  return { user, org };
 }
 
 export default async function ApplicationLayout({
@@ -34,13 +37,15 @@ export default async function ApplicationLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-  const {user, org} = await getUser();
+  const { user, org } = await getUser();
 
   return (
     <PHProvider>
-      <UserProvider user={user} org={org} >
-        <div className="hidden max-h-screen w-full flex-1 overflow-hidden lg:flex" id="app">
+      <UserProvider user={user} org={org}>
+        <div
+          className="hidden max-h-screen w-full flex-1 overflow-hidden lg:flex"
+          id="app"
+        >
           <Sidebar />
           <main className="flex h-screen w-full flex-1 flex-col items-center overflow-x-auto">
             <div className="sticky top-0 z-10 w-full">
