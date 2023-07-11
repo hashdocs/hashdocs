@@ -182,7 +182,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Date
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {formatDate(view.viewed_at, "MMM DD, YYYY HH:MM")}
+                            {formatDate(view.viewed_at, "MMM DD, YYYY HH:mm")}
                           </div>
                         </div>
                         <div className="flex flex-row">

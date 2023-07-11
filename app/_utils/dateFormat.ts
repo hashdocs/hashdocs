@@ -1,11 +1,17 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc"; // dependent on utc plugin
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export function formatDate(
   dateval: string,
   formatString: string = "MMM D",
   diff: boolean = false
 ): string {
-  let returnval = dayjs(dateval).format(formatString);
+  let returnval = dayjs(dateval).tz(userTimezone).format(formatString);
   if (diff) {
     const dateDiff =
       dayjs().diff(dayjs(dateval), "d") < 1
