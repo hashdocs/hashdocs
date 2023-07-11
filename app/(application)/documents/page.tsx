@@ -24,9 +24,7 @@ export default function DocumentsPage() {
 
   const _documents = useContext(DocumentsContext);
 
-  if (!_documents) throw Error("Error in fetching documents");
-
-  const { documents } = _documents;
+  const { documents } = _documents!;
 
   return (
     <section className="flex flex-1 flex-col">
@@ -50,9 +48,7 @@ export default function DocumentsPage() {
         }
       </div>
       <ul role="list" className="flex w-full flex-1 flex-col">
-        {!documents ? (
-          <Loader />
-        ) : documents.length > 0 ? (
+        {documents.length > 0 ? (
           documents.map((document) => (
             <DocumentRow key={document.document_id} {...document} />
           ))
