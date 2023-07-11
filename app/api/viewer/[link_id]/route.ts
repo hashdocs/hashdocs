@@ -17,6 +17,8 @@ export async function POST(
   const ip = request.headers.get("ip");
   const geo = request.headers.get("geo");
 
+  console.log(request.headers.get('x-vercel-ip-country-region'), request.headers.get('x-vercel-ip-city'), request.headers.get('x-real-ip'));
+
   const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
     "authorize-viewer",
     {

@@ -276,7 +276,7 @@ export default function DocumentHeader({
                 <input
                   className="truncate rounded-sm px-1 py-0 text-lg font-semibold text-shade-pencil-black focus:ring-2 focus:ring-stratos-default"
                   type="text"
-                  value={document.document_name}
+                  value={name}
                   onChange={handleNameChange}
                   onBlur={handleBlur}
                   autoFocus
@@ -286,7 +286,7 @@ export default function DocumentHeader({
                   className="cursor-text truncate text-lg font-semibold  text-shade-pencil-black hover:underline"
                   onClick={handleClick}
                 >
-                  {document.document_name}
+                  {name}
                 </h3>
               )}
               <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
