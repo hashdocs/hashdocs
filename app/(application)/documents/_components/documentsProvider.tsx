@@ -10,21 +10,6 @@ export const DocumentsContext = createContext<DocumentsContextType | null>(
   null
 );
 
-async function getDocuments(): Promise<DocumentType[]> {
-  const res = await fetch(`/api/documents`, {
-    method: "GET",
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Could not fetch documents");
-  }
-
-  const documents = await res.json();
-
-  return documents;
-}
-
 export default function DocumentsProvider({
   children,
   documents_data,
@@ -36,16 +21,6 @@ export default function DocumentsProvider({
   const [showViewAnalyticsModal, setShowViewAnalyticsModal] = useState<
     string | null
   >(null);
-
-  useEffect(() => {
-    getDocuments()
-      .then((documents) => {
-        setDocuments(documents);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
   return (
     <DocumentsContext.Provider

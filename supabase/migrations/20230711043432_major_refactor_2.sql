@@ -1,7 +1,9 @@
-CREATE OR REPLACE FUNCTION get_documents(document_id_input text DEFAULT NULL)
-	RETURNS json
-	LANGUAGE PLPGSQL
-	AS $$
+set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.get_documents(document_id_input text DEFAULT NULL::text)
+ RETURNS json
+ LANGUAGE plpgsql
+AS $function$
 DECLARE
 	return_data json;
 	time_input timestamptz;
@@ -80,5 +82,7 @@ BEGIN
 	--
 	RETURN coalesce(return_data, '[]'::json);
 END;
-$$;
+$function$
+;
+
 

@@ -1,11 +1,9 @@
-import { Fragment, useContext, useEffect, useMemo, useState } from "react";
+import { Fragment, useContext } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { DocumentType } from "@/types/documents.types";
 import {
   Bar,
   BarChart,
   Cell,
-  LabelList,
   Pie,
   PieChart,
   Tooltip,
@@ -14,11 +12,9 @@ import {
 } from "recharts";
 import { formatDate, formatTime } from "@/app/_utils/dateFormat";
 import Loader from "@/app/_components/navigation/loader";
-import { classNames } from "@/app/_utils/classNames";
 import dynamic from "next/dynamic";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
 import { useParams } from "next/navigation";
-import { DocumentIdContext } from "../../_components/documentHeader";
 
 interface AnalyticsModalProps {
   viewId: string | null;
@@ -64,13 +60,19 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
 ) => {
   const { viewId, setViewId } = props;
 
-  const _documentIdContext = useContext(DocumentIdContext);
+  const { document_id } = useParams();
 
-  if (!_documentIdContext) return null;
+  const _documentsContext = useContext(DocumentsContext);
 
-  const { document, urls } = _documentIdContext;
+  const { documents } = _documentsContext!;
 
-  const { links } = document;
+  const document = documents.find((doc) => doc.document_id === document_id);
+
+  if (!document) {
+    return null;
+  }
+
+  const { links, versions } = document;
 
   const link = links?.find(
     (link) => link.link_id && viewId?.includes(link.link_id)
@@ -84,7 +86,13 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
 
   if (!view) return null;
 
-  const { page_count } = view;
+  const { page_count, document_version } = view;
+
+  const token =
+    versions.find((version) => version.document_version === document_version)
+      ?.token ?? "";
+
+  const signed_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document_id}/${document_version}.pdf?token=${token}`;
 
   if (!page_count) return null;
 
@@ -275,15 +283,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                       <YAxis name="Duration" allowDecimals={false} />
                       <Tooltip
                         offset={20}
-                        content={
-                          <CustomTooltip
-                            signed_url={
-                              urls.find(
-                                (url) => url.version == view.document_version
-                              )?.signed_url
-                            }
-                          />
-                        }
+                        content={<CustomTooltip signed_url={signed_url} />}
                       />
                       <Bar
                         dataKey="duration"

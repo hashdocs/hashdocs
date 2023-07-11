@@ -16,16 +16,20 @@ export type LinkType = Database["public"]["Tables"]["tbl_links"]["Row"] & {
   views: ViewType[];
 };
 
+export type DocumentVersionType =
+  Database["public"]["Tables"]["tbl_document_versions"]["Row"] & {
+    token: string;
+  };
+
 export type DocumentType =
   Database["public"]["Tables"]["tbl_documents"]["Row"] & {
     links: LinkType[];
-    versions: Database["public"]["Tables"]["tbl_document_versions"]["Row"][];
+    versions: DocumentVersionType[];
   };
 
 export type GetLinkProps = Database["public"]["Tables"]["tbl_links"]["Row"] &
   Database["public"]["Tables"]["tbl_documents"]["Row"] &
   Database["public"]["Tables"]["tbl_document_versions"]["Row"];
-
 
 export interface documentTabType {
   name: string;
@@ -40,14 +44,3 @@ export type DocumentsContextType = {
   showViewAnalyticsModal: string | null;
   setShowViewAnalyticsModal: Dispatch<SetStateAction<string | null>>;
 };
-
-export type SignedUrlType = {
-  version: number;
-  path: string;
-  signed_url:string
-}
-
-export type DocumentIdContextType = {
-  document: DocumentType;
-  urls: SignedUrlType[]
-}

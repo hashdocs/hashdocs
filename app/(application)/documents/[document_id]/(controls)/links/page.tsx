@@ -1,9 +1,9 @@
 "use client";
 import EmptyLinks from "./_components/emptyLinks";
 import LinkRow from "./_components/linkRow";
-import { getDocuments } from "../layout";
 import { useContext } from "react";
-import { DocumentIdContext } from "../_components/documentHeader";
+import { DocumentsContext } from "../../../_components/documentsProvider";
+import { useRouter } from "next/navigation";
 
 /*=========================================== COMPONENT ===========================================*/
 
@@ -12,11 +12,19 @@ export default function LinksPage({
 }: {
   params: { document_id: string };
 }) {
-  const _documentIdContext = useContext(DocumentIdContext);
+  const _documentsContext = useContext(DocumentsContext);
+  const router = useRouter();
 
-  if (!_documentIdContext) return null;
+  if (!_documentsContext) return null;
 
-  const { document } = _documentIdContext;
+  const { documents } = _documentsContext;
+
+  const document = documents.find((doc) => doc.document_id === document_id);
+
+  if (!document) {
+    router.push(`/documents`);
+    return null;
+  }
 
   return document.links.length > 0 ? (
     <ul role="list" className="flex flex-col py-4">

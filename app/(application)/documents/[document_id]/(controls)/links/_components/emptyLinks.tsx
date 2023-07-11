@@ -1,22 +1,24 @@
 "use client";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
-import { DocumentPlusIcon } from "@heroicons/react/20/solid";
 import { LinkIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
 import EditLinkModal from "../../_components/editLinkModal";
-import { DocumentIdContext } from "../../_components/documentHeader";
-import { DocumentType } from "@/types/documents.types";
 
 export default function EmptyLinks({ document_id }: { document_id: string }) {
-
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
 
-  const _documentIdContext = useContext(DocumentIdContext);
+  const _documentsContext = useContext(DocumentsContext);
 
-  if (!_documentIdContext) return null;
+  if (!_documentsContext) return null;
 
-  const { document } = _documentIdContext;
+  const { documents } = _documentsContext;
+
+  const document = documents.find((doc) => doc.document_id === document_id);
+
+  if (!document) {
+    return null;
+  }
 
   return (
     <div className="my-4 flex flex-col items-center gap-y-4 border-2 border-dashed border-shade-line pb-16 pt-12 text-center">
@@ -38,6 +40,7 @@ export default function EmptyLinks({ document_id }: { document_id: string }) {
         }
         onClick={() => setShowNewLinkModal(true)}
         ButtonId={""}
+        disabled={!document.is_enabled}
       />
       <EditLinkModal
         isOpen={showNewLinkModal}
