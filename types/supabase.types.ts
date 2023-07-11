@@ -330,7 +330,7 @@ export interface Database {
       tbl_views: {
         Row: {
           document_version: number | null
-          geo: Json | null
+          geo: string | null
           ip: string | null
           is_authorized: boolean
           link_id: string | null
@@ -342,7 +342,7 @@ export interface Database {
         }
         Insert: {
           document_version?: number | null
-          geo?: Json | null
+          geo?: string | null
           ip?: string | null
           is_authorized?: boolean
           link_id?: string | null
@@ -354,7 +354,7 @@ export interface Database {
         }
         Update: {
           document_version?: number | null
-          geo?: Json | null
+          geo?: string | null
           ip?: string | null
           is_authorized?: boolean
           link_id?: string | null

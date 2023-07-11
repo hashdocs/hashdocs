@@ -188,12 +188,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                             Location
                           </div>
                           <div className="basis-2/3 font-semibold">
-                            {(view.geo as any)?.city ||
-                            (view.geo as any)?.country
-                              ? `${(view.geo as any)?.city ?? ""}, ${
-                                  (view.geo as any)?.country ?? ""
-                                }`
-                              : "unknown"}
+                            {view.geo ?? "unknown"}
                           </div>
                         </div>
                         <div className="flex flex-row">

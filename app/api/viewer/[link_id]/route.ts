@@ -14,11 +14,6 @@ export async function POST(
 
   const { email, password } = await request.json();
 
-  const ip = request.headers.get("ip");
-  const geo = request.headers.get("geo");
-
-  console.log(request.headers.get('x-vercel-ip-country-region'), request.headers.get('x-vercel-ip-city'), request.headers.get('x-real-ip'));
-
   const { data, error } = await supabase.functions.invoke<AuthorizeViewerType>(
     "authorize-viewer",
     {
@@ -26,8 +21,8 @@ export async function POST(
         link_id_input: link_id,
         email_input: email,
         password_input: password,
-        ip,
-        geo,
+        ip: request.headers.get('x-real-ip'),
+        geo: `${request.headers.get('x-vercel-ip-city') ?? ""}, ${request.headers.get('x-vercel-ip-country-region') ?? ""}, ${request.headers.get('x-vercel-ip-country') ?? ""}`,
         ua: userAgent(request),
       },
     }
