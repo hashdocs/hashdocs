@@ -24,19 +24,18 @@ async function getSignedURL(document_id: string) {
   }
 
   const document_props = document_data[0];
-  const document_version = document_props.versions.find((version) => {
-    version.is_enabled == true;
-  })?.document_version;
+  const document_version =
+    document_props.versions.find((version) => version.is_enabled)
+      ?.document_version ?? 0;
 
-  const { data, error } = await supabase.storage
-    .from("documents")
-    .createSignedUrl(`${document_id}/${document_version}.pdf`, 10);
+  const token =
+    document_props.versions.find(
+      (version) => version.document_version === document_version
+    )?.token ?? "";
 
-  if (error || !data) return null;
+  const signed_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document_id}/${document_version}.pdf?token=${token}`;
 
-  const { signedUrl } = data;
-
-  return { signedUrl, document_props };
+  return { signed_url, document_props };
 }
 
 export default async function InternalViewerPage({
@@ -52,7 +51,7 @@ export default async function InternalViewerPage({
         <PreviewTopBar documentProps={props.document_props} />
       </div>
       <div className=" flex max-h-screen w-full flex-1 justify-center overflow-hidden">
-        <PDFViewerPage signedURL={props.signedUrl} />;
+        <PDFViewerPage signedURL={props.signed_url} />;
       </div>
     </main>
   ) : (

@@ -54,8 +54,7 @@ export default function DocumentHeader({
 
   const document = documents.find((doc) => doc.document_id === document_id)!;
 
-  const { image, is_enabled, document_name, source_path, source_type, links } =
-    document;
+  const { image, is_enabled, document_name, source_path, source_type, links } = document;
 
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
   const [isEnabled, setIsEnabled] = useState(is_enabled);
