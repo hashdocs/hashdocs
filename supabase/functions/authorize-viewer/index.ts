@@ -16,13 +16,7 @@ type AuthorizeViewerProps = {
   email_input?: string;
   password_input?: string;
   ip: string | undefined;
-  geo: {
-    city: string | undefined;
-    country: string | undefined;
-    region: string | undefined;
-    latitude: string | undefined;
-    longitude: string | undefined;
-  };
+  geo: string | undefined;
   ua: {
     isBot: boolean;
     ua: string;
@@ -132,7 +126,7 @@ serve(async (req) => {
     link_id_input,
     email_input,
     ip,
-    geo = {},
+    geo,
     ua,
   } = input_props as AuthorizeViewerProps;
 
