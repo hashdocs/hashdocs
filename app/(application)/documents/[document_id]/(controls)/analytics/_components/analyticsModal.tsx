@@ -88,6 +88,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
 
   const { page_count, document_version } = view;
 
+  console.log(view);
+
   const token =
     versions.find((version) => version.document_version === document_version)
       ?.token ?? "";
@@ -147,7 +149,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                     >
                       Analytics
                     </Dialog.Title>
-                    <div className="flex flex-row">
+                    <div className="flex flex-row gap-x-2">
                       <div className="flex basis-1/3 flex-col gap-y-3">
                         <div className="flex flex-row">
                           <div className="basis-1/3 text-shade-pencil-light">
@@ -187,8 +189,8 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           <div className="basis-1/3 text-shade-pencil-light">
                             Location
                           </div>
-                          <div className="basis-2/3 font-semibold">
-                            {view.geo ?? "unknown"}
+                          <div className="basis-2/3 font-semibold truncate">
+                            {view.geo ?? ""}
                           </div>
                         </div>
                         <div className="flex flex-row">
