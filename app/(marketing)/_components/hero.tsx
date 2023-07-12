@@ -6,7 +6,7 @@ const Hero = () => {
   return (
     <div className="mx-auto flex max-w-screen-xl flex-col items-center p-4 text-center">
       <Link
-        href="/"
+        href="https://twitter.com/rbkayz/status/1678813872965447681"
         target="_blank"
         className="group mx-auto flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-shade-line bg-white px-7 py-2 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.1)] backdrop-blur transition-all hover:border-shade-line hover:bg-white/50"
       >
