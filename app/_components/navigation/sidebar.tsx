@@ -60,7 +60,7 @@ export default function Sidebar() {
         reject(false);
       } else {
         resolve(true);
-        router.push("/");
+        router.replace("/", { forceOptimisticNavigation: true });
       }
     });
 
