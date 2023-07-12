@@ -61,7 +61,9 @@ serve(async (req) => {
   try {
     const body = (await req.json()) as InsertPayload;
 
-    const { id } = body.record;
+    const { id, email } = body.record;
+
+    console.log(`${id} - Starting create-org function for ${email}`);
 
     /* ------------------------- Fetch org_info from body ------------------------- */
 
@@ -96,7 +98,7 @@ serve(async (req) => {
       .rpc("get_org", { org_id_input: org_id })
       .returns<OrgType>();
 
-    console.log(`${org_id} - Fetched ${org_info}`);
+    console.log(`${org_id} - Fetched email from org - ${org_info?.users[0].email}`);
 
     if (org_error || !org_info) {
       throw Error(`Error fetching org - ${org_error}`);

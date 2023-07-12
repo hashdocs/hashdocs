@@ -1,11 +1,9 @@
 "use client";
-import Empty from "@/app/_components/navigation/empty";
-import LargeButton from "@/app/_components/shared/buttons/largeButton";
-import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
-import { User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import Link from "next/link";
+import {
+  createClientComponentClient,
+} from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import toast from "react-hot-toast";
 import { UserContext } from "../../_components/userProvider";
 import { formatDate } from "@/app/_utils/dateFormat";
@@ -16,13 +14,14 @@ import Loader from "@/app/_components/navigation/loader";
 /*=========================================== CONSTANTS ===========================================*/
 
 export default function AnalyticsPage() {
-
   const supabase = createClientComponentClient();
   const router = useRouter();
 
   const _userContext = useContext(UserContext);
 
-  if(!_userContext) {return <Loader />}
+  if (!_userContext) {
+    return <Loader />;
+  }
 
   const { user } = _userContext;
 
@@ -36,7 +35,7 @@ export default function AnalyticsPage() {
         reject(false);
       } else {
         resolve(true);
-        router.push("/");
+        router.replace("/", { forceOptimisticNavigation: true });
       }
     });
 
@@ -49,18 +48,31 @@ export default function AnalyticsPage() {
 
   return (
     <main className="flex flex-col space-y-4">
-      <div className="w-full flex flex-1 flex-col p-8 items-center bg-white text-shade-pencil-light shadow-sm rounded-md gap-y-8 ">
-        <div className="flex flex-row flex-1 items-center w-full">
-          <div className="basis-1/2 flex flex-1 text-sm font-semibold">Email</div>
-          <div className="basis-1/2 flex flex-1 bg-shade-overlay font-semibold shadow-inner rounded-md p-2 h-10 border border-shade-line">{user?.email}</div>
+      <div className="flex w-full flex-1 flex-col items-center gap-y-8 rounded-md bg-white p-8 text-shade-pencil-light shadow-sm ">
+        <div className="flex w-full flex-1 flex-row items-center">
+          <div className="flex flex-1 basis-1/2 text-sm font-semibold">
+            Email
+          </div>
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+            {user?.email}
+          </div>
         </div>
-        <div className="flex flex-row flex-1 items-center w-full">
-          <div className="basis-1/2 flex flex-1 text-sm font-semibold">Last Sign In</div>
-          <div className="basis-1/2 flex flex-1 bg-shade-overlay font-semibold shadow-inner rounded-md p-2 h-10 border border-shade-line">{formatDate(user?.last_sign_in_at ?? "", "MMM DD, YYYY")}</div>
+        <div className="flex w-full flex-1 flex-row items-center">
+          <div className="flex flex-1 basis-1/2 text-sm font-semibold">
+            Last Sign In
+          </div>
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+            {formatDate(user?.last_sign_in_at ?? "", "MMM DD, YYYY")}
+          </div>
         </div>
-        <div className="flex flex-row flex-1 items-center w-full">
-          <div className="basis-3/4 flex flex-1 text-sm font-semibold"></div>
-          <button className="font-semibold shadow-inner rounded-md p-2 border border-red-500 text-red-700 bg-red-50" onClick={handleLogout}>Logout of all sessions</button>
+        <div className="flex w-full flex-1 flex-row items-center">
+          <div className="flex flex-1 basis-3/4 text-sm font-semibold"></div>
+          <button
+            className="rounded-md border border-red-500 bg-red-50 p-2 font-semibold text-red-700 shadow-inner"
+            onClick={handleLogout}
+          >
+            Logout of all sessions
+          </button>
         </div>
       </div>
     </main>

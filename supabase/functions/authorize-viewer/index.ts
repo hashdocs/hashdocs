@@ -43,23 +43,89 @@ type AuthorizeViewerProps = {
   };
 };
 
+type ValidateEmailProps = {
+  email: string;
+  autocorrect: string;
+  deliverability: "DELIVERABLE" | "UNDELIVERABLE" | "UNKNOWN";
+  quality_score: number;
+  is_valid_format: {
+    value: boolean;
+    text: string;
+  };
+  is_free_email: {
+    value: boolean;
+    text: string;
+  };
+  is_disposable_email: {
+    value: boolean;
+    text: string;
+  };
+  is_role_email: {
+    value: boolean;
+    text: string;
+  };
+  is_catchall_email: {
+    value: boolean;
+    text: string;
+  };
+  is_mx_found: {
+    value: boolean;
+    text: string;
+  };
+  is_smtp_valid: {
+    value: boolean;
+    text: string;
+  };
+};
+
 /* --------------------------------- SUCCESS RETURN FUNCTION -------------------------------- */
 
-function validateViewer(
+async function validateViewer(
   input_props: AuthorizeViewerProps,
   link_props: GetLinkProps
 ) {
-  /* -------------------------- VALIDATION FUNCTIONS -------------------------- */
+  let error_message: string | undefined;
 
   // Validate if email is correct
-  function validateEmail(email_input?: string) {
+  async function validateEmail(email_input?: string) {
     if (!email_input) return false;
 
-    const email_regex = new RegExp(
-      /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
-    );
+    try {
+      const res = await fetch(
+        `https://emailvalidation.abstractapi.com/v1?api_key=${Deno.env.get(
+          "ABSTRACT_API_KEY"
+        )}&email=${email_input}`
+      );
 
-    return email_regex.test(email_input);
+      const data = (await res.json()) as ValidateEmailProps;
+
+      if (!data.is_valid_format.value) {
+        error_message = "Invalid email. Please enter a valid email address";
+        return false;
+      }
+
+      if (data.is_disposable_email.value) {
+        error_message =
+          "You appear to be using a disposable email address. Please use your actual email";
+        return false;
+      }
+
+      if (data.deliverability == "DELIVERABLE") {
+        return true;
+      } else {
+        error_message =
+          "Apologies! This appears to be an undeliverable email address. Please use your real email";
+        return false;
+      }
+    } catch (error) {
+      console.warn(`Error validating email from api: ${error}`);
+
+      const email_regex = new RegExp(
+        /^[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/
+      );
+
+      return email_regex.test(email_input);
+    }
   }
 
   // Validate if password matches
@@ -91,15 +157,18 @@ function validateViewer(
 
   /* -------------------------- EXECUTION BODY -------------------------- */
 
-  if (link_props.is_email_required && !validateEmail(input_props.email_input)) {
-    return false;
+  if (
+    link_props.is_email_required &&
+    !(await validateEmail(input_props.email_input))
+  ) {
+    return { is_valid: false, error_message: error_message };
   }
 
   if (
     link_props.is_password_required &&
     !validatePassword(input_props.password_input)
   ) {
-    return false;
+    return { is_valid: false, error_message: error_message };
   }
 
   if (
@@ -109,10 +178,10 @@ function validateViewer(
       link_props.restricted_domains ?? undefined
     )
   ) {
-    return false;
+    return { is_valid: false, error_message: error_message };
   }
 
-  return true;
+  return { is_valid: true, error_message: error_message };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -122,26 +191,26 @@ function validateViewer(
 serve(async (req) => {
   const input_props = await req.json();
 
-  const {
-    link_id_input,
-    email_input,
-    ip,
-    geo,
-    ua,
-  } = input_props as AuthorizeViewerProps;
+  const { link_id_input, email_input, ip, geo, ua } =
+    input_props as AuthorizeViewerProps;
+
+  console.log(`${link_id_input} | ${email_input} - Initiating viewer auth`);
 
   const { data: link_props, error } = await supabase
     .rpc("get_link_props", { link_id_input })
     .returns<GetLinkProps[]>()
     .maybeSingle();
 
-  if (error) {
-    return errorHandler(error);
+  if (error || !link_props) {
+    console.error(
+      `${link_id_input} | ${email_input} - Error fetching link - ${error}`
+    );
+    return errorHandler(
+      "Invalid or inactive link. Please contact the owner of the document"
+    );
   }
 
-  if (!link_props) {
-    return errorHandler(Error("Invalid link"));
-  }
+  console.log(`${link_id_input} | ${email_input} - Fetched link props`);
 
   /* ------------------ INSERT VIEW LOG ----------------- */
 
@@ -159,15 +228,26 @@ serve(async (req) => {
     .maybeSingle();
 
   if (insert_view_error || !insert_view || !insert_view.view_id) {
-    return errorHandler(insert_view_error);
+    console.error(
+      `${link_id_input} | ${email_input} - Error inserting view log`
+    );
+    return errorHandler(
+      "Authorization failed. Please contact the owner of the document"
+    );
   }
+
+  console.log(
+    `${link_id_input} | ${email_input} - Inserted view log - ${insert_view.view_id}`
+  );
 
   /* ------------------ CHECK IF DOCUMENT AND LINK ARE ACTIVE ----------------- */
 
   const { is_enabled, is_active } = link_props;
 
   if (!is_enabled || !is_active) {
-    return errorHandler(Error("Invalid link"));
+    return errorHandler(
+      "Invalid or inactive link. Please contact the owner of the document"
+    );
   }
 
   /* -------------------------- CHECK FOR EXPIRATION -------------------------- */
@@ -178,19 +258,28 @@ serve(async (req) => {
     const expiration_date_obj = new Date(expiration_date);
 
     if (new Date() > expiration_date_obj) {
-      return errorHandler(Error("Link expired"));
+      return errorHandler(
+        "This link has expired. Please contact the owner of the document"
+      );
     }
   }
 
+  console.log(`${link_id_input} | ${email_input} - Validated link props`);
+
   /* -------------------------- CHECK FOR AUTHORIZATION -------------------------- */
 
-  const is_valid_viewer = validateViewer(input_props, link_props);
+  const { is_valid, error_message } = await validateViewer(
+    input_props,
+    link_props
+  );
 
-  if (!is_valid_viewer) {
-    return errorHandler(Error("Unauthorized"));
+  if (!is_valid) {
+    return errorHandler(error_message);
   }
 
-  console.log(input_props, insert_view);
+  console.log(
+    `${link_id_input} | ${email_input} - Authorizing ${insert_view.view_id}`
+  );
 
   const { data: authorize_data, error: authorize_error } = await supabaseAdmin
     .rpc("authorize_viewer", {
@@ -200,10 +289,18 @@ serve(async (req) => {
 
   if (authorize_error || !authorize_data) {
     console.error(
-      `Error in authorization RPC - ${JSON.stringify(authorize_error)}`
+      `${link_id_input} | ${email_input} - Error in authorization RPC - ${JSON.stringify(
+        authorize_error
+      )}`
     );
-    return errorHandler(error);
+    return errorHandler(
+      "Could not authorize. Please contact the owner of the document"
+    );
   }
+
+  console.log(
+    `${link_id_input} | ${email_input} - Authorized ${insert_view.view_id}`
+  );
 
   return new Response(JSON.stringify(authorize_data), {
     headers: { "Content-Type": "application/json" },
