@@ -28,7 +28,8 @@ export async function POST(
     }
   );
 
-  if (error || !data) return NextResponse.json(null, { status: 401 });
+
+  if (error || !data) return NextResponse.json(await error.context.text(), { status: 401 });
 
   cookies().set({
     name: link_id,

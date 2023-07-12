@@ -35,13 +35,13 @@ export default function ViewerAuth() {
       });
 
       if (res.ok) {
-        // toast.success("Authorization successful");
         resolve("success");
         router.refresh();
-        // setIsLoading(false);
       } else {
-        // toast.error("Authorization failed! Please try again");
-        reject("error");
+
+        const err = await res.json();
+
+        reject(err);
         setIsLoading(false);
       }
     });
@@ -49,10 +49,10 @@ export default function ViewerAuth() {
     toast.promise(authorizePromise, {
       loading: "Authorizing...",
       success: "Authorization successful",
-      error: "Authorization failed! Please try again",
+      error: (error_message: string) => (
+        <p>{error_message ?? "Authorization failed! Please try again"}</p>
+      ),
     });
-    // router.refresh();
-    // setIsLoading(false);
   };
 
   const validateEmail = (email: string) => {
@@ -82,12 +82,14 @@ export default function ViewerAuth() {
 
   return (
     <section className="flex flex-1 flex-col items-center justify-center ">
-      <div className="flex min-h-[400px] max-w-xl w-full flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
+      <div className="flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
         <div className="bg-stratos-gradient flex h-12 w-12 items-center justify-center rounded-full border-2 text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-stratos-default ring-offset-1">
           <LockClosedIcon className="h-5 w-5" />
         </div>
         <p className="text-base ">
-          {(!is_email_required && !is_password_required) ? "By continuing, you affirm that you have received permission from the author to view the document" : "The author requires the following details to view the document"}
+          {!is_email_required && !is_password_required
+            ? "By continuing, you affirm that you have received permission from the author to view the document"
+            : "The author requires the following details to view the document"}
         </p>
 
         <form
