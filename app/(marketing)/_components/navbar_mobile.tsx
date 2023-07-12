@@ -27,7 +27,6 @@ const sidebar = {
 const navItems = ["pricing", "roadmap"];
 
 export default function MobileNav() {
-
   const [isOpen, toggleOpen] = useCycle(false, true);
   const containerRef = useRef(null);
   const { height } = useDimensions(containerRef);
@@ -50,20 +49,31 @@ export default function MobileNav() {
         variants={variants}
         className="absolute grid w-full gap-3 px-10 py-16"
       >
-        {navItems.map((item) => (
-          <div key={item} className="grid gap-3">
-            <MenuItem>
-              <Link
-                href={`/${item}`}
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                {item}
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-shade-line" />
-          </div>
-        ))}
+        <div key={"pricing"} className="grid gap-3">
+          <MenuItem>
+            <Link
+              href={`/pricing`}
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Pricing
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-shade-line" />
+        </div>
+        <div key={"roadmap"} className="grid gap-3">
+          <MenuItem>
+            <Link
+              href={`https://github.com/hashdocs/hashdocs/issues`}
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Roadmap
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-shade-line" />
+        </div>
+
         <MenuItem key="Dashboard">
           <Link
             href={`/login`}
