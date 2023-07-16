@@ -49,6 +49,18 @@ export default function MobileNav() {
         variants={variants}
         className="absolute grid w-full gap-3 px-10 py-16"
       >
+        <div key={"blog"} className="grid gap-3">
+          <MenuItem>
+            <Link
+              href={`/blog`}
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Blog
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-shade-line" />
+        </div>
         <div key={"pricing"} className="grid gap-3">
           <MenuItem>
             <Link

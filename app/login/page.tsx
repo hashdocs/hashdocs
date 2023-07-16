@@ -90,6 +90,7 @@ export default function LoginPage() {
       if (data.user) {
         resolve(true);
         router.push("/documents");
+        router.refresh();
       }
     });
 
