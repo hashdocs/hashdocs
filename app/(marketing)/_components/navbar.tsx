@@ -4,8 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 
-const navItems = ["pricing", "roadmap"];
-
 export default function Navbar() {
   return (
     <div
@@ -28,6 +26,13 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center space-x-6 sm:flex">
+          <Link
+            key={"blog"}
+            href={`/blog`}
+            className={`rounded-md text-sm font-medium capitalize ${"text-shade-pencil-light"} transition-colors ease-out hover:text-shade-pencil-black`}
+          >
+            {"Blog"}
+          </Link>
           <Link
             key={"pricing"}
             href={`/pricing`}
