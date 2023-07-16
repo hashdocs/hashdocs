@@ -65,7 +65,7 @@ export default async function BlogIdPage({
               <div className="flex flex-col lg:sticky lg:top-24">
                 <div className="text-base py-1 font-semibold">Related articles</div>
                 {blogData.related_blogs.map((b) => {
-                  return <Link href={`/blog/${b.blog_id}`} className="py-1 hover:text-stratos-default">{b.title}</Link>;
+                  return <Link href={`/blog/${b.blog_id}`} key={b.blog_id} className="py-1 hover:text-stratos-default">{b.title}</Link>;
                 })}
               </div>
             </div>

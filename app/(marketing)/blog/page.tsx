@@ -10,7 +10,7 @@ export default async function Blog() {
       <ol className="grid grid-cols-12 py-16 lg:gap-16">
         {blogData.map((blog) => {
           return (
-            <div className="col-span-12 lg:col-span-4">
+            <div className="col-span-12 lg:col-span-4" key={blog.blog_id}>
               <Link href={`/blog/${blog.blog_id}`}>
                 <div className="group min-w-full transition hover:scale-105">
                   <div className="flex flex-col space-y-3">
