@@ -9,14 +9,9 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { BlogType } from "../(marketing)/blog/[blog_id]/page";
 
-const markdownDirectory = path.join(process.cwd());
+const folderPath = `blog-content`;
 
 export const parseBlogMarkdown = async (blog_id: string) => {
-  const folderPath = path.join(
-    markdownDirectory,
-    `/app/(marketing)/blog/[blog_id]/content/`
-  );
-
   let blogData: BlogType = {
     blog_id: "",
     title: "",
@@ -81,11 +76,6 @@ export const parseBlogMarkdown = async (blog_id: string) => {
 };
 
 export const parseBlogs = async () => {
-  const folderPath = path.join(
-    markdownDirectory,
-    `/app/(marketing)/blog/[blog_id]/content/`
-  );
-
   let blogData: {
     blog_id: string;
     title: string;
