@@ -1,6 +1,7 @@
 ---
 blog_id: "killer-competition-slide"
-title: "Building a killer pitch deck competition slide"
+title: "Building a killer competition slide for your pitch deck"
+description: "Read more on the various types of competition slides you could use in your pitch deck"
 date: "2023-07-15"
 length: "2 min read"
 image: "/blog-assets/killer-competition-slide/hero.png"

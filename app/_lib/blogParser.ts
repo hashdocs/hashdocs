@@ -9,79 +9,78 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { BlogType } from "../(marketing)/blog/[blog_id]/page";
 
-const markdownDirectory = path.join(process.cwd());
+const folderPath = path.join(process.cwd(), "/blog-content");
 
 export const parseBlogMarkdown = async (blog_id: string) => {
-  const folderPath = path.join(
-    markdownDirectory,
-    `/app/(marketing)/blog/[blog_id]/content/`
-  );
+  let blogData: BlogType = {
+    blog_id: "",
+    title: "",
+    date: "",
+    length: "",
+    description: "",
+    image: "",
+    tags: [],
+    content: "",
+    related_blogs: [],
+  };
 
-  const blogPath = path.join(folderPath, `${blog_id}.md`);
+  fs.readdirSync(folderPath).forEach(async (file) => {
+    if (file === `${blog_id}.md`) {
+      const blogPath = path.join(folderPath, `${blog_id}.md`);
 
-  try {
-    const blogContent = fs.readFileSync(blogPath, "utf8");
+      const blogContent = fs.readFileSync(blogPath, "utf8");
 
-    const blogMatterResult = matter(blogContent);
+      const blogMatterResult = matter(blogContent);
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await unified()
-      .data("settings", { fragment: true })
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeStringify)
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings)
-      .process(blogMatterResult.content);
-    const content = processedContent.toString();
+      // Use remark to convert markdown into HTML string
+      const processedContent = await unified()
+        .data("settings", { fragment: true })
+        .use(remarkParse)
+        .use(remarkRehype)
+        .use(rehypeStringify)
+        .use(rehypeSlug)
+        .use(rehypeAutolinkHeadings)
+        .process(blogMatterResult.content);
 
-    let blogData: BlogType = {
-      blog_id: blog_id,
-      title: blogMatterResult.data.title,
-      date: blogMatterResult.data.date,
-      length: blogMatterResult.data.length,
-      image: blogMatterResult.data.image,
-      content: content,
-      tags: blogMatterResult.data.tags,
-      related_blogs: [],
-    };
+      const content = processedContent.toString();
 
-    fs.readdirSync(folderPath).forEach(async (file) => {
-      if (file === `${blog_id}.md`) return;
+      blogData.blog_id = blog_id;
+      blogData.title = blogMatterResult.data.title;
+      blogData.date = blogMatterResult.data.date;
+      blogData.length = blogMatterResult.data.length;
+      blogData.image = blogMatterResult.data.image;
+      blogData.content = content;
+      blogData.tags = blogMatterResult.data.tags as string[];
 
-      const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
+      fs.readdirSync(folderPath).forEach(async (file) => {
+        if (file !== `${blog_id}.md`) {
+          const blogPath = path.join(folderPath, file);
 
-      const matterResult = matter(fileContents);
+          const fileContents = fs.readFileSync(blogPath, "utf8");
 
-      const tags = matterResult.data.tags as string[];
+          const matterResult = matter(fileContents);
 
-      if (tags.some((item) => blogData.tags.includes(item))) {
-        blogData.related_blogs.push({
-          blog_id: matterResult.data.blog_id,
-          title: matterResult.data.title,
-        });
-      }
-    });
+          const tags = matterResult.data.tags as string[];
 
-    return blogData;
-  } catch (error) {
-    return null;
-  }
+          if (tags.some((item) => blogData.tags.includes(item))) {
+            blogData.related_blogs.push({
+              blog_id: matterResult.data.blog_id,
+              title: matterResult.data.title,
+            });
+          }
+        }
+      });
+    }
+  });
+
+  return blogData;
 };
 
 export const parseBlogs = async () => {
-  const folderPath = path.join(
-    markdownDirectory,
-    `/app/(marketing)/blog/[blog_id]/content/`
-  );
-
-  let blogData: {
-    blog_id: string;
-    title: string;
-    date: string;
-    length: string;
-    image:string;
-  }[] = [];
+  let blogData: Pick<
+    BlogType,
+    "blog_id" | "title" | "date" | "length" | "image" | "description"
+  >[] = [];
 
   fs.readdirSync(folderPath).forEach(async (file) => {
     const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
@@ -92,6 +91,7 @@ export const parseBlogs = async () => {
       blog_id: matterResult.data.blog_id,
       title: matterResult.data.title,
       date: matterResult.data.date,
+      description: matterResult.data.description,
       length: matterResult.data.length,
       image: matterResult.data.image,
     });

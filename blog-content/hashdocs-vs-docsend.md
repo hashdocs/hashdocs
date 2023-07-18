@@ -1,16 +1,17 @@
 ---
 blog_id: "hashdocs-vs-docsend"
-title: "Hashdocs vs Docsend: A comparison"
+title: "Why should you switch to using Hashdocs?"
+description: "A head-to-head comparison of Docsend and Hashdocs on features, pricing and ease of use"
 date: "2023-07-15"
 length: "3 min read"
 image: "/blog-assets/hashdocs-vs-docsend/hero.png"
 tags: ["general"]
 ---
-- Need to share a pitch deck with investors but with restricted access to certain domains?
+- _Need to share a pitch deck with investors but with restricted access to certain domains?_
 
-- Want to set an expiry date for content shared with your clients / vendors?
+- *Want to set an expiry date for content shared with your clients / vendors?*
 
-- Or simply track pieces of content your viewers are engaging the most with?* 
+- *Or simply track pieces of content your viewers are engaging the most with?* 
 
 Unlike an email attachment that is in the wild once it leaves your outbox, **secure link sharing is a great way to maintain full control** over your sensitive documents. 
 
@@ -18,27 +19,27 @@ And for most part, Docsend has been a great starting point.
 
 From single document upload & sharing to creating custom spaces and virtual data rooms, it serves the document sharing needs of startups and enterprises alike. 
 
-## **DocSend is a useful tool,  but most teams have the same issues**
+### **Most teams using Docsend have the same issues**
 
 - Many basic features are gated by price tiers, with the costs becoming prohibitive for small teams
 
-![1](/blog-assets/hashdocs-vs-docsend/1.png)
+![1](/blog-assets/hashdocs-vs-docsend/5.png)
 
-- Does not restrict - print to PDF, making it easy for documnets to be copied.
+- Does not restrict print to PDF, making it easy for documnets to be copied.
 
-![2](/blog-assets/hashdocs-vs-docsend/2.png)
+![2](/blog-assets/hashdocs-vs-docsend/1.png)
 
-- The tracking can be off (especially if someone leaves the doc open). When you are using analytics to determine what content your viewers engage with, acuuracy of reporting is key.
+- The accuracy in tracking can be wildly off (especially if someone leaves the doc open)
 
-![3](/blog-assets/hashdocs-vs-docsend/3.png)
+![3](/blog-assets/hashdocs-vs-docsend/2.png)
 
 - The user experience is unintuitive and clunky
 
-![5](/blog-assets/hashdocs-vs-docsend/5.png)
+![5](/blog-assets/hashdocs-vs-docsend/3.png)
 
-**For something used so extensively, there have got to be better alternatives.**
+---
 
-## Introducing Hashdocs - a secure, open-source Docsend alternative
+### Introducing Hashdocs - a secure, open-source Docsend alternative
 
 ![4](/blog-assets/hashdocs-vs-docsend/4.png)
 
@@ -53,14 +54,10 @@ From single document upload & sharing to creating custom spaces and virtual data
 **Features -** 
 
 1. **Advanced Link Controls**
-In addition to setting passwords, expiry dates and restricting downloads, Hashdocs allows you to restrict access to specific domains and watermark documents - **even in the Free plan!**
- 
-Now have full control on your document without upgrading to a premium plan.
+In addition to setting passwords, expiry dates and restricting downloads, Hashdocs allows you to restrict access to specific domains and watermark documents - **even in the Free plan!** Now have full control on your document without upgrading to a premium plan.
 
 2. **Enhanced Security**
-Hashdocs ensures robust security by completely disabling the ability to copy or print content - ensuring that your sensitive information is well-protected.
-
-No more worries that your sensitive documents are simply being printed and saved!
+Hashdocs ensures robust security by completely disabling the ability to copy or print content - ensuring that your sensitive information is well-protected No more worries that your sensitive documents are simply being printed and saved!
 
 3. **Completely Open Source**
 By completely open sourcing the code, Hashdocs allows users to view, audit and self host, ensuring that you can fully trust the software that handles your sensitive documents.
