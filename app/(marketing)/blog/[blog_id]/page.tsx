@@ -2,9 +2,7 @@
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import React from "react";
-import {
-  parseBlogMarkdown,
-} from "@/app/_lib/blogParser";
+import { parseBlogMarkdown } from "@/app/_lib/blogParser";
 
 export interface BlogType {
   blog_id: string;
@@ -27,7 +25,7 @@ export default async function BlogIdPage({
 }) {
   const blogData = await parseBlogMarkdown(blog_id);
 
-  if (!blogData) throw Error("Blog not found");
+  if (blogData.blog_id !== blog_id) throw Error("Blog not found");
 
   return (
     <div className="mx-auto flex w-full max-w-screen-xl flex-1 flex-col items-center px-4 py-8 text-center">
@@ -63,9 +61,19 @@ export default async function BlogIdPage({
             <div className="col-span-12 lg:col-span-1"></div>
             <div className="col-span-12 lg:col-span-4">
               <div className="flex flex-col lg:sticky lg:top-24">
-                <div className="text-base py-1 font-semibold">Related articles</div>
+                <div className="py-1 text-base font-semibold">
+                  Related articles
+                </div>
                 {blogData.related_blogs.map((b) => {
-                  return <Link href={`/blog/${b.blog_id}`} key={b.blog_id} className="py-1 hover:text-stratos-default">{b.title}</Link>;
+                  return (
+                    <Link
+                      href={`/blog/${b.blog_id}`}
+                      key={b.blog_id}
+                      className="py-1 hover:text-stratos-default"
+                    >
+                      {b.title}
+                    </Link>
+                  );
                 })}
               </div>
             </div>
