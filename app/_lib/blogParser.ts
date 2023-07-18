@@ -19,64 +19,51 @@ export const parseBlogMarkdown = async (blog_id: string) => {
 
   const blogPath = path.join(folderPath, `${blog_id}.md`);
 
-  try {
-    const blogContent = fs.readFileSync(blogPath, "utf8");
+  const blogContent = fs.readFileSync(blogPath, "utf8");
 
-    console.log("blog found", blogContent);
+  const blogMatterResult = matter(blogContent);
 
-    const blogMatterResult = matter(blogContent);
+  // Use remark to convert markdown into HTML string
+  const processedContent = await unified()
+    .data("settings", { fragment: true })
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings)
+    .process(blogMatterResult.content);
 
-    console.log("blog matter result", blogMatterResult);
+  const content = processedContent.toString();
 
-    // Use remark to convert markdown into HTML string
-    const processedContent = await unified()
-      .data("settings", { fragment: true })
-      .use(remarkParse)
-      .use(remarkRehype)
-      .use(rehypeStringify)
-      .use(rehypeSlug)
-      .use(rehypeAutolinkHeadings)
-      .process(blogMatterResult.content);
+  let blogData: BlogType = {
+    blog_id: blog_id,
+    title: blogMatterResult.data.title,
+    date: blogMatterResult.data.date,
+    length: blogMatterResult.data.length,
+    image: blogMatterResult.data.image,
+    content: content,
+    tags: blogMatterResult.data.tags,
+    related_blogs: [],
+  };
 
-    console.log("processed content", processedContent);
+  fs.readdirSync(folderPath).forEach(async (file) => {
+    if (file === `${blog_id}.md`) return;
 
-    const content = processedContent.toString();
+    const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
 
-    console.log("content", content);
+    const matterResult = matter(fileContents);
 
-    let blogData: BlogType = {
-      blog_id: blog_id,
-      title: blogMatterResult.data.title,
-      date: blogMatterResult.data.date,
-      length: blogMatterResult.data.length,
-      image: blogMatterResult.data.image,
-      content: content,
-      tags: blogMatterResult.data.tags,
-      related_blogs: [],
-    };
+    const tags = matterResult.data.tags as string[];
 
-    fs.readdirSync(folderPath).forEach(async (file) => {
-      if (file === `${blog_id}.md`) return;
+    if (tags.some((item) => blogData.tags.includes(item))) {
+      blogData.related_blogs.push({
+        blog_id: matterResult.data.blog_id,
+        title: matterResult.data.title,
+      });
+    }
+  });
 
-      const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
-
-      const matterResult = matter(fileContents);
-
-      const tags = matterResult.data.tags as string[];
-
-      if (tags.some((item) => blogData.tags.includes(item))) {
-        blogData.related_blogs.push({
-          blog_id: matterResult.data.blog_id,
-          title: matterResult.data.title,
-        });
-      }
-    });
-
-    return blogData;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+  return blogData;
 };
 
 export const parseBlogs = async () => {
