@@ -12,22 +12,21 @@ import { BlogType } from "../(marketing)/blog/[blog_id]/page";
 const markdownDirectory = path.join(process.cwd());
 
 export const parseBlogMarkdown = async (blog_id: string) => {
-  console.log(blog_id);
   const folderPath = path.join(
     markdownDirectory,
     `/app/(marketing)/blog/[blog_id]/content/`
   );
 
-  console.log(folderPath);
-
   const blogPath = path.join(folderPath, `${blog_id}.md`);
-
-  console.log(blogPath);
 
   try {
     const blogContent = fs.readFileSync(blogPath, "utf8");
 
+    console.log("blog found", blogContent);
+
     const blogMatterResult = matter(blogContent);
+
+    console.log("blog matter result", blogMatterResult);
 
     // Use remark to convert markdown into HTML string
     const processedContent = await unified()
@@ -38,7 +37,12 @@ export const parseBlogMarkdown = async (blog_id: string) => {
       .use(rehypeSlug)
       .use(rehypeAutolinkHeadings)
       .process(blogMatterResult.content);
+
+    console.log("processed content", processedContent);
+
     const content = processedContent.toString();
+
+    console.log("content", content);
 
     let blogData: BlogType = {
       blog_id: blog_id,
