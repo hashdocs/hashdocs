@@ -12,10 +12,13 @@ import { BlogType } from "../(marketing)/blog/[blog_id]/page";
 const markdownDirectory = path.join(process.cwd());
 
 export const parseBlogMarkdown = async (blog_id: string) => {
+  console.log(blog_id);
   const folderPath = path.join(
     markdownDirectory,
     `/app/(marketing)/blog/[blog_id]/content/`
   );
+
+  console.log(folderPath);
 
   const blogPath = path.join(folderPath, `${blog_id}.md`);
 
@@ -83,7 +86,7 @@ export const parseBlogs = async () => {
     title: string;
     date: string;
     length: string;
-    image:string;
+    image: string;
   }[] = [];
 
   fs.readdirSync(folderPath).forEach(async (file) => {
