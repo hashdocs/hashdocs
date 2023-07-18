@@ -27,6 +27,8 @@ export default async function BlogIdPage({
 }) {
   const blogData = await parseBlogMarkdown(blog_id);
 
+  console.log(blog_id, blogData);
+
   if (!blogData) throw Error("Blog not found");
 
   return (
