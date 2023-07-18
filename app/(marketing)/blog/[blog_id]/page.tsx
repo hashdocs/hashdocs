@@ -3,10 +3,50 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 import React from "react";
 import { parseBlogMarkdown } from "@/app/_lib/blogParser";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params: { blog_id }, // will be a page or nested layout
+}: {
+  params: { blog_id: string };
+}): Promise<Metadata> {
+  const blogData = await parseBlogMarkdown(blog_id);
+
+  return {
+    title: blogData.title,
+    description: blogData.description,
+    openGraph: {
+      title: blogData.title,
+      description: blogData.description,
+      siteName: "Hashdocs",
+      images: [
+        {
+          url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog-assets/${blog_id}/hero.png`,
+          width: 1200,
+          height: 630,
+        },
+      ],
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blogData.title ?? "Hashdocs - an open source docsend alternative",
+      description: "Securely view this document with Hashdocs",
+      siteId: "1467726470533754880",
+      creator: "@rbkayz",
+      creatorId: "1467726470533754880",
+      images: [
+        `${process.env.NEXT_PUBLIC_BASE_URL}/blog-assets/${blog_id}/hero.png`,
+      ],
+    },
+  };
+}
 
 export interface BlogType {
   blog_id: string;
   title: string;
+  description: string;
   date: string;
   length: string;
   image: string;

@@ -1,6 +1,7 @@
 ---
 blog_id: "pitchdeck-executive-summary"
-title: "How to draft the perfect pitch deck executive summary"
+title: "Crafting the perfect executive summary"
+description: "A guide to writing pithy executive summaries for your pitch deck to keep your investors hooked"
 date: "2023-07-15"
 length: "5 min read"
 image: "/blog-assets/pitchdeck-executive-summary/hero.png"

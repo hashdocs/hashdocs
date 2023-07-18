@@ -1,6 +1,7 @@
 ---
 blog_id: "hashdocs-vs-docsend"
-title: "Hashdocs vs Docsend: A comparison"
+title: "Why should you switch to using Hashdocs?"
+description: "A head-to-head comparison of Docsend and Hashdocs on features, pricing and ease of use"
 date: "2023-07-15"
 length: "3 min read"
 image: "/blog-assets/hashdocs-vs-docsend/hero.png"

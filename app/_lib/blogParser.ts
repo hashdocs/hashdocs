@@ -9,7 +9,7 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { BlogType } from "../(marketing)/blog/[blog_id]/page";
 
-const folderPath = `blog-content`;
+const folderPath = path.join(process.cwd(), "/blog-content");
 
 export const parseBlogMarkdown = async (blog_id: string) => {
   let blogData: BlogType = {
@@ -17,6 +17,7 @@ export const parseBlogMarkdown = async (blog_id: string) => {
     title: "",
     date: "",
     length: "",
+    description: "",
     image: "",
     tags: [],
     content: "",
@@ -76,13 +77,10 @@ export const parseBlogMarkdown = async (blog_id: string) => {
 };
 
 export const parseBlogs = async () => {
-  let blogData: {
-    blog_id: string;
-    title: string;
-    date: string;
-    length: string;
-    image: string;
-  }[] = [];
+  let blogData: Pick<
+    BlogType,
+    "blog_id" | "title" | "date" | "length" | "image" | "description"
+  >[] = [];
 
   fs.readdirSync(folderPath).forEach(async (file) => {
     const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
@@ -93,6 +91,7 @@ export const parseBlogs = async () => {
       blog_id: matterResult.data.blog_id,
       title: matterResult.data.title,
       date: matterResult.data.date,
+      description: matterResult.data.description,
       length: matterResult.data.length,
       image: matterResult.data.image,
     });
