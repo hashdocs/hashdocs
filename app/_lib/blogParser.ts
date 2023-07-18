@@ -94,6 +94,8 @@ export const parseBlogs = async () => {
   }[] = [];
 
   fs.readdirSync(folderPath).forEach(async (file) => {
+    console.log(path.join(folderPath, file));
+
     const fileContents = fs.readFileSync(path.join(folderPath, file), "utf8");
 
     const matterResult = matter(fileContents);
