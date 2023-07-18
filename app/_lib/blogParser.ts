@@ -19,6 +19,8 @@ export const parseBlogMarkdown = async (blog_id: string) => {
 
   const blogPath = path.join(folderPath, `${blog_id}.md`);
 
+  console.log(blogPath);
+
   try {
     const blogContent = fs.readFileSync(blogPath, "utf8");
 
@@ -65,6 +67,7 @@ export const parseBlogMarkdown = async (blog_id: string) => {
 
     return blogData;
   } catch (error) {
+    console.error(error);
     return null;
   }
 };
