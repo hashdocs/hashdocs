@@ -2,7 +2,7 @@
   "name": "hashdocs",
   "version": "0.1.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "concurrently \"next dev\" \"supabase functions serve --no-verify-jwt --env-file supabase/functions/.env\"",
     "build": "next build",
