@@ -26,5 +26,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${process.env.NEXT_PUBLIC_BASE_URL}/cookies`,
       lastModified: new Date(),
     },
+    {
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/pitch-deck/killer-competition-slide`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/pitch-deck/pitchdeck-executive-summary`,
+      lastModified: new Date(),
+    },
+    {
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/pitch-deck/hashdocs-vs-docsend`,
+      lastModified: new Date(),
+    },
   ];
 }
