@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { resend_email } from "../_emails/resend.ts";
+import { welcome } from "../_emails/templates/welcome.ts";
 import { stripe } from "../_shared/stripeClient.ts";
 import {
   InsertPayload,
@@ -98,7 +100,9 @@ serve(async (req) => {
       .rpc("get_org", { org_id_input: org_id })
       .returns<OrgType>();
 
-    console.log(`${org_id} - Fetched email from org - ${org_info?.users[0].email}`);
+    console.log(
+      `${org_id} - Fetched email from org - ${org_info?.users[0].email}`
+    );
 
     if (org_error || !org_info) {
       throw Error(`Error fetching org - ${org_error}`);
@@ -149,7 +153,18 @@ serve(async (req) => {
     });
 
     console.log(`${org_id} - Completed successfully`);
-    
+
+    /* ------------------------ Send welcome email ------------------------- */
+
+    const email_res = await resend_email({
+      to: [owner?.email ?? ""],
+      subject: "Welcome to Hashdocs",
+      html: welcome,
+    });
+
+    console.log(
+      `${org_id} - Sent welcome email - ${JSON.stringify(email_res)}`
+    );
   } catch (error) {
     console.error(error);
 
