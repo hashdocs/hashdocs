@@ -31,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
     },
     {
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/pitch-deck/killer-competition-slide`,
+      url: `${process.env.NEXT_PUBLIC_BASE_URL}/blog/pitch-deck/pitchdeck-competition-slide`,
       lastModified: new Date(),
     },
     {
