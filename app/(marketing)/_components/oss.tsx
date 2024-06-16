@@ -1,5 +1,5 @@
-import { FaGithub, FaMapMarkedAlt } from "react-icons/fa";
 import Link from "next/link";
+import { FaGithub, FaMapMarkedAlt } from "react-icons/fa";
 
 export default function OSS() {
 
@@ -9,7 +9,7 @@ export default function OSS() {
         <h2 className="text-3xl text-shade-gradient font-extrabold leading-tight text-transparent sm:text-4xl sm:leading-tight">
           Proudly <span className="text-stratos-gradient">open-source</span>
         </h2>
-        <p className="mt-5 text-shade-pencil-light sm:text-lg">
+        <p className="mt-5 text-shade-gray-500 sm:text-lg">
           Our source code is available on GitHub - feel free to review, contribute, audit or self-host!
         </p>
       </div>

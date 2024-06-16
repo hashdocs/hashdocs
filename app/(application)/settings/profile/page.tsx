@@ -1,13 +1,13 @@
 "use client";
+import Loader from "@/app/_components/navigation/loader";
+import { formatDate } from "@/app/_utils/dateFormat";
 import {
-  createClientComponentClient,
+    createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import toast from "react-hot-toast";
 import { UserContext } from "../../_components/userProvider";
-import { formatDate } from "@/app/_utils/dateFormat";
-import Loader from "@/app/_components/navigation/loader";
 
 /*=========================================== TYPES ===========================================*/
 
@@ -48,12 +48,12 @@ export default function AnalyticsPage() {
 
   return (
     <main className="flex flex-col space-y-4">
-      <div className="flex w-full flex-1 flex-col items-center gap-y-8 rounded-md bg-white p-8 text-shade-pencil-light shadow-sm ">
+      <div className="flex w-full flex-1 flex-col items-center gap-y-8 rounded-md bg-white p-8 text-shade-gray-500 shadow-sm ">
         <div className="flex w-full flex-1 flex-row items-center">
           <div className="flex flex-1 basis-1/2 text-sm font-semibold">
             Email
           </div>
-          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-gray-50 p-2 font-semibold shadow-inner">
             {user?.email}
           </div>
         </div>
@@ -61,7 +61,7 @@ export default function AnalyticsPage() {
           <div className="flex flex-1 basis-1/2 text-sm font-semibold">
             Last Sign In
           </div>
-          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-gray-50 p-2 font-semibold shadow-inner">
             {formatDate(user?.last_sign_in_at ?? "", "MMM DD, YYYY")}
           </div>
         </div>

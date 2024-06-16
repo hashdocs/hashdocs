@@ -1,29 +1,25 @@
 "use client";
-import { useCallback, useContext, useState } from "react";
+import { UserContext } from "@/app/(application)/_components/userProvider";
+import { classNames } from "@/app/_utils/classNames";
+import { Database } from "@/types/supabase.types";
+import { Popover } from "@headlessui/react";
+import {
+    ArrowLeftOnRectangleIcon,
+    CreditCardIcon,
+    EllipsisVerticalIcon,
+    PlusIcon,
+    QuestionMarkCircleIcon,
+    UserIcon,
+    WrenchScrewdriverIcon
+} from "@heroicons/react/24/outline";
+import { BoltIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { primaryNavigation } from "./routes.constants";
-import Image from "next/image";
-import { classNames } from "@/app/_utils/classNames";
-import { User } from "@supabase/supabase-js";
-import {
-  ArrowLeftOnRectangleIcon,
-  BuildingOfficeIcon,
-  CreditCardIcon,
-  EllipsisVerticalIcon,
-  PlusIcon,
-  QuestionMarkCircleIcon,
-  UserIcon,
-  WrenchScrewdriverIcon,
-} from "@heroicons/react/24/outline";
-import { UserCircleIcon, BoltIcon } from "@heroicons/react/24/solid";
-import PopOver from "../shared/popover";
+import { useCallback, useContext, useState } from "react";
 import toast from "react-hot-toast";
-import { Popover } from "@headlessui/react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/types/supabase.types";
-import { EllipsisHorizontalIcon } from "@heroicons/react/20/solid";
-import { UserContext } from "@/app/(application)/_components/userProvider";
+import { primaryNavigation } from "./routes.constants";
 
 type primaryNavigationType = (typeof primaryNavigation)[0];
 
@@ -152,7 +148,7 @@ export default function Sidebar() {
                     className={classNames(
                       nav.path === activeNav.path
                         ? "text-stratos-default"
-                        : "text-shade-pencil-light hover:text-shade-pencil-dark",
+                        : "text-shade-gray-500 hover:text-shade-pencil-dark",
                       "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
                     )}
                   >
@@ -187,13 +183,13 @@ export default function Sidebar() {
                     />
                   ) : (
                     <UserCircleIcon
-                      className="h-6 w-6 text-shade-pencil-light"
+                      className="h-6 w-6 text-shade-gray-500"
                       aria-hidden="true"
                     />
                   )}
                   <span
                     aria-hidden="true"
-                    className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-pencil-light hover:text-shade-pencil-dark"
+                    className="w-36 truncate text-left text-sm font-semibold leading-6 text-shade-gray-500 hover:text-shade-pencil-dark"
                   >
                     {user?.email}
                   </span>

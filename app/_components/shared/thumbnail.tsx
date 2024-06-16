@@ -1,7 +1,7 @@
-import { EyeIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { EyeIcon } from '@heroicons/react/24/solid';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export function ThumbnailImage({
   src = null,
@@ -28,14 +28,14 @@ export function ThumbnailImage({
       <Image
         alt={document_id}
         onError={setError}
-        src={error || !src ? "/images/noimage_thumbnail.png" : src}
+        src={error || !src ? '/images/noimage_thumbnail.png' : src}
         // fill={true}
         height={72}
         width={137}
-        style={{ borderRadius: "6px" }}
+        style={{ borderRadius: '6px' }}
       />
-      <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-shade-disabled opacity-0 transition-opacity duration-200 hover:opacity-50">
-        <EyeIcon className="h-6 w-6 text-shade-pencil-black" />
+      <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-gray-200 opacity-0 transition-opacity duration-200 hover:opacity-50">
+        <EyeIcon className="h-6 w-6" />
       </div>
     </Link>
   );

@@ -1,13 +1,12 @@
 "use client";
-import { usePathname } from "next/navigation";
-import { primaryNavigation } from "./routes.constants";
+import {
+    ChatBubbleOvalLeftEllipsisIcon
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import FeedbackModal from "../shared/feedbackModal";
-import {
-  ChatBubbleLeftEllipsisIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
-} from "@heroicons/react/24/outline";
+import { primaryNavigation } from "./routes.constants";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -39,8 +38,8 @@ export default function TopBar() {
   const secondaryPages = pathArray.slice(1);
 
   return (
-    <div className="flex h-12 w-full flex-row items-center justify-between border-b border-shade-line bg-shade-overlay xl:px-8">
-      <div className="flex flex-row items-center gap-x-2 text-sm lowercase text-shade-pencil-light">
+    <div className="flex h-12 w-full flex-row items-center justify-between border-b border-shade-line bg-gray-50 xl:px-8">
+      <div className="flex flex-row items-center gap-x-2 text-sm lowercase text-shade-gray-500">
         {primaryPageProps && (
           <primaryPageProps.icon
             key={`${primaryPageProps.path}-icon`}
@@ -72,7 +71,7 @@ export default function TopBar() {
       </div>
       <button
         onClick={() => setIsFeedbackModalOpen(true)}
-        className="flex items-center gap-x-2 rounded-md border border-shade-line bg-white px-2 py-1 text-xs font-semibold shadow-sm hover:bg-shade-overlay hover:text-stratos-default"
+        className="flex items-center gap-x-2 rounded-md border border-shade-line bg-white px-2 py-1 text-xs font-semibold shadow-sm hover:bg-gray-50 hover:text-stratos-default"
       >
         <ChatBubbleOvalLeftEllipsisIcon className="h-4 w-4" />
         <p>Suggest feedback</p>

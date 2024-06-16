@@ -1,7 +1,7 @@
-import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDown } from "lucide-react";
 import cn from "classnames";
+import { ChevronDown } from "lucide-react";
+import * as React from "react";
 
 const Accordion = AccordionPrimitive.Root;
 
@@ -47,7 +47,7 @@ const AccordionContent = React.forwardRef<
   <AccordionPrimitive.Content
     ref={ref}
     className={cn(
-      "overflow-hidden text-sm text-shade-pencil-light transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down sm:text-base",
+      "overflow-hidden text-sm text-shade-gray-500 transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down sm:text-base",
       className,
     )}
     {...props}
@@ -57,4 +57,4 @@ const AccordionContent = React.forwardRef<
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };
+export { Accordion, AccordionContent, AccordionItem, AccordionTrigger };

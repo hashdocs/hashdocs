@@ -2,17 +2,16 @@
 import Loader from "@/app/_components/navigation/loader";
 import { classNames } from "@/app/_utils/classNames";
 import {
-  MagnifyingGlassMinusIcon,
-  MagnifyingGlassPlusIcon,
+    MagnifyingGlassMinusIcon,
+    MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
 import { useParams } from "next/navigation";
 import { RefObject, createRef, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Document, Page, Thumbnail } from "react-pdf";
-import { pdfjs } from "react-pdf";
+import { Document, Page, Thumbnail, pdfjs } from "react-pdf";
 import {
-  DocumentCallback,
-  OnItemClickArgs,
+    DocumentCallback,
+    OnItemClickArgs,
 } from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -182,7 +181,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
         );
         e.preventDefault();
       }}
-      className="no-print -mx-1 flex w-full flex-1 flex-row justify-center bg-shade-overlay"
+      className="no-print -mx-1 flex w-full flex-1 flex-row justify-center bg-gray-50"
       externalLinkTarget="_blank"
     >
       <div
@@ -227,25 +226,25 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
             <div className="flex flex-row gap-x-2">
               <div
-                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                className="flex items-center justify-center font-semibold text-shade-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {"Page"}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                className="flex items-center justify-center font-semibold text-shade-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {activePage}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                className="flex items-center justify-center font-semibold text-shade-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {"of"}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-pencil-light"
+                className="flex items-center justify-center font-semibold text-shade-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {numPages}
@@ -253,11 +252,11 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
             </div>
             <div className="flex flex-row gap-x-2">
               <MagnifyingGlassPlusIcon
-                className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
+                className="h-6 w-6 cursor-pointer text-shade-gray-500 hover:text-shade-pencil-black"
                 onClick={handleZoomIn}
               />
               <MagnifyingGlassMinusIcon
-                className="h-6 w-6 cursor-pointer text-shade-pencil-light hover:text-shade-pencil-black"
+                className="h-6 w-6 cursor-pointer text-shade-gray-500 hover:text-shade-pencil-black"
                 onClick={handleZoomOut}
               />
             </div>

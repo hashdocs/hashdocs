@@ -1,20 +1,20 @@
-import { Fragment, useContext } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { formatDate, formatTime } from "@/app/_utils/dateFormat";
-import Loader from "@/app/_components/navigation/loader";
-import dynamic from "next/dynamic";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import Loader from "@/app/_components/navigation/loader";
+import { formatDate, formatTime } from "@/app/_utils/dateFormat";
+import { Dialog, Transition } from "@headlessui/react";
+import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
+import { Fragment, useContext } from "react";
+import {
+    Bar,
+    BarChart,
+    Cell,
+    Pie,
+    PieChart,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
 
 interface AnalyticsModalProps {
   viewId: string | null;
@@ -125,7 +125,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-shade-overlay bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-50 bg-opacity-75 transition-opacity" />
         </Transition.Child>
         <div className="z-100 fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center text-left">
@@ -152,7 +152,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                     <div className="flex flex-row gap-x-2">
                       <div className="flex basis-1/3 flex-col gap-y-3">
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Viewer
                           </div>
                           <div className="basis-2/3 font-semibold">
@@ -160,7 +160,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           </div>
                         </div>
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Link
                           </div>
                           <div className="basis-2/3 font-semibold">
@@ -168,7 +168,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           </div>
                         </div>
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Version
                           </div>
                           <div className="basis-2/3 font-semibold">
@@ -178,7 +178,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                       </div>
                       <div className="flex basis-1/3 flex-col gap-y-3">
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Date
                           </div>
                           <div className="basis-2/3 font-semibold">
@@ -186,7 +186,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           </div>
                         </div>
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Location
                           </div>
                           <div className="basis-2/3 font-semibold truncate">
@@ -194,7 +194,7 @@ const AnalyticsModal: React.FC<AnalyticsModalProps> = (
                           </div>
                         </div>
                         <div className="flex flex-row">
-                          <div className="basis-1/3 text-shade-pencil-light">
+                          <div className="basis-1/3 text-shade-gray-500">
                             Device
                           </div>
                           <div className="basis-2/3 font-semibold">

@@ -1,72 +1,48 @@
-DROP FUNCTION IF EXISTS get_org;
+DROP FUNCTION IF EXISTS public.get_org(org_id_input uuid);
 
-CREATE OR REPLACE FUNCTION get_org(org_id_input uuid DEFAULT NULL)
-	RETURNS json
-	LANGUAGE PLPGSQL
-	SECURITY DEFINER
-	SET search_path = auth, public
-	AS $$
+CREATE OR REPLACE FUNCTION public.get_org(org_id_input uuid DEFAULT NULL::uuid) 
+RETURNS jsonb 
+LANGUAGE plpgsql 
+STABLE 
+SECURITY DEFINER 
+AS $function$
 DECLARE
-	found_org_id uuid;
-	return_data json;
+	return_data jsonb;
 BEGIN
 	--
 	--
-	IF (org_id_input IS NOT NULL) THEN
-		IF (auth.jwt() ->> 'role' <> 'service_role') THEN
-			RAISE EXCEPTION 'Invalid credentials';
-		END IF;
+	IF auth.uid() IS NULL AND auth.role() != 'service_role' THEN
+		RETURN NULL;
 	END IF;
-		--
-		--
-		found_org_id := COALESCE(list_org_from_user(), org_id_input);
-		--
-		--
-		IF (found_org_id IS NULL) THEN
-			RAISE EXCEPTION 'No org found';
-		END IF;
-		--
-		--
-		WITH members AS (
-			SELECT
-                org_member_seq,
-				org_id,
-				email,
-				user_id,
-				user_role
-			FROM
-				tbl_org_members
-			LEFT JOIN auth.users ON tbl_org_members.user_id = auth.users.id
-		WHERE
-			org_id = found_org_id
-)
-	SELECT
-		row_to_json(t)
-	FROM (
+	--
+	--
+	WITH org AS (
 		SELECT
-			tbl_org.org_id,
-			tbl_org.org_name,
-			tbl_org.stripe_price_plan,
-			tbl_org.stripe_product_plan,
-			tbl_org.stripe_customer_id,
-			tbl_org.subscription_status,
-			tbl_org.billing_cycle_start,
-			tbl_org.billing_cycle_end,
-			ARRAY (
-				SELECT
-					row_to_json(members.*)
-				FROM
-					members
+			tbl_org.*,
+			(
+				SELECT 
+					row_to_json(tbl_org_members.*) 
+				FROM 
+					tbl_org_members
 				WHERE
-					members.org_id = tbl_org.org_id ORDER BY org_member_seq) AS users
-			FROM
-				tbl_org
-			LEFT JOIN members ON tbl_org.org_id = members.org_id
-		WHERE
-			tbl_org.org_id = found_org_id) t INTO return_data;
-		--
-		--
-		RETURN return_data;
-END;
-$$;
-
+					org_id = tbl_org.org_id AND 
+					email = auth.email()
+			) AS user,
+			coalesce(
+				(
+					SELECT json_agg(row_to_json(tbl_org_members) ORDER BY LOWER(COALESCE(tbl_org_members.member_name, tbl_org_members.email)) NULLS LAST)
+					FROM  tbl_org_members
+					WHERE org_id = tbl_org.org_id
+				), '[]'
+			) AS members
+		FROM tbl_org
+		WHERE (org_id_input IS NULL OR tbl_org.org_id = org_id_input)
+		ORDER BY tbl_org.created_at DESC
+	)
+	SELECT COALESCE(json_agg(row_to_json(org)),'[]')
+	FROM org INTO return_data;
+	--
+	--
+	RETURN return_data;
+END
+$function$

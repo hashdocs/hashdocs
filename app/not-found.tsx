@@ -1,22 +1,20 @@
-import Link from "next/link";
+import Link from 'next/link';
+import Button from './_components/button';
 
 export default function NotFound() {
   return (
-    <div className="grid h-screen place-content-center px-4">
-      <div className="text-center gap-x-4">
-        <h1 className="text-9xl font-black text-gray-200">404</h1>
+    <div className="flex flex-1 flex-col items-center justify-center gap-y-2 p-4">
+      <h1 className="text-9xl font-black text-gray-200">404</h1>
 
-        <p className="text-lg tracking-tight text-shade-disabled">
-          This page does not exist!
-        </p>
+      <p className="text-lg tracking-tight text-gray-400">
+        This page does not exist!
+      </p>
 
-        <Link href={`/`}
-          type="button"
-          className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-stratos-gradient rounded hover:bg-stratos-gradient/80 focus:outline-none focus:ring-0"
-        >
+      <Link href={`/`}>
+        <Button variant="solid" size="sm">
           Go to home
-        </Link>
-      </div>
+        </Button>
+      </Link>
     </div>
   );
 }

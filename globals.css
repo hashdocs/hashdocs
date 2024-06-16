@@ -2,24 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-} */
-
-/* body {
-  color: ;
-} */
-
 .tooltip {
   border-radius: 6px;
   color: rgb(200, 50, 100);
@@ -30,35 +12,203 @@
     display: none;
   }
 }
+@tailwind base;
+
+*,
+html,
+body {
+  @apply font-sans outline-blue-700;
+}
+
+input,
+input[type],
+select,
+select[multiple],
+textarea {
+  @apply placeholder:text-gray-400 focus:border-blue-700 focus:ring-blue-700;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  @apply m-0 appearance-none;
+}
+
+[type='checkbox']:focus,
+[type='radio']:focus {
+  outline: none;
+  box-shadow: none;
+  /* removing custom properties as well, if not required elsewhere */
+  --tw-ring-offset-shadow: 0 0 0 0 transparent;
+  --tw-ring-shadow: 0 0 0 0 transparent;
+}
 
 .hashdocs-scrollbar {
-  @apply overflow-y-scroll scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled;
+  @apply overflow-auto;
 }
 
-.bg-stratos-gradient {
-  @apply bg-gradient-to-r from-stratos-400 via-stratos-default to-stratos-600 ;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px; /* width of the entire scrollbar */
 }
 
-.bg-shade-gradient {
-@apply bg-gradient-to-r from-shade-pencil-light via-shade-pencil-dark to-shade-pencil-dark 
+/* For the track (progress bar) of the scrollbar */
+::-webkit-scrollbar-track {
+  background: transparent; /* color of the tracking area */
 }
 
-.text-stratos-gradient {
-  background: linear-gradient(to right, rgb(62, 97, 255), rgb(0, 16, 255), rgb(0, 16, 255));
-  background-clip: text;
-  color: transparent;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* For the handle (movable part) of the scrollbar */
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px; /* color of the scroll thumb */
 }
 
-.text-shade-gradient {
+/* When hovering over the scroll thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #d5d7db; /* color when hovering over the scroll thumb */
+}
+
+.fixed-layout {
+  table-layout: fixed;
+}
+
+.icon path {
+  stroke: currentColor;
+}
+
+.no-select {
+  user-select: none;
+}
+
+/* ----------------------------- Rotating border ---------------------------- */
+
+@keyframes rotate-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.rotating-border {
+  --border-radius: 1rem;
+  --border-size: 0.5rem;
+  --border-bg: conic-gradient(red);
+  --padding: 1rem;
+  position: relative;
+  overflow: hidden;
+  font-size: 2rem;
+  padding: calc(var(--padding) + var(--border-size));
+  border-radius: var(--border-radius);
+  display: inline-block;
+}
+
+.rotating-border::before {
+  content: '';
+  display: block;
+  background: var(--border-bg);
+  width: calc(150%);
+  height: calc(250%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 0.75rem;
+  z-index: -2;
+  animation: rotate-spin 10s linear infinite;
+}
+
+.rotating-border::after {
+  content: '';
+  position: absolute;
+  inset: var(--border-size);
+  z-index: -1;
+  background: #fcfcfc;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(20px);
+}
+
+.rotating-border--google {
+  --border-radius: 0.5rem;
+  --border-size: 0.25rem;
+  --border-bg: conic-gradient(
+    #e5e7eb00 0turn 0.125turn,
+    #e5e7eb00 0.125turn 0.25turn,
+    #e5e7eb00 0.25turn 0.375turn,
+    #e5e7eb00 0.375turn 0.5turn,
+    #e5e7eb00 0.5turn 0.625turn,
+    #e5e7eb00 0.625turn 0.75turn,
+    #e5e7eb00 0.75turn 0.875turn,
+    #15803d 0.99turn 1turn
+  );
+}
+
+/* ---------------------------------- PULSE --------------------------------- */
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* --------------------------------- SHIMMER -------------------------------- */
+
+.shimmer-effect {
+  animation: shimmer 1.5s infinite;
+  background: linear-gradient(
+    to right,
+    var(--shimmer-from, #f9fafb) 0%,
+    #f3f4f6 20%,
+    var(--shimmer-from, #f9fafb) 40%,
+    var(--shimmer-from, #f9fafb) 100%
+  );
+  background-size: 800px 104px;
+  position: relative;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s infinite; /* 4s is the total animation time for all components */
+}
+
+/* --------------------------- BACKGROUND BLINK --------------------------- */
+
+.bg-blink {
+  animation: blink 0.5s linear 2;
+}
+
+@keyframes blink {
+  0% {
+    @apply bg-transparent;
+  }
+  50% {
+    @apply bg-gray-200;
+  }
+  100% {
+    @apply bg-transparent;
+  }
+}
+
+.calendly-popup {
+  min-height: 700px !important;
+}
+
+.text-gray-gradient {
   background: linear-gradient(to right, rgb(107, 114, 128), rgb(55, 65, 81), rgb(55, 65, 81));
   background-clip: text;
   color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.calendly-popup {
-  min-height: 700px !important;
 }

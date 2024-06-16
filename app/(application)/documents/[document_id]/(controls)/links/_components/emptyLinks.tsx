@@ -26,7 +26,7 @@ export default function EmptyLinks({ document_id }: { document_id: string }) {
         <h3 className="text-sm font-semibold text-shade-pencil-black">
           No links
         </h3>
-        <p className="text-sm text-shade-pencil-light">
+        <p className="text-sm text-shade-gray-500">
           Create a secure link for this document
         </p>
       </div>

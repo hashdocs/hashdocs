@@ -1,32 +1,31 @@
 "use client";
+import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import { classNames } from "@/app/_utils/classNames";
+import { DocumentType, LinkType, ViewType } from "@/types/documents.types";
+import { Combobox, Transition } from "@headlessui/react";
 import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { LinkType, ViewType } from "@/types/documents.types";
+    CheckIcon,
+    ChevronUpDownIcon,
+    EyeSlashIcon,
+    FunnelIcon,
+    MagnifyingGlassIcon,
+    XMarkIcon,
+} from "@heroicons/react/24/outline";
 import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
+    useParams,
+    usePathname,
+    useRouter,
+    useSearchParams,
 } from "next/navigation";
 import {
-  ChevronUpDownIcon,
-  EyeSlashIcon,
-  MagnifyingGlassIcon,
-  CheckIcon,
-  FunnelIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import { Combobox, Transition } from "@headlessui/react";
-import { classNames } from "@/app/_utils/classNames";
-import { ViewsHeader } from "./viewsHeader";
+    Fragment,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import ViewRow from "./viewRow";
-import { DocumentType } from "@/types/documents.types";
-import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import { ViewsHeader } from "./viewsHeader";
 
 export type ViewTableType = ViewType & { link_name: string };
 
@@ -180,7 +179,7 @@ export default function ViewsFilter() {
             >
               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black ring-opacity-5 scrollbar-thin scrollbar-track-shade-line scrollbar-thumb-shade-disabled focus:outline-none">
                 {filteredLinks?.length === 0 && linkQuery !== "" ? (
-                  <div className="relative cursor-default select-none px-4 py-2 text-shade-pencil-light">
+                  <div className="relative cursor-default select-none px-4 py-2 text-shade-gray-500">
                     Nothing found.
                   </div>
                 ) : (
@@ -232,7 +231,7 @@ export default function ViewsFilter() {
               onClick={() => setSearchValue("")}
             />
           ) : (
-            <MagnifyingGlassIcon className="h-4 w-4 text-shade-pencil-light" />
+            <MagnifyingGlassIcon className="h-4 w-4 text-shade-gray-500" />
           )}
           <input
             className=" flex-1 border-none text-sm placeholder:text-shade-disabled focus:ring-0"
@@ -250,8 +249,8 @@ export default function ViewsFilter() {
           views.map((view, idx) => ViewRow(view, idx))
         ) : (
           <div className="flex flex-col items-center justify-center space-y-2 bg-white p-24">
-            <EyeSlashIcon className="h-8 w-8 text-shade-pencil-light" />
-            <p className="text-shade-pencil-light">{`No views found`}</p>
+            <EyeSlashIcon className="h-8 w-8 text-shade-gray-500" />
+            <p className="text-shade-gray-500">{`No views found`}</p>
           </div>
         )}
       </div>

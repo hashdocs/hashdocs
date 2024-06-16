@@ -4,12 +4,11 @@
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import { classNames } from "@/app/_utils/classNames";
 import {
-  BuildingOfficeIcon,
-  CheckBadgeIcon,
-  CreditCardIcon,
-  PuzzlePieceIcon,
-  UserIcon,
-  UsersIcon,
+    BuildingOfficeIcon,
+    CheckBadgeIcon,
+    CreditCardIcon,
+    PuzzlePieceIcon,
+    UserIcon
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -40,7 +39,7 @@ export default function SettingsLayout({
           <h1 className="text-lg font-semibold text-shade-pencil-black">
             {pageProps?.name}
           </h1>
-          <p className="text-sm text-shade-pencil-light">
+          <p className="text-sm text-shade-gray-500">
             {pageProps?.description}
           </p>
         </div>
@@ -54,7 +53,7 @@ export default function SettingsLayout({
               className={classNames(
                 tab.href == activeTab
                   ? "border-stratos-default text-stratos-default"
-                  : "border-transparent text-shade-pencil-light hover:border-shade-line hover:text-shade-pencil-black",
+                  : "border-transparent text-shade-gray-500 hover:border-shade-line hover:text-shade-pencil-black",
                 "group inline-flex items-center border-b-2 px-1 py-4 text-sm font-medium"
               )}
             >
@@ -62,7 +61,7 @@ export default function SettingsLayout({
                 className={classNames(
                   tab.href == activeTab
                     ? "text-stratos-default"
-                    : "text-shade-pencil-light group-hover:text-shade-pencil-black",
+                    : "text-shade-gray-500 group-hover:text-shade-pencil-black",
                   "-ml-0.5 mr-2 h-5 w-5"
                 )}
                 aria-hidden="true"

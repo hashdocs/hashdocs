@@ -1,7 +1,7 @@
+import { classNames } from "@/app/_utils/classNames";
+import { Url } from "next/dist/shared/lib/router/router";
 import Link from "next/link";
 import { ButtonHTMLAttributes } from "react";
-import { Url } from "next/dist/shared/lib/router/router";
-import { classNames } from "@/app/_utils/classNames";
 
 type BaseButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -31,7 +31,7 @@ const MediumButton: React.FC<MediumButtonProps> = (props) => {
         type="button"
         key={ButtonId}
         className={classNames(
-          "flex shrink-0 items-center space-x-2 rounded-md border border-shade-line bg-white px-2  py-1 text-xs font-semibold text-shade-pencil-dark  hover:border-stratos-50 hover:bg-shade-overlay hover:text-stratos-default",
+          "flex shrink-0 items-center space-x-2 rounded-md border border-shade-line bg-white px-2  py-1 text-xs font-semibold text-shade-pencil-dark  hover:border-stratos-50 hover:bg-gray-50 hover:text-stratos-default",
           ButtonClassName
         )}
         data-tooltip-id={ButtonId}

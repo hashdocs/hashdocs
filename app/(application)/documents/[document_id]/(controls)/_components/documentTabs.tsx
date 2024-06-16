@@ -1,9 +1,9 @@
 "use client";
+import { classNames } from "@/app/_utils/classNames";
+import { DocumentType, documentTabType } from "@/types/documents.types";
 import { ChartBarIcon, EyeIcon, LinkIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import { classNames } from "@/app/_utils/classNames";
-import { DocumentType, documentTabType } from "@/types/documents.types";
 
 /*=========================================== CONSTANTS ===========================================*/
 
@@ -59,7 +59,7 @@ export default function DocumentTabs(document: DocumentType) {
                 className={classNames(
                   tab.href === activeTab
                     ? "border-stratos-default text-stratos-default"
-                    : "border-transparent text-shade-pencil-light hover:border-shade-line hover:text-shade-pencil-dark",
+                    : "border-transparent text-shade-gray-500 hover:border-shade-line hover:text-shade-pencil-dark",
                   "group inline-flex items-center border-b-2 px-1 py-3 text-sm font-medium"
                 )}
               >

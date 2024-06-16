@@ -1,18 +1,14 @@
-import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import Uppy, { UppyFile } from "@uppy/core";
 import { Dashboard } from "@uppy/react";
 import XHR from "@uppy/xhr-upload";
+import { Fragment, useState } from "react";
 
+import Loader from "@/app/_components/navigation/loader";
 import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 import { useRouter } from "next/navigation";
-import Loader from "@/app/_components/navigation/loader";
 import toast from "react-hot-toast";
-import Link from "next/link";
-import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
-import Toggle from "@/app/_components/shared/buttons/toggle";
-import Image from "next/image";
 
 interface UploadThumbnailProps {
   isOpen: boolean;
@@ -106,7 +102,7 @@ const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-shade-overlay bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-50 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="z-100 fixed inset-0 overflow-y-auto">
@@ -134,7 +130,7 @@ const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
                       </Dialog.Title>
                       <Dialog.Description
                         as="h3"
-                        className="text-left text-xs leading-5 text-shade-pencil-light"
+                        className="text-left text-xs leading-5 text-shade-gray-500"
                       >
                         File types: .jpg, .jpeg, .png files<br/>Resolution: 1200x630 px
                       </Dialog.Description>
@@ -164,7 +160,7 @@ const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
                   //     width={380}
                   //     src={"/images/default_thumbnail.png"}
                   //     alt={"Thumbnail"}
-                  //     className="rounded-lg bg-shade-overlay p-2"
+                  //     className="rounded-lg bg-gray-50 p-2"
                   //   />
                   // )} */}
                 </Dialog.Panel>

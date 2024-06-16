@@ -1,12 +1,11 @@
 "use client";
-import { formatDate, formatTime } from "@/app/_utils/dateFormat";
-import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
-import { ChartBarIcon } from "@heroicons/react/24/solid";
-import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { classNames } from "@/app/_utils/classNames";
-import { useContext, useState } from "react";
-import AnalyticsModal from "../../analytics/_components/analyticsModal";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
+import IconButton from "@/app/_components/shared/buttons/iconButton";
+import PercentageCircle from "@/app/_components/shared/buttons/percentageCircle";
+import { classNames } from "@/app/_utils/classNames";
+import { formatDate, formatTime } from "@/app/_utils/dateFormat";
+import { ChartBarIcon } from "@heroicons/react/24/solid";
+import { useContext } from "react";
 import { ViewTableType } from "./viewsFilter";
 
 export default function ViewRow(view: ViewTableType, idx: number) {
@@ -25,7 +24,7 @@ export default function ViewRow(view: ViewTableType, idx: number) {
       )}
     >
       <div className="col-span-3 flex items-center space-x-4">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-shade-line bg-shade-overlay font-mono font-extrabold uppercase text-shade-disabled">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-shade-line bg-gray-50 font-mono font-extrabold uppercase text-shade-disabled">
           {view.viewer.charAt(0)}
         </div>
         <p className={`truncate font-semibold`}>{view.viewer}</p>

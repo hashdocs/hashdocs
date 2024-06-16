@@ -1,5 +1,5 @@
-import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import Empty from "@/app/_components/navigation/empty";
+import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 
 export default function DataroomPage() {
   const pageProps = primaryNavigation.find((page) => page.path === "/dataroom");
@@ -11,7 +11,7 @@ export default function DataroomPage() {
           <h1 className="text-lg font-semibold text-shade-pencil-black">
             {pageProps?.name}
           </h1>
-          <p className="text-sm text-shade-pencil-light">
+          <p className="text-sm text-shade-gray-500">
             {pageProps?.description}
           </p>
         </div>

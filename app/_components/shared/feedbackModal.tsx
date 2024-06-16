@@ -1,11 +1,11 @@
-import { Fragment, useContext, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { classNames } from "@/app/_utils/classNames";
-import LargeButton from "./buttons/largeButton";
-import { toast } from "react-hot-toast";
-import { PopupButton } from "react-calendly";
 import { UserContext } from "@/app/(application)/_components/userProvider";
+import { classNames } from "@/app/_utils/classNames";
+import { Dialog, Transition } from "@headlessui/react";
 import { usePathname } from "next/navigation";
+import { Fragment, useContext, useState } from "react";
+import { PopupButton } from "react-calendly";
+import { toast } from "react-hot-toast";
+import LargeButton from "./buttons/largeButton";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -109,7 +109,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, setIsOpen }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-shade-overlay bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-50 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <form
@@ -136,7 +136,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, setIsOpen }) => {
                       >
                         {"Feedback"}
                       </Dialog.Title>
-                      <Dialog.Description className="text-left text-xs text-shade-pencil-light">
+                      <Dialog.Description className="text-left text-xs text-shade-gray-500">
                         {
                           "We really appreciate your feedback. Please suggest features, improvements, bugs or anything else you'd like to solve for you."
                         }

@@ -1,0 +1,23 @@
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "jsxBracketSameLine": false,
+  "bracketSameLine": false,
+  "arrowParens": "always",
+  "printWidth": 80,
+  "useTabs": false,
+  "quoteProps": "as-needed",
+  "bracketSpacing": true,
+  "requirePragma": false,
+  "insertPragma": false,
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "auto",
+  "singleAttributePerLine": false,
+  "embeddedLanguageFormatting": "auto",
+  "proseWrap": "preserve",
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindConfig": "./tailwind.config.js"
+}

@@ -1,6 +1,6 @@
 import Loader from "@/app/_components/navigation/loader";
 import { classNames } from "@/app/_utils/classNames";
-import { Document, Page, Thumbnail, pdfjs } from "react-pdf";
+import { Document, Thumbnail, pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function ChartViewer({
@@ -14,7 +14,7 @@ export default function ChartViewer({
     <Document
       file={signedUrl}
       loading={<Loader />}
-      className="no-print flex w-full flex-1 flex-row justify-center bg-shade-overlay"
+      className="no-print flex w-full flex-1 flex-row justify-center bg-gray-50"
       externalLinkTarget="_blank"
     >
       <Thumbnail

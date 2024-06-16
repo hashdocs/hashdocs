@@ -1,13 +1,12 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  ArrowDownTrayIcon,
-  CalendarDaysIcon,
-  EnvelopeIcon,
-} from "@heroicons/react/24/outline";
 import IconButton from "@/app/_components/shared/buttons/iconButton";
 import { DocumentType } from "@/types/documents.types";
+import {
+    CalendarDaysIcon,
+    EnvelopeIcon
+} from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function PreviewTopBar({
   documentProps,
@@ -15,7 +14,7 @@ export default function PreviewTopBar({
   documentProps: DocumentType | null;
 }) {
   return (
-    <div className="flex h-12 w-full items-center justify-between border-b border-shade-line bg-shade-overlay px-4">
+    <div className="flex h-12 w-full items-center justify-between border-b border-shade-line bg-gray-50 px-4">
       <Link href={`/`} className="flex w-1/6 flex-row items-center">
         <div className="-ml-1 h-10 w-8 shrink-0 scale-75 rounded-md">
           <Image src={"/hashdocs_gradient.svg"} fill={true} alt={"Hashdocs"} />
@@ -26,7 +25,7 @@ export default function PreviewTopBar({
       </Link>
       <div className="mr-4 flex flex-row items-center justify-center gap-x-4">
         {documentProps && (
-          <h1 className="hidden text-base font-semibold leading-6 tracking-wide text-shade-pencil-light lg:flex">
+          <h1 className="hidden text-base font-semibold leading-6 tracking-wide text-shade-gray-500 lg:flex">
             {documentProps.document_name} (Preview)
           </h1>
         )}

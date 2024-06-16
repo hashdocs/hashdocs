@@ -1,6 +1,6 @@
 export function ViewsHeader() {
   return (
-    <div className="grid grid-cols-12 border-b bg-shade-overlay px-6 py-4 text-xs uppercase text-shade-pencil-light ">
+    <div className="grid grid-cols-12 border-b bg-gray-50 px-6 py-4 text-xs uppercase text-shade-gray-500 ">
       <div className="col-span-3 grid">{"Email"}</div>
       <div className="col-span-2 grid">{"Link"}</div>
       <div className="col-span-2 grid justify-center">{"Date"}</div>

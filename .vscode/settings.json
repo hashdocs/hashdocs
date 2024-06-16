@@ -1,12 +1,46 @@
 {
     "editor.formatOnSave": false,
-    "vscode-postgres.defaultConnection": "hashdocs-local",
-    "vscode-postgres.defaultDatabase": "postgres",
     "vscode-postgres.setConnectionFromExplorer": "ifunset",
     "deno.enable": true,
     "deno.unstable": true,
     "deno.enablePaths": [
         "./supabase/functions"
     ],
-    "deno.importMap": "./supabase/functions/import_map.json"
+    "deno.importMap": "./supabase/functions/import_map.json",
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always"
+    },
+    "vscode-postgres.defaultConnection": "hashdocs-local",
+    "vscode-postgres.defaultDatabase": "postgres",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 54322,
+            "driver": "PostgreSQL",
+            "name": "localhost",
+            "database": "postgres",
+            "username": "postgres",
+            "password": "postgres"
+        }
+    ],
+    "tailwindCSS.classAttributes": [
+        "class",
+        "className",
+        "\\b[_a-zA-Z+]*ClassName"
+    ],
+    "tailwindCSS.experimental.classRegex": [
+        [
+            "classes \\=([^;]*);",
+            "'([^']*)'"
+        ],
+        [
+            "classes \\=([^;]*);",
+            "\"([^\"]*)\""
+        ],
+        [
+            "classes \\=([^;]*);",
+            "\\`([^\\`]*)\\`"
+        ]
+    ],
 }

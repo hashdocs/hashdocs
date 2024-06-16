@@ -1,18 +1,18 @@
 "use client";
+import Loader from "@/app/_components/navigation/loader";
 import { features, pricingPlans } from "@/app/_lib/stripe/constants";
 import { classNames } from "@/app/_utils/classNames";
+import { formatDate } from "@/app/_utils/dateFormat";
 import {
-  CheckCircleIcon,
-  MinusCircleIcon,
-  XCircleIcon,
+    CheckCircleIcon,
+    MinusCircleIcon,
+    XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { PopupButton } from "react-calendly";
 import toast from "react-hot-toast";
 import { UserContext } from "../../_components/userProvider";
-import { useContext } from "react";
-import Loader from "@/app/_components/navigation/loader";
-import { formatDate } from "@/app/_utils/dateFormat";
-import { PopupButton, PopupWidget } from "react-calendly";
 
 /*=========================================== CONSTANTS ===========================================*/
 
@@ -68,15 +68,15 @@ export default function BillingPage() {
 
   return (
     <main className="mb-8 flex flex-col space-y-2" id="billing">
-      <div className="font-semibold uppercase text-shade-pencil-light">
+      <div className="font-semibold uppercase text-shade-gray-500">
         Preferences
       </div>
-      <div className="flex w-full flex-1 flex-col items-center gap-y-6 rounded-md bg-white p-8 text-shade-pencil-light shadow-sm ">
+      <div className="flex w-full flex-1 flex-col items-center gap-y-6 rounded-md bg-white p-8 text-shade-gray-500 shadow-sm ">
         <div className="flex w-full flex-1 flex-row items-center">
           <div className="flex flex-1 basis-1/2 text-sm font-semibold">
             Current Plan
           </div>
-          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-gray-50 p-2 font-semibold shadow-inner">
             {current_plan}
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function BillingPage() {
           <div className="flex flex-1 basis-1/2 text-sm font-semibold">
             Billing cycle
           </div>
-          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-shade-overlay p-2 font-semibold shadow-inner">
+          <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-shade-line bg-gray-50 p-2 font-semibold shadow-inner">
             {org.billing_cycle_start &&
               formatDate(org.billing_cycle_start, "MMM DD")}{" "}
             -{" "}
@@ -107,10 +107,10 @@ export default function BillingPage() {
           </button>
         </div>
       </div>
-      <div className="pt-8 font-semibold uppercase text-shade-pencil-light">
+      <div className="pt-8 font-semibold uppercase text-shade-gray-500">
         Plans
       </div>
-      <div className="flex w-full flex-1 flex-col items-center rounded-md bg-white px-10 py-4 text-shade-pencil-light shadow-sm ">
+      <div className="flex w-full flex-1 flex-col items-center rounded-md bg-white px-10 py-4 text-shade-gray-500 shadow-sm ">
         <div className="my-6 grid w-full grid-cols-1 gap-20 text-center lg:grid-cols-3">
           {pricingPlans.map(
             ({ plan, details: { tagline, price, meter, billing_cta } }) => {
@@ -123,12 +123,12 @@ export default function BillingPage() {
                     <h3 className="font-display my-3 text-center text-3xl font-bold">
                       {plan}
                     </h3>
-                    <p className="text-shade-pencil-light">{tagline}</p>
+                    <p className="text-shade-gray-500">{tagline}</p>
                     <p className="font-display my-5 text-6xl font-semibold">
                       {price.monthly.currency}
                       {price.monthly.amount}
                     </p>
-                    <p className="text-shade-pencil-light">{meter}</p>
+                    <p className="text-shade-gray-500">{meter}</p>
                   </div>
                   <div className="p-5">
                     {plan === "Enterprise" ? (

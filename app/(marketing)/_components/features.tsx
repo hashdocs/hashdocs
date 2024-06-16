@@ -1,30 +1,28 @@
 "use client";
 
-import Link from "next/link";
+import {
+    AdjustmentsVerticalIcon,
+    ChartBarIcon,
+    CheckBadgeIcon,
+    PencilSquareIcon,
+    PresentationChartLineIcon,
+    UserGroupIcon
+} from "@heroicons/react/24/outline";
+import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
 } from "./accordion";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  AdjustmentsVerticalIcon,
-  ChartBarIcon,
-  CheckBadgeIcon,
-  CreditCardIcon,
-  PresentationChartLineIcon,
-  UserGroupIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
 
 const featureList = [
   {
     key: "powerful-link-controls",
     title: "Powerful link controls",
     icon: (
-      <AdjustmentsVerticalIcon className="h-5 w-5 text-shade-pencil-light" />
+      <AdjustmentsVerticalIcon className="h-5 w-5 text-shade-gray-500" />
     ),
     description:
       "Manage access control for your links with fine-grained settings such as restricted domains, password protection, expiry conditions and more",
@@ -33,7 +31,7 @@ const featureList = [
   {
     key: "advanced-tracking",
     title: "Advanced tracking",
-    icon: <ChartBarIcon className="h-5 w-5 text-shade-pencil-light" />,
+    icon: <ChartBarIcon className="h-5 w-5 text-shade-gray-500" />,
     description:
       "Critical insights on your link views - visitor emails, time spent across pages, geo-location, ip",
     demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/advanced-tracking.mp4",
@@ -42,7 +40,7 @@ const featureList = [
     key: "secure-viewer",
     title: "Secure document viewer",
     icon: (
-      <PresentationChartLineIcon className="h-5 w-5 text-shade-pencil-light" />
+      <PresentationChartLineIcon className="h-5 w-5 text-shade-gray-500" />
     ),
     description:
       "Secure document viewer with watermarks, no-print, no-download, and no-copy settings to protect your sensitive docs",
@@ -51,7 +49,7 @@ const featureList = [
   {
     key: "custom-data-room",
     title: "Customized data rooms",
-    icon: <CheckBadgeIcon className="h-5 w-5 text-shade-pencil-light" />,
+    icon: <CheckBadgeIcon className="h-5 w-5 text-shade-gray-500" />,
     description:
       "Customizable data room with your logo, brand identity, custom domains and social cards",
     demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/custom-data-room.mp4",
@@ -59,7 +57,7 @@ const featureList = [
   {
     key: "signatures",
     title: "E-Signatures",
-    icon: <PencilSquareIcon className="h-5 w-5 text-shade-pencil-light" />,
+    icon: <PencilSquareIcon className="h-5 w-5 text-shade-gray-500" />,
     description:
       "Collect and manage e-signatures for all your documents (coming soon)",
     demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/signatures.mp4",
@@ -67,7 +65,7 @@ const featureList = [
   {
     key: "manage-team",
     title: "Collaborate with your team",
-    icon: <UserGroupIcon className="h-5 w-5 text-shade-pencil-light" />,
+    icon: <UserGroupIcon className="h-5 w-5 text-shade-gray-500" />,
     description:
       "Invite your team members to collaborate with custom permissions (coming soon)",
     demo: "https://dblpeefwccpldqwuzwza.supabase.co/storage/v1/object/public/assets/feature-videos/manage-team.mp4",
@@ -97,14 +95,14 @@ export default function Features() {
                 <AccordionTrigger>
                   <div className="flex items-center space-x-3 p-3">
                     {icon}
-                    <h3 className="text-base font-semibold text-shade-pencil-light">
+                    <h3 className="text-base font-semibold text-shade-gray-500">
                       {title}
                     </h3>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="p-3">
-                    <p className="mb-4 text-sm text-shade-pencil-light">
+                    <p className="mb-4 text-sm text-shade-gray-500">
                       {description}
                     </p>
                   </div>

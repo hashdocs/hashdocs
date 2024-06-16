@@ -2,38 +2,38 @@
 import IconButton from "@/app/_components/shared/buttons/iconButton";
 import LargeButton from "@/app/_components/shared/buttons/largeButton";
 import Toggle from "@/app/_components/shared/buttons/toggle";
+import PopOver from "@/app/_components/shared/popover";
+import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
+import { formatDate } from "@/app/_utils/dateFormat";
 import {
-  ArrowDownTrayIcon,
-  ArrowLongLeftIcon,
-  ArrowPathIcon,
-  BackwardIcon,
-  CalendarDaysIcon,
-  DocumentArrowUpIcon,
-  LinkIcon,
-  PencilIcon,
-  PhotoIcon,
-  PresentationChartBarIcon,
-  TrashIcon,
-  WrenchScrewdriverIcon,
+    DocumentType,
+} from "@/types/documents.types";
+import {
+    ArrowDownTrayIcon,
+    ArrowLongLeftIcon,
+    ArrowPathIcon,
+    BackwardIcon,
+    CalendarDaysIcon,
+    DocumentArrowUpIcon,
+    LinkIcon,
+    PencilIcon,
+    PhotoIcon,
+    PresentationChartBarIcon,
+    TrashIcon,
+    WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { useContext, useState } from "react";
+import toast from "react-hot-toast";
 import { DiGoogleDrive } from "react-icons/di";
 import { FiHardDrive } from "react-icons/fi";
-import EditLinkModal from "./editLinkModal";
-import {
-  DocumentType,
-} from "@/types/documents.types";
-import DocumentTabs from "./documentTabs";
-import { formatDate } from "@/app/_utils/dateFormat";
-import { ThumbnailImage } from "@/app/_components/shared/thumbnail";
-import toast from "react-hot-toast";
-import { useParams, useRouter } from "next/navigation";
-import UploadDocumentModal from "../../../_components/uploadDocument";
-import PopOver from "@/app/_components/shared/popover";
-import UploadThumbnailModal from "../../../_components/uploadThumbnail";
 import { DocumentsContext } from "../../../_components/documentsProvider";
+import UploadDocumentModal from "../../../_components/uploadDocument";
+import UploadThumbnailModal from "../../../_components/uploadThumbnail";
 import AnalyticsModal from "../analytics/_components/analyticsModal";
+import DocumentTabs from "./documentTabs";
+import EditLinkModal from "./editLinkModal";
 
 export default function DocumentHeader({
   children,
@@ -289,7 +289,7 @@ export default function DocumentHeader({
                   {name}
                 </h3>
               )}
-              <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
+              <div className="flex flex-row items-center space-x-1 text-shade-gray-500">
                 {source_type === "LOCAL" ? (
                   <FiHardDrive className="h-4 w-4" />
                 ) : null}
@@ -300,7 +300,7 @@ export default function DocumentHeader({
                   {source_path ?? "."}
                 </p>
               </div>
-              <div className="flex flex-row items-center space-x-1 text-shade-pencil-light">
+              <div className="flex flex-row items-center space-x-1 text-shade-gray-500">
                 <CalendarDaysIcon className="h-4 w-4" />
                 <p className="flex-nowrap truncate text-xs ">{`Version ${document_version} | Updated on ${formatDate(
                   updated_at,
@@ -316,7 +316,7 @@ export default function DocumentHeader({
                 document.is_enabled ? (
                   <p>
                     {document_name} is now{" "}
-                    {<span className="text-shade-pencil-light">DISABLED</span>}
+                    {<span className="text-shade-gray-500">DISABLED</span>}
                   </p>
                 ) : (
                   <p>

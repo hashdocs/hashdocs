@@ -1,7 +1,7 @@
 "use client";
 import Loader from "@/app/_components/navigation/loader";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import { ViewerContext } from "./viewerProvider";
@@ -98,7 +98,7 @@ export default function ViewerAuth() {
         >
           {is_email_required && (
             <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-pencil-light ">
+              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-gray-500 ">
                 Email
               </p>
               <input
@@ -114,7 +114,7 @@ export default function ViewerAuth() {
           )}
           {is_password_required && (
             <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-pencil-light ">
+              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-gray-500 ">
                 Password
               </p>
               <input
@@ -143,7 +143,7 @@ export default function ViewerAuth() {
           )}
         </form>
 
-        <p className="text-xs text-shade-pencil-light ">
+        <p className="text-xs text-shade-gray-500 ">
           This information will be shared with the author. Please visit our{" "}
           <a href="/privacy" className="text-stratos-default hover:underline">
             privacy policy

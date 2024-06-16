@@ -1,24 +1,24 @@
 "use client";
-import Link from "next/link";
-import { useState, useContext } from "react";
-import { BiCopy, BiLinkExternal } from "react-icons/bi";
-import {
-  AdjustmentsHorizontalIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  EyeIcon,
-} from "@heroicons/react/24/outline";
-import Toggle from "@/app/_components/shared/buttons/toggle";
-import IconButton from "@/app/_components/shared/buttons/iconButton";
-import { AnimatePresence, motion } from "framer-motion";
-import { formatDate } from "@/app/_utils/dateFormat";
-import { LinkType, DocumentType } from "@/types/documents.types";
-import MediumButton from "@/app/_components/shared/buttons/mediumButton";
 import EditLinkModal from "@/app/(application)/documents/[document_id]/(controls)/_components/editLinkModal";
-import { CopyLinkToClipboard } from "@/app/_utils/common";
 import { DocumentsContext } from "@/app/(application)/documents/_components/documentsProvider";
-import { ViewsHeader } from "../../views/_components/viewsHeader";
+import IconButton from "@/app/_components/shared/buttons/iconButton";
+import MediumButton from "@/app/_components/shared/buttons/mediumButton";
+import Toggle from "@/app/_components/shared/buttons/toggle";
+import { CopyLinkToClipboard } from "@/app/_utils/common";
+import { formatDate } from "@/app/_utils/dateFormat";
+import { DocumentType, LinkType } from "@/types/documents.types";
+import {
+    AdjustmentsHorizontalIcon,
+    ChevronDownIcon,
+    ChevronUpIcon,
+    EyeIcon,
+} from "@heroicons/react/24/outline";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { BiCopy, BiLinkExternal } from "react-icons/bi";
 import ViewRow from "../../views/_components/viewRow";
+import { ViewsHeader } from "../../views/_components/viewsHeader";
 
 type LinkDocumentProps = {
   link:LinkType;
@@ -100,7 +100,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
     <li
       key={link_id}
       className={`my-2 rounded-md bg-white p-4 shadow-sm  ${
-        isActive && document?.is_enabled ? "" : "text-shade-pencil-light"
+        isActive && document?.is_enabled ? "" : "text-shade-gray-500"
       }`}
     >
       <div className={` flex items-center justify-between space-x-4`}>
@@ -109,7 +109,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
         <div className=" flex w-1/4 shrink-0 flex-row items-center space-x-4">
           <div className="flex flex-col ">
             <p className={`font-semibold`}>{link_name}</p>
-            <p className="text-xs text-shade-pencil-light">
+            <p className="text-xs text-shade-gray-500">
               {created_at && formatDate(created_at, "MMM D", false)}
             </p>
           </div>
@@ -124,10 +124,10 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
         >
           <div
             onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)}
-            className={`flex items-center space-x-2 rounded-xl bg-shade-overlay px-4 py-2 ${
+            className={`flex items-center space-x-2 rounded-xl bg-gray-50 px-4 py-2 ${
               isActive && document?.is_enabled
                 ? "cursor-pointer text-stratos-default "
-                : "pointer-events-none text-shade-pencil-light"
+                : "pointer-events-none text-shade-gray-500"
             } shadow-inner`}
           >
             <span className="px-1 font-mono">
@@ -172,7 +172,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
               isActive ? (
                 <p>
                   Link for {link_name} is now{" "}
-                  {<span className="text-shade-pencil-light">INACTIVE</span>}
+                  {<span className="text-shade-gray-500">INACTIVE</span>}
                 </p>
               ) : (
                 <p>
@@ -197,7 +197,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
             }}
           />
           <div
-            className="pointer-events-auto cursor-pointer rounded-md p-2 hover:bg-shade-overlay"
+            className="pointer-events-auto cursor-pointer rounded-md p-2 hover:bg-gray-50"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? (
@@ -228,7 +228,7 @@ const LinkRow: React.FC<LinkDocumentProps> = (props) => {
                     ViewRow({link_name, ...view},idx)
                   ) : null
                 )}
-              <div className=" grid grid-cols-12 justify-end pt-2 text-xs text-shade-pencil-light shadow-sm hover:text-stratos-default hover:underline">
+              <div className=" grid grid-cols-12 justify-end pt-2 text-xs text-shade-gray-500 shadow-sm hover:text-stratos-default hover:underline">
                 <Link
                   href={{
                     pathname: `/documents/${document?.document_id}/views`,

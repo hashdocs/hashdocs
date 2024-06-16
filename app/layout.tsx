@@ -1,47 +1,64 @@
-import toast, { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/react";
-import "../globals.css";
-import Script from "next/script";
-import { Metadata } from "next";
+import { Analytics } from '@vercel/analytics/react';
+import { Metadata, Viewport } from 'next';
+import Script from 'next/script';
+import '../globals.css';
+import HashdocsToast from './_components/toast';
+import { inter } from './_utils/font';
 
-export const metadata: Metadata = {
+export const HASHDOCS_META_TAGS = {
   title: {
-    template: "%s | Hashdocs",
-    default: "Hashdocs", // a default is required when creating a template
+    template: '%s | Hashdocs',
+    default: 'Hashdocs', // a default is required when creating a template
   },
   description:
-    "An open-source docsend alternative with powerful link controls and realtime tracking",
-  icons: {
-    icon: "/hashdocs_gradient_square.png",
+    'An open-source dataroom platform with secure document sharing, powerful link controls and realtime tracking. A better alternative to docsend.',
+  icon: 'assets/hashdocs_logo_512x512.png',
+  og_image: `${
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    'https://' + process.env.VERCEL_BRANCH_URL
+  }/assets/og.jpg`,
+  theme_color: '#1D4ED8',
+};
+
+export const metadata: Metadata = {
+  title: HASHDOCS_META_TAGS.title,
+  description: `${HASHDOCS_META_TAGS.description}`,
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL ||
+      'https://' + process.env.VERCEL_BRANCH_URL ||
+      ''
+  ),
+  alternates: {
+    canonical: '/',
   },
-  themeColor: "#0010FF",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? ""),
   openGraph: {
-    title: "Hashdocs",
-    description:
-      "An open-source docsend alternative with powerful link controls and realtime tracking",
-    url: process.env.NEXT_PUBLIC_BASE_URL,
-    siteName: "Hashdocs",
+    title: `${HASHDOCS_META_TAGS.title}`,
+    description: `${HASHDOCS_META_TAGS.description}`,
+    url:
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      'https://' + process.env.VERCEL_BRANCH_URL,
+    siteName: HASHDOCS_META_TAGS.title.default,
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`,
+        url: `${HASHDOCS_META_TAGS.og_image}`,
         width: 1200,
         height: 630,
       },
     ],
-    locale: "en_US",
-    type: "website",
+    locale: 'en_US',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Hashdocs - an open source docsend alternative",
-    description:
-      "Hashdocs is a powerful document sharing platform with advanced link controls and realtime tracking",
-    siteId: "1467726470533754880",
-    creator: "@rbkayz",
-    creatorId: "1467726470533754880",
-    images: [`${process.env.NEXT_PUBLIC_BASE_URL}/og_base.png`],
+    card: 'summary_large_image',
+    title: `${HASHDOCS_META_TAGS.title}`,
+    description: `${HASHDOCS_META_TAGS.description}`,
+    creator: '@rbkayz',
+    images: [`${HASHDOCS_META_TAGS.og_image}`],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: `${HASHDOCS_META_TAGS.theme_color}`,
 };
 
 export default function RootLayout({
@@ -50,23 +67,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full w-full bg-shade-overlay">
+    <html lang="en" className={`flex h-full w-full ${inter.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="flex min-h-full min-w-full items-center justify-center text-sm text-shade-pencil-black">
-        <Toaster
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              fontWeight: "bolder",
-              fontSize: "12px",
-              borderRadius: "8px",
-              width: "fit-content",
-              maxWidth: "50%",
-            },
-          }}
-        />
+      <body className="flex flex-1 overflow-hidden flex-col items-center text-sm font-medium text-gray-900">
+        <HashdocsToast />
         {children}
         <Analytics />
         <Script

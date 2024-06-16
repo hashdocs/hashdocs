@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import {
+    classNames,
+} from "@/app/_utils/classNames";
 import { Switch } from "@headlessui/react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import CustomTooltip from "../tooltip";
-import {
-  classNames,
-} from "@/app/_utils/classNames";
 
 type ToggleProps = {
   toggleId: string;
@@ -105,7 +105,7 @@ const Toggle: React.FC<ToggleProps> = ({
               aria-hidden="true"
             >
               <svg
-                className="h-3 w-3 text-shade-pencil-light"
+                className="h-3 w-3 text-shade-gray-500"
                 fill="none"
                 viewBox="0 0 12 12"
               >
@@ -131,7 +131,7 @@ const Toggle: React.FC<ToggleProps> = ({
                 className={`h-3 w-3 ${
                   !isDisabled
                     ? "text-stratos-default"
-                    : "text-shade-pencil-light"
+                    : "text-shade-gray-500"
                 }}`}
                 fill="currentColor"
                 viewBox="0 0 12 12"
@@ -146,7 +146,7 @@ const Toggle: React.FC<ToggleProps> = ({
           <Switch.Label
             className={classNames(
               "ml-4 text-xs text-left font-semibold leading-6 w-[120px] truncate",
-              isChecked ? "text-stratos-default" : "text-shade-pencil-light"
+              isChecked ? "text-stratos-default" : "text-shade-gray-500"
             )}
           >
             {Label}

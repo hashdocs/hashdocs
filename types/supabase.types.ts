@@ -1,12 +1,6 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json }
-  | Json[]
+export type Json = { [key: string]: any } | any
 
-export interface Database {
+export type Database = {
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -40,6 +34,7 @@ export interface Database {
           document_id: string
           document_version: number
           is_enabled: boolean
+          org_id: string
           page_count: number | null
         }
         Insert: {
@@ -47,6 +42,7 @@ export interface Database {
           document_id: string
           document_version?: number
           is_enabled?: boolean
+          org_id?: string
           page_count?: number | null
         }
         Update: {
@@ -54,24 +50,32 @@ export interface Database {
           document_id?: string
           document_version?: number
           is_enabled?: boolean
+          org_id?: string
           page_count?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_document_versions_document_id_fkey"
-            columns: ["document_id"]
+            foreignKeyName: "public_tbl_document_versions_document_id_org_id_fkey"
+            columns: ["document_id", "org_id"]
+            isOneToOne: false
             referencedRelation: "tbl_documents"
-            referencedColumns: ["document_id"]
-          }
+            referencedColumns: ["document_id", "org_id"]
+          },
+          {
+            foreignKeyName: "public_tbl_document_versions_document_id_org_id_fkey"
+            columns: ["document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "view_documents"
+            referencedColumns: ["document_id", "org_id"]
+          },
         ]
       }
       tbl_documents: {
         Row: {
           created_at: string
-          created_by: string | null
           document_id: string
           document_name: string
-          document_seq: number
+          email: string | null
           image: string | null
           is_enabled: boolean
           org_id: string | null
@@ -80,10 +84,9 @@ export interface Database {
         }
         Insert: {
           created_at?: string
-          created_by?: string | null
           document_id?: string
           document_name: string
-          document_seq?: number
+          email?: string | null
           image?: string | null
           is_enabled?: boolean
           org_id?: string | null
@@ -92,10 +95,9 @@ export interface Database {
         }
         Update: {
           created_at?: string
-          created_by?: string | null
           document_id?: string
           document_name?: string
-          document_seq?: number
+          email?: string | null
           image?: string | null
           is_enabled?: boolean
           org_id?: string | null
@@ -104,66 +106,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_documents_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "tbl_documents_org_id_fkey"
             columns: ["org_id"]
-            referencedRelation: "tbl_org"
-            referencedColumns: ["org_id"]
-          }
-        ]
-      }
-      tbl_feedback: {
-        Row: {
-          created_at: string | null
-          feedback_seq: number
-          feedback_text: string | null
-          org_id: string | null
-          pathname: string | null
-          user_email: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          feedback_seq?: number
-          feedback_text?: string | null
-          org_id?: string | null
-          pathname?: string | null
-          user_email?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          feedback_seq?: number
-          feedback_text?: string | null
-          org_id?: string | null
-          pathname?: string | null
-          user_email?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_feedback_org_id_fkey"
-            columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "tbl_org"
             referencedColumns: ["org_id"]
           },
-          {
-            foreignKeyName: "tbl_feedback_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
         ]
       }
       tbl_links: {
         Row: {
           created_at: string | null
-          created_by: string | null
           document_id: string
           expiration_date: string | null
           is_active: boolean
@@ -177,12 +130,11 @@ export interface Database {
           link_id: string
           link_name: string
           link_password: string | null
-          link_seq: number
+          org_id: string
           restricted_domains: string | null
         }
         Insert: {
           created_at?: string | null
-          created_by?: string | null
           document_id: string
           expiration_date?: string | null
           is_active?: boolean
@@ -196,12 +148,11 @@ export interface Database {
           link_id?: string
           link_name: string
           link_password?: string | null
-          link_seq?: number
+          org_id: string
           restricted_domains?: string | null
         }
         Update: {
           created_at?: string | null
-          created_by?: string | null
           document_id?: string
           expiration_date?: string | null
           is_active?: boolean
@@ -215,92 +166,108 @@ export interface Database {
           link_id?: string
           link_name?: string
           link_password?: string | null
-          link_seq?: number
+          org_id?: string
           restricted_domains?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_links_created_by_fkey"
-            columns: ["created_by"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
+            foreignKeyName: "public_tbl_links_document_id_org_id_fkey"
+            columns: ["document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "tbl_documents"
+            referencedColumns: ["document_id", "org_id"]
           },
           {
-            foreignKeyName: "tbl_links_document_id_fkey"
-            columns: ["document_id"]
-            referencedRelation: "tbl_documents"
-            referencedColumns: ["document_id"]
-          }
+            foreignKeyName: "public_tbl_links_document_id_org_id_fkey"
+            columns: ["document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "view_documents"
+            referencedColumns: ["document_id", "org_id"]
+          },
         ]
       }
       tbl_org: {
         Row: {
-          billing_cycle_end: string | null
-          billing_cycle_start: string | null
           created_at: string | null
           org_id: string
+          org_image: string | null
           org_name: string | null
-          stripe_customer_id: string | null
-          stripe_price_plan: string | null
-          stripe_product_plan: Database["public"]["Enums"]["pricing_plans"]
-          subscription_status: string | null
+          stripe_metadata: Json | null
         }
         Insert: {
-          billing_cycle_end?: string | null
-          billing_cycle_start?: string | null
           created_at?: string | null
           org_id?: string
+          org_image?: string | null
           org_name?: string | null
-          stripe_customer_id?: string | null
-          stripe_price_plan?: string | null
-          stripe_product_plan?: Database["public"]["Enums"]["pricing_plans"]
-          subscription_status?: string | null
+          stripe_metadata?: Json | null
         }
         Update: {
-          billing_cycle_end?: string | null
-          billing_cycle_start?: string | null
           created_at?: string | null
           org_id?: string
+          org_image?: string | null
           org_name?: string | null
-          stripe_customer_id?: string | null
-          stripe_price_plan?: string | null
-          stripe_product_plan?: Database["public"]["Enums"]["pricing_plans"]
-          subscription_status?: string | null
+          stripe_metadata?: Json | null
         }
         Relationships: []
       }
       tbl_org_members: {
         Row: {
+          created_at: string | null
+          email: string
+          invited_at: string | null
+          invited_by: string | null
+          is_active: boolean
+          is_owner: boolean | null
+          member_color: Database["public"]["Enums"]["enum_colors"]
+          member_image: string | null
+          member_name: string | null
           org_id: string
-          org_member_seq: number
-          user_id: string
-          user_role: Database["public"]["Enums"]["org_role"]
+          role: Database["public"]["Enums"]["enum_member_role"]
+          user_id: string | null
         }
         Insert: {
+          created_at?: string | null
+          email: string
+          invited_at?: string | null
+          invited_by?: string | null
+          is_active?: boolean
+          is_owner?: boolean | null
+          member_color?: Database["public"]["Enums"]["enum_colors"]
+          member_image?: string | null
+          member_name?: string | null
           org_id: string
-          org_member_seq?: number
-          user_id: string
-          user_role?: Database["public"]["Enums"]["org_role"]
+          role?: Database["public"]["Enums"]["enum_member_role"]
+          user_id?: string | null
         }
         Update: {
+          created_at?: string | null
+          email?: string
+          invited_at?: string | null
+          invited_by?: string | null
+          is_active?: boolean
+          is_owner?: boolean | null
+          member_color?: Database["public"]["Enums"]["enum_colors"]
+          member_image?: string | null
+          member_name?: string | null
           org_id?: string
-          org_member_seq?: number
-          user_id?: string
-          user_role?: Database["public"]["Enums"]["org_role"]
+          role?: Database["public"]["Enums"]["enum_member_role"]
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_org_members_org_id_fkey"
+            foreignKeyName: "tbl_org_members_fkey_auth_users"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tbl_org_members_fkey_tbl_org"
             columns: ["org_id"]
+            isOneToOne: false
             referencedRelation: "tbl_org"
             referencedColumns: ["org_id"]
           },
-          {
-            foreignKeyName: "tbl_org_members_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
         ]
       }
       tbl_view_logs: {
@@ -329,51 +296,93 @@ export interface Database {
       }
       tbl_views: {
         Row: {
+          document_id: string | null
           document_version: number | null
           geo: string | null
           ip: string | null
           is_authorized: boolean
           link_id: string | null
+          org_id: string | null
           ua: Json | null
-          view_id: string | null
-          view_seq: number
+          view_id: string
           viewed_at: string
           viewer: string
         }
         Insert: {
+          document_id?: string | null
           document_version?: number | null
           geo?: string | null
           ip?: string | null
           is_authorized?: boolean
           link_id?: string | null
+          org_id?: string | null
           ua?: Json | null
-          view_id?: string | null
-          view_seq?: number
+          view_id: string
           viewed_at?: string
           viewer?: string
         }
         Update: {
+          document_id?: string | null
           document_version?: number | null
           geo?: string | null
           ip?: string | null
           is_authorized?: boolean
           link_id?: string | null
+          org_id?: string | null
           ua?: Json | null
-          view_id?: string | null
-          view_seq?: number
+          view_id?: string
           viewed_at?: string
           viewer?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_tbl_views_link_id_document_id_org_id_fkey"
+            columns: ["link_id", "document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "tbl_links"
+            referencedColumns: ["link_id", "document_id", "org_id"]
+          },
+        ]
       }
     }
     Views: {
-      [_ in never]: never
+      view_documents: {
+        Row: {
+          active_links_count: number | null
+          created_at: string | null
+          document_id: string | null
+          document_name: string | null
+          document_version: number | null
+          email: string | null
+          image: string | null
+          is_enabled: boolean | null
+          org_id: string | null
+          source_path: string | null
+          source_type: string | null
+          total_links_count: number | null
+          total_views_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tbl_documents_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "tbl_org"
+            referencedColumns: ["org_id"]
+          },
+        ]
+      }
     }
     Functions: {
       authorize_viewer: {
         Args: {
           view_id_input: string
+        }
+        Returns: Json
+      }
+      custom_access_token_hook: {
+        Args: {
+          event: Json
         }
         Returns: Json
       }
@@ -422,7 +431,7 @@ export interface Database {
       }
       list_org_from_user: {
         Args: Record<PropertyKey, never>
-        Returns: string
+        Returns: string[]
       }
       upsert_document: {
         Args: {
@@ -435,6 +444,23 @@ export interface Database {
       }
     }
     Enums: {
+      enum_colors:
+        | "#B4876E"
+        | "#A5B337"
+        | "#06CF9C"
+        | "#25D366"
+        | "#02A698"
+        | "#7D9EF1"
+        | "#007BFC"
+        | "#5E47DE"
+        | "#7F66FF"
+        | "#9333EA"
+        | "#FA6533"
+        | "#C4532D"
+        | "#DC2626"
+        | "#FF2E74"
+        | "#DB2777"
+      enum_member_role: "admin" | "member"
       org_role: "OWNER"
       pricing_plans: "Free" | "Pro" | "Enterprise"
     }
@@ -453,6 +479,7 @@ export interface Database {
           id: string
           name: string
           owner: string | null
+          owner_id: string | null
           public: boolean | null
           updated_at: string | null
         }
@@ -464,6 +491,7 @@ export interface Database {
           id: string
           name: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
@@ -475,17 +503,11 @@ export interface Database {
           id?: string
           name?: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       migrations: {
         Row: {
@@ -517,6 +539,7 @@ export interface Database {
           metadata: Json | null
           name: string | null
           owner: string | null
+          owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
           version: string | null
@@ -529,6 +552,7 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
           version?: string | null
@@ -541,6 +565,7 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
           version?: string | null
@@ -549,15 +574,105 @@ export interface Database {
           {
             foreignKeyName: "objects_bucketId_fkey"
             columns: ["bucket_id"]
+            isOneToOne: false
+            referencedRelation: "buckets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      s3_multipart_uploads: {
+        Row: {
+          bucket_id: string
+          created_at: string
+          id: string
+          in_progress_size: number
+          key: string
+          owner_id: string | null
+          upload_signature: string
+          version: string
+        }
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          id: string
+          in_progress_size?: number
+          key: string
+          owner_id?: string | null
+          upload_signature: string
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          id?: string
+          in_progress_size?: number
+          key?: string
+          owner_id?: string | null
+          upload_signature?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
+            columns: ["bucket_id"]
+            isOneToOne: false
+            referencedRelation: "buckets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      s3_multipart_uploads_parts: {
+        Row: {
+          bucket_id: string
+          created_at: string
+          etag: string
+          id: string
+          key: string
+          owner_id: string | null
+          part_number: number
+          size: number
+          upload_id: string
+          version: string
+        }
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          etag: string
+          id?: string
+          key: string
+          owner_id?: string | null
+          part_number: number
+          size?: number
+          upload_id: string
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          etag?: string
+          id?: string
+          key?: string
+          owner_id?: string | null
+          part_number?: number
+          size?: number
+          upload_id?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
+            columns: ["bucket_id"]
+            isOneToOne: false
             referencedRelation: "buckets"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "objects_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
+            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "s3_multipart_uploads"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
     }
@@ -590,13 +705,44 @@ export interface Database {
         Args: {
           name: string
         }
-        Returns: unknown
+        Returns: string[]
       }
       get_size_by_bucket: {
         Args: Record<PropertyKey, never>
         Returns: {
           size: number
           bucket_id: string
+        }[]
+      }
+      list_multipart_uploads_with_delimiter: {
+        Args: {
+          bucket_id: string
+          prefix_param: string
+          delimiter_param: string
+          max_keys?: number
+          next_key_token?: string
+          next_upload_token?: string
+        }
+        Returns: {
+          key: string
+          id: string
+          created_at: string
+        }[]
+      }
+      list_objects_with_delimiter: {
+        Args: {
+          bucket_id: string
+          prefix_param: string
+          delimiter_param: string
+          max_keys?: number
+          start_after?: string
+          next_token?: string
+        }
+        Returns: {
+          name: string
+          id: string
+          metadata: Json
+          updated_at: string
         }[]
       }
       search: {
@@ -628,4 +774,87 @@ export interface Database {
     }
   }
 }
+
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof PublicSchema["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof PublicSchema["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
 
