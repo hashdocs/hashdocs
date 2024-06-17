@@ -1,5 +1,5 @@
-import Link from "next/link";
-import toast from "react-hot-toast";
+import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 // Copy link to clipboard
 export const CopyLinkToClipboard = async (
@@ -13,17 +13,17 @@ export const CopyLinkToClipboard = async (
     toast.promise(
       copyPromise,
       {
-        loading: "Copying...",
+        loading: 'Copying...',
         success: (
           <p className="font-normal">
-            Successfully copied{" "}
+            Successfully copied{' '}
             <Link
               href={copyText}
               target="_blank"
-              className="font-semibold text-stratos-default underline"
+              className="text-stratos-default font-semibold underline"
             >
               {copyText}
-            </Link>{" "}
+            </Link>{' '}
             to clipboard
           </p>
         ),
@@ -33,4 +33,14 @@ export const CopyLinkToClipboard = async (
         id: toastId,
       }
     );
+};
+
+export const generateRandomString = (length: number) => {
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };

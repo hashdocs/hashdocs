@@ -37,7 +37,7 @@ export default function TopBar() {
   return (
     <div
       className={clsx(
-        'flex h-12 w-full flex-shrink-0 flex-row items-center shadow-sm justify-between gap-x-4 border-b border-gray-200 px-4'
+        'hidden lg:flex h-12 w-full flex-shrink-0 flex-row items-center shadow-sm justify-between gap-x-4 border-b border-gray-200 px-4'
       )}
     >
       <div className="flex flex-row items-center gap-x-3">

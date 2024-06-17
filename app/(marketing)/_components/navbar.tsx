@@ -17,10 +17,7 @@ export default function Navbar() {
       )}
     >
       <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4 ">
-        <Link href={`/`} className="flex items-center gap-x-1">
-          <HashdocsLogo size="md" />
-          <h1 className="mt-1 text-2xl font-black tracking-wide">Hashdocs</h1>
-        </Link>
+        <HashdocsLogo size="md" full link />
 
         <div className="hidden items-center space-x-6 sm:flex">
           {navbarLinks.map((link) => (

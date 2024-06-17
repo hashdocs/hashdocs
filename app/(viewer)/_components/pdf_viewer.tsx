@@ -1,17 +1,17 @@
 "use client";
-import Loader from "@/app/_components/navigation/loader";
-import { classNames } from "@/app/_utils/classNames";
+import Loader from "@/app/_components/loader";
 import {
-    MagnifyingGlassMinusIcon,
-    MagnifyingGlassPlusIcon,
+  MagnifyingGlassMinusIcon,
+  MagnifyingGlassPlusIcon,
 } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 import { useParams } from "next/navigation";
 import { RefObject, createRef, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Document, Page, Thumbnail, pdfjs } from "react-pdf";
 import {
-    DocumentCallback,
-    OnItemClickArgs,
+  DocumentCallback,
+  OnItemClickArgs,
 } from "react-pdf/dist/cjs/shared/types";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -194,7 +194,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
             className="flex flex-row justify-center gap-x-2 px-2 py-2"
           >
             <p
-              className={classNames(
+              className={clsx(
                 activePage == index + 1
                   ? "font-semibold text-stratos-default"
                   : ""
@@ -208,7 +208,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               height={thumbnailHeight}
               onItemClick={handleThumbnailClick}
               loading={<Loader />}
-              className={classNames(
+              className={clsx(
                 "rounded-sm ring-2 ring-offset-2",
                 activePage == index + 1
                   ? "ring-stratos-default"

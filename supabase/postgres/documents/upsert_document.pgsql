@@ -1,6 +1,6 @@
 DROP FUNCTION IF EXISTS upsert_document;
 
-CREATE OR REPLACE FUNCTION upsert_document(document_id_input text DEFAULT NULL, document_name_input text DEFAULT NULL, source_path_input text DEFAULT NULL, source_type_input text DEFAULT NULL)
+CREATE OR REPLACE FUNCTION upsert_document(org_id_input uuid, document_id_input text DEFAULT NULL, document_name_input text DEFAULT NULL, source_path_input text DEFAULT NULL, source_type_input text DEFAULT NULL)
 	RETURNS json
 	LANGUAGE PLPGSQL
 	AS $$
@@ -10,13 +10,14 @@ DECLARE
 	return_data json;
 BEGIN
 	INSERT INTO tbl_documents(
+		org_id,
 		document_id,
 		document_name,
 		source_path,
 		source_type)
 	VALUES (
-		coalesce(
-			document_id_input, gen_document_id()),
+		org_id_input,
+		coalesce(document_id_input, gen_document_id()),
 		document_name_input,
 		source_path_input,
 		source_type_input)
@@ -24,7 +25,8 @@ ON CONFLICT (
 	document_id)
 	DO UPDATE SET
 		source_path = EXCLUDED.source_path,
-		source_type = EXCLUDED.source_type
+		source_type = EXCLUDED.source_type,
+		document_name = EXCLUDED.document_name
 	RETURNING
 		document_id INTO found_document_id;
 	--
@@ -39,17 +41,21 @@ ON CONFLICT (
 	UPDATE
 		tbl_document_versions
 	SET
-		is_enabled = FALSE
+		is_active = FALSE
 	WHERE
-		document_id = found_document_id;
+		document_id = found_document_id
+		AND org_id = org_id_input;
 	--
 	-- insert new version
 	--
 	INSERT INTO tbl_document_versions(
+		org_id,
 		document_id,
 		document_version,
-		is_enabled)
+		is_active, 
+		token)
 	VALUES (
+		org_id_input,
 		found_document_id,
 (
 			SELECT
@@ -57,13 +63,11 @@ ON CONFLICT (
 			FROM
 				tbl_document_versions
 			WHERE
-				document_id = found_document_id), TRUE)
-RETURNING
-	* INTO insert_data;
+				document_id = found_document_id AND org_id = org_id_input), TRUE, 
+				 sign(json_build_object('url', 'documents/' || tbl_document_versions.org_id || '/' || tbl_document_versions.document_id || '/' || tbl_document_versions.document_version || '.pdf', 'iat', ROUND(extract(epoch FROM now())), 'exp', ROUND(extract(epoch FROM now())) + 60 * 60 * 7 * 24 * 52 * 20), current_setting('app.settings.jwt_secret', TRUE)));
 	--
 	--
-	SELECT
-		get_documents(insert_data.document_id) INTO return_data;
+	SELECT row_to_json(view_documents) INTO return_data FROM view_documents WHERE document_id = found_document_id AND org_id = org_id_input;
 	--
 	--
 	RETURN return_data;

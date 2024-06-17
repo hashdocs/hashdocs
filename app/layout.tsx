@@ -71,7 +71,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
-      <body className="flex flex-1 overflow-hidden flex-col items-center text-sm font-medium text-gray-900">
+      <body className="flex flex-1 overflow-hidden flex-col items-center text-sm text-gray-900">
         <HashdocsToast />
         {children}
         <Analytics />

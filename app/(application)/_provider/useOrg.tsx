@@ -3,12 +3,12 @@ import { createClientComponentClient } from '@/app/_utils/supabase';
 import { OrgType } from '@/types';
 import { useRouter } from 'next/navigation';
 import {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from 'react';
 import toast from 'react-hot-toast';
 import { getOrg } from './org.actions';
@@ -82,7 +82,7 @@ export const OrgProvider = ({
     } = supabase.auth.onAuthStateChange((event) => {
       switch (event) {
         case 'SIGNED_IN': {
-          revalidateOrg();
+          // revalidateOrg();
           break;
         }
 

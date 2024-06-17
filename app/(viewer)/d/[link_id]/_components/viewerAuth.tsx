@@ -1,56 +1,55 @@
-"use client";
-import Loader from "@/app/_components/navigation/loader";
-import { LockClosedIcon } from "@heroicons/react/24/solid";
-import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
-import { toast } from "react-hot-toast";
-import { ViewerContext } from "./viewerProvider";
+'use client';
+import Button from '@/app/_components/button';
+import Loader from '@/app/_components/loader';
+import { LinkViewType } from '@/types';
+import { LockClosedIcon } from '@heroicons/react/24/solid';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { authorizeViewer } from '../_actions/link.actions';
 
-export default function ViewerAuth() {
+export default function ViewerAuth({ link }: { link: LinkViewType }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<boolean>(false);
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<boolean>(false);
 
-  const linkProps = useContext(ViewerContext);
-
-  if (!linkProps) {
-    return null;
-  }
-
-  const { is_email_required, is_password_required } = linkProps;
+  const { is_email_required, is_password_required, link_id } = link;
 
   const handleAuthorizeViewer = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const authorizePromise = new Promise(async (resolve, reject) => {
-      const res = await fetch(`/api/viewer/${linkProps?.link_id}`, {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        resolve("success");
-        router.refresh();
-      } else {
-
-        const err = await res.json();
-
-        reject(err);
+    const authorizePromise = new Promise<string>(async (resolve, reject) => {
+      try {
+        const { data, error } = await authorizeViewer({
+          link_id,
+          email,
+          password,
+        });
+        if (error || !data) {
+          console.error(error);
+          reject(error);
+          return;
+        }
+        resolve(data);
+      } catch (error) {
+        reject();
+      } finally {
         setIsLoading(false);
       }
     });
 
-    toast.promise(authorizePromise, {
-      loading: "Authorizing...",
-      success: "Authorization successful",
-      error: (error_message: string) => (
-        <p>{error_message ?? "Authorization failed! Please try again"}</p>
+    await toast.promise(authorizePromise, {
+      loading: 'Authorizing...',
+      success: (data: string) => `Authorization successful - ${data}`,
+      error: (e: string) => (
+        <p>{e ?? 'Authorization failed! Please try again'}</p>
       ),
     });
   };
@@ -76,20 +75,26 @@ export default function ViewerAuth() {
     if (emailError) {
       e.preventDefault();
       return;
+    } 
+
+    if (passwordError) {
+      e.preventDefault();
+      return;
     }
+
     handleAuthorizeViewer(e);
   };
 
   return (
     <section className="flex flex-1 flex-col items-center justify-center ">
-      <div className="flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center space-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
-        <div className="bg-stratos-gradient flex h-12 w-12 items-center justify-center rounded-full border-2 text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-stratos-default ring-offset-1">
+      <div className="flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center gap-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-blue-700 text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-blue-700 ring-offset-1">
           <LockClosedIcon className="h-5 w-5" />
         </div>
         <p className="text-base ">
           {!is_email_required && !is_password_required
-            ? "By continuing, you affirm that you have received permission from the author to view the document"
-            : "The author requires the following details to view the document"}
+            ? 'By continuing, you affirm that you have received permission from the author to view the document'
+            : 'The author requires the following details to view the document'}
         </p>
 
         <form
@@ -98,7 +103,7 @@ export default function ViewerAuth() {
         >
           {is_email_required && (
             <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-gray-500 ">
+              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
                 Email
               </p>
               <input
@@ -106,7 +111,7 @@ export default function ViewerAuth() {
                 type="email"
                 onChange={handleEmailChange}
                 value={email}
-                className="shrink-0 basis-3/4 rounded-md border border-shade-line p-2 shadow-inner focus:ring-1 focus:ring-stratos-default"
+                className="shrink-0 basis-3/4 rounded-md border border-gray-200 p-2 shadow-inner focus:ring-1 focus:ring-blue-700"
                 autoFocus={true}
                 disabled={isLoading}
               />
@@ -114,7 +119,7 @@ export default function ViewerAuth() {
           )}
           {is_password_required && (
             <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-shade-gray-500 ">
+              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
                 Password
               </p>
               <input
@@ -122,33 +127,28 @@ export default function ViewerAuth() {
                 type="password"
                 onChange={handlePasswordChange}
                 value={password}
-                className="shrink-0 basis-3/4 rounded-md border border-shade-line p-2 shadow-inner focus:ring-1 focus:ring-stratos-default"
+                className="shrink-0 basis-3/4 rounded-md border border-gray-200 p-2 shadow-inner focus:ring-1 focus:ring-blue-700"
                 autoFocus={true}
                 disabled={isLoading}
               />
             </div>
           )}
 
-          {isLoading ? (
-            <div className="h-11 w-11">
-              <Loader />
-            </div>
-          ) : (
-            <button
-              className="bg-stratos-gradient hover:bg-stratos-gradient/80 w-40 rounded-lg px-3 py-3 font-semibold text-white disabled:bg-stratos-line"
-              disabled={isLoading || emailError || passwordError}
-            >
-              Continue
-            </button>
-          )}
+          <Button
+            variant="solid"
+            size="md"
+            className="flex h-12 w-40 items-center justify-center"
+            disabled={isLoading || emailError || passwordError}
+          >
+            {isLoading ? <Loader size="xs" /> : 'Continue'}
+          </Button>
         </form>
 
-        <p className="text-xs text-shade-gray-500 ">
-          This information will be shared with the author. Please visit our{" "}
-          <a href="/privacy" className="text-stratos-default hover:underline">
+        <p className="text-gray-500 text-xs w-96">
+          This information will be shared with the author.<br/> For more info, please read our{' '}
+          <Link href="/privacy" className="text-blue-700 hover:underline">
             privacy policy
-          </a>{" "}
-          to know more.
+          </Link>
         </p>
       </div>
     </section>

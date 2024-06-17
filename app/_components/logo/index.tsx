@@ -1,31 +1,57 @@
 import clsx from 'clsx';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export type HashdocsLogoProps = {
-  className?: string;
   size?: 'sm' | 'md' | 'lg';
+  full?: boolean;
+  className?: string;
+  link?: boolean;
 };
 
-const sizeMap = {
+const logoSizeMap = {
   sm: 'scale-50',
   md: 'scale-75',
   lg: '',
 };
 
-export const HashdocsLogo = ({ size = 'lg', className }: HashdocsLogoProps) => {
+const textSizeMap = {
+  sm: 'text-xl mt-1',
+  md: 'text-2xl mt-2',
+  lg: 'text-4xl mt-4',
+};
+
+export const HashdocsLogo = ({
+  size = 'md',
+  full = false,
+  className = '',
+  link = false,
+}: HashdocsLogoProps) => {
   return (
-    <div
+    <Link
+      href={link ? '/' : ''}
       className={clsx(
-        'relative h-12 w-9 overflow-hidden rounded-md',
-        sizeMap[size],
+        'text-gray-gradient flex items-center gap-x-2.5',
         className
       )}
     >
-      <Image
-        src={'/assets/hashdocs_gradient.svg'}
-        fill={true}
-        alt={'Hashdocs'}
-      />
-    </div>
+      <div
+        className={clsx(
+          'relative h-12 w-9 shrink-0 overflow-hidden rounded-md',
+          logoSizeMap[size]
+        )}
+      >
+        <Image
+          src={'/assets/hashdocs_gradient.svg'}
+          fill={true}
+          alt={'Hashdocs'}
+        />
+      </div>
+      {full && (
+        <p className={clsx('font-black tracking-wide ', textSizeMap[size])}>
+          Hashdocs
+        </p>
+      )}
+    </Link>
   );
 };

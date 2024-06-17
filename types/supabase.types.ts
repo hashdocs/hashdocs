@@ -30,28 +30,37 @@ export type Database = {
     Tables: {
       tbl_document_versions: {
         Row: {
-          created_at: string | null
           document_id: string
           document_version: number
-          is_enabled: boolean
+          is_active: boolean
           org_id: string
           page_count: number | null
+          thumbnail_image: string | null
+          token: string | null
+          updated_at: string
+          updated_by: string | null
         }
         Insert: {
-          created_at?: string | null
           document_id: string
           document_version?: number
-          is_enabled?: boolean
+          is_active?: boolean
           org_id?: string
           page_count?: number | null
+          thumbnail_image?: string | null
+          token?: string | null
+          updated_at?: string
+          updated_by?: string | null
         }
         Update: {
-          created_at?: string | null
           document_id?: string
           document_version?: number
-          is_enabled?: boolean
+          is_active?: boolean
           org_id?: string
           page_count?: number | null
+          thumbnail_image?: string | null
+          token?: string | null
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: [
           {
@@ -75,10 +84,8 @@ export type Database = {
           created_at: string
           document_id: string
           document_name: string
-          email: string | null
-          image: string | null
           is_enabled: boolean
-          org_id: string | null
+          org_id: string
           source_path: string
           source_type: string
         }
@@ -86,10 +93,8 @@ export type Database = {
           created_at?: string
           document_id?: string
           document_name: string
-          email?: string | null
-          image?: string | null
           is_enabled?: boolean
-          org_id?: string | null
+          org_id: string
           source_path: string
           source_type: string
         }
@@ -97,10 +102,8 @@ export type Database = {
           created_at?: string
           document_id?: string
           document_name?: string
-          email?: string | null
-          image?: string | null
           is_enabled?: boolean
-          org_id?: string | null
+          org_id?: string
           source_path?: string
           source_type?: string
         }
@@ -192,6 +195,7 @@ export type Database = {
           org_id: string
           org_image: string | null
           org_name: string | null
+          org_plan: string | null
           stripe_metadata: Json | null
         }
         Insert: {
@@ -199,6 +203,7 @@ export type Database = {
           org_id?: string
           org_image?: string | null
           org_name?: string | null
+          org_plan?: string | null
           stripe_metadata?: Json | null
         }
         Update: {
@@ -206,6 +211,7 @@ export type Database = {
           org_id?: string
           org_image?: string | null
           org_name?: string | null
+          org_plan?: string | null
           stripe_metadata?: Json | null
         }
         Relationships: []
@@ -272,63 +278,87 @@ export type Database = {
       }
       tbl_view_logs: {
         Row: {
-          end_time: number | null
+          document_id: string
+          end_time: number
+          link_id: string
+          org_id: string
           page_num: number
-          start_time: number | null
-          view_id: string | null
+          start_time: number
+          view_id: string
           view_log_seq: number
         }
         Insert: {
-          end_time?: number | null
+          document_id: string
+          end_time: number
+          link_id: string
+          org_id: string
           page_num?: number
-          start_time?: number | null
-          view_id?: string | null
+          start_time: number
+          view_id?: string
           view_log_seq?: number
         }
         Update: {
-          end_time?: number | null
+          document_id?: string
+          end_time?: number
+          link_id?: string
+          org_id?: string
           page_num?: number
-          start_time?: number | null
-          view_id?: string | null
+          start_time?: number
+          view_id?: string
           view_log_seq?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_tbl_view_logs_view_id_link_id_document_id_org_id_fkey"
+            columns: ["view_id", "link_id", "document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "tbl_views"
+            referencedColumns: ["view_id", "link_id", "document_id", "org_id"]
+          },
+          {
+            foreignKeyName: "public_tbl_view_logs_view_id_link_id_document_id_org_id_fkey"
+            columns: ["view_id", "link_id", "document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "view_logs"
+            referencedColumns: ["view_id", "link_id", "document_id", "org_id"]
+          },
+        ]
       }
       tbl_views: {
         Row: {
-          document_id: string | null
+          document_id: string
           document_version: number | null
           geo: string | null
           ip: string | null
           is_authorized: boolean
-          link_id: string | null
-          org_id: string | null
+          link_id: string
+          org_id: string
           ua: Json | null
           view_id: string
           viewed_at: string
           viewer: string
         }
         Insert: {
-          document_id?: string | null
+          document_id: string
           document_version?: number | null
           geo?: string | null
           ip?: string | null
           is_authorized?: boolean
-          link_id?: string | null
-          org_id?: string | null
+          link_id: string
+          org_id: string
           ua?: Json | null
           view_id: string
           viewed_at?: string
           viewer?: string
         }
         Update: {
-          document_id?: string | null
+          document_id?: string
           document_version?: number | null
           geo?: string | null
           ip?: string | null
           is_authorized?: boolean
-          link_id?: string | null
-          org_id?: string | null
+          link_id?: string
+          org_id?: string
           ua?: Json | null
           view_id?: string
           viewed_at?: string
@@ -353,14 +383,18 @@ export type Database = {
           document_id: string | null
           document_name: string | null
           document_version: number | null
-          email: string | null
-          image: string | null
+          is_active: boolean | null
           is_enabled: boolean | null
           org_id: string | null
+          page_count: number | null
           source_path: string | null
           source_type: string | null
+          thumbnail_image: string | null
+          token: string | null
           total_links_count: number | null
           total_views_count: number | null
+          updated_at: string | null
+          updated_by: string | null
         }
         Relationships: [
           {
@@ -369,6 +403,34 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tbl_org"
             referencedColumns: ["org_id"]
+          },
+        ]
+      }
+      view_logs: {
+        Row: {
+          completion: number | null
+          document_id: string | null
+          document_version: number | null
+          duration: number | null
+          geo: string | null
+          ip: string | null
+          is_authorized: boolean | null
+          link_id: string | null
+          org_id: string | null
+          page_count: number | null
+          ua: Json | null
+          view_id: string | null
+          view_logs: Json | null
+          viewed_at: string | null
+          viewer: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_tbl_views_link_id_document_id_org_id_fkey"
+            columns: ["link_id", "document_id", "org_id"]
+            isOneToOne: false
+            referencedRelation: "tbl_links"
+            referencedColumns: ["link_id", "document_id", "org_id"]
           },
         ]
       }
@@ -405,6 +467,20 @@ export type Database = {
         }
         Returns: string
       }
+      get_document:
+        | {
+            Args: {
+              document_id_input: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              document_id_input: string
+              org_id_input: string
+            }
+            Returns: Json
+          }
       get_documents: {
         Args: {
           document_id_input?: string
@@ -435,6 +511,7 @@ export type Database = {
       }
       upsert_document: {
         Args: {
+          org_id_input: string
           document_id_input?: string
           document_name_input?: string
           source_path_input?: string

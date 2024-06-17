@@ -36,6 +36,7 @@
     "csstype": "^3.0.10",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.8",
+    "disposable-email-detector": "^1.0.3",
     "eslint": "8.42.0",
     "eslint-config-next": "^14.2.4",
     "framer-motion": "^10.12.16",

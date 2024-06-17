@@ -18,6 +18,7 @@ type ModalProps = {
 
 export type ModalRef = {
   openModal: () => void;
+  closeModal: () => void;
 };
 
 const Container = React.forwardRef<ModalRef, ModalProps>(
@@ -27,6 +28,9 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
     useImperativeHandle(ref, () => ({
       openModal() {
         setOpen(true);
+      },
+      closeModal() {
+        setOpen(false);
       },
     }));
 
@@ -64,7 +68,9 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
                   )}
                 >
                   {title ? (
-                    <Header title={title} onClose={() => setOpen(false)} />
+                    <Header title={title} onClose={() => {
+                      console.log('clicked');
+                      setOpen(false)}} />
                   ) : null}
                   <div className={clsx('p-4 text-gray-600', classNames?.body)}>
                     {children}

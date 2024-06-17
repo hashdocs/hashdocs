@@ -16,16 +16,18 @@ const Switch: React.FC<SwitchProps> = ({
   enabled,
   setEnabled,
   callback,
+  disabled
 }) => {
   return (
     <HeadlessSwitch
       checked={enabled}
+      disabled={disabled}
       onChange={(checked) => {
         setEnabled(checked);
         callback && callback(checked);
       }}
       className={`${
-        enabled ? '!bg-blue-700' : '!bg-gray-200'
+        enabled && !disabled ? '!bg-blue-700' : '!bg-gray-400'
       } relative inline-flex h-6 w-11 items-center rounded-full ${className}`}
     >
       <span

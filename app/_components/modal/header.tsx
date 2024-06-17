@@ -16,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ title, onClose }) => {
         size="sm"
         variant="white"
         className="text-gray-400 !p-1 focus:outline-none"
-        buttonProps={{ onClick: onClose }}
+        onClick={onClose}
       >
         <CgClose />
       </Button>

@@ -99,7 +99,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <section className="flex h-screen w-full flex-1 flex-col items-start overflow-y-scroll">
+      <section className="flex h-screen w-full flex-1 flex-col items-start overflow-y-scroll bg-gray-50">
         <Navbar />
         <div className="flex h-full w-full flex-1 flex-col items-center justify-center px-4">
           <div className="flex h-[400px] w-full max-w-sm flex-col justify-center gap-y-4 rounded-lg bg-white p-8 text-center font-semibold leading-6 tracking-wide shadow-lg">

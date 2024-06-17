@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React from 'react';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg';
-type ButtonVariant = 'solid' | 'white' | 'outline' | 'link';
+type ButtonVariant = 'solid' | 'white' | 'outline' | 'link' | 'icon';
 
 const buttonClass = {
   xs: 'border py-1 px-2 text-xs rounded transition',
@@ -17,6 +17,7 @@ const buttonClass = {
     outline:
       'bg-white border-gray-200 text-gray-800 hover:bg-gray-100 shadow-sm disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-gray-100',
     link: 'px-0 py-0 bg-transparent border-none text-gray-500 underline hover:text-gray-800',
+    icon: 'p-2 bg-transparent border-none text-gray-600 hover:text-blue-700 hover:bg-gray-200/80 rounded'
   },
 };
 
