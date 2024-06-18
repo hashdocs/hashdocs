@@ -31,4 +31,6 @@ SELECT tbl_documents.*,
 FROM tbl_documents
     LEFT JOIN tbl_document_versions ON tbl_documents.document_id = tbl_document_versions.document_id AND tbl_document_versions.is_active = TRUE
     LEFT JOIN links ON tbl_documents.document_id = links.document_id
-    LEFT JOIN views ON tbl_documents.document_id = views.document_id;
+    LEFT JOIN views ON tbl_documents.document_id = views.document_id
+ORDER BY
+    tbl_document_versions.updated_at DESC;

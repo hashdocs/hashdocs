@@ -20,8 +20,8 @@ export default async function ApplicationLayout({
           <div className="flex flex-1 flex-col overflow-hidden">
             <TopBar />
             <MobileTopBar />
-            <section className="hashdocs-scrollbar flex h-full w-full flex-1 flex-col items-center justify-center !overflow-y-scroll bg-gray-50">
-              <div className="flex w-full max-w-screen-xl flex-1 flex-col p-4 ">
+            <section className="flex h-full w-full flex-1 flex-col items-center bg-gray-50 hashdocs-scrollbar !overflow-y-scroll">
+              <div className="flex w-full max-w-screen-xl flex-1 flex-col px-4 ">
                 {children}
               </div>
             </section>

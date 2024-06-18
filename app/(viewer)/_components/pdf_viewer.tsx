@@ -13,6 +13,7 @@ import {
   DocumentCallback,
   OnItemClickArgs,
 } from "react-pdf/dist/cjs/shared/types";
+import { updatePageTimes } from "../d/[link_id]/_actions/link.actions";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function PDFViewer({ signedURL }: { signedURL: string }) {
@@ -154,11 +155,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           flatPageTimes[flatPageTimes.length - 1].exitTime = Date.now();
         }
 
-        link_id &&
-          (await fetch(`/api/viewer/${link_id}`, {
-            method: "PUT",
-            body: JSON.stringify(flatPageTimes),
-          }));
+        await updatePageTimes({pageTimes: flatPageTimes, link_id: link_id as string})
       }
     }, 3000);
 
@@ -196,7 +193,7 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
             <p
               className={clsx(
                 activePage == index + 1
-                  ? "font-semibold text-stratos-default"
+                  ? "font-semibold text-blue-700"
                   : ""
               )}
             >
@@ -211,8 +208,8 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
               className={clsx(
                 "rounded-sm ring-2 ring-offset-2",
                 activePage == index + 1
-                  ? "ring-stratos-default"
-                  : "ring-shade-overlay"
+                  ? "ring-blue-700"
+                  : "ring-gray-50"
               )}
             />
           </div>
@@ -226,25 +223,25 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
           <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
             <div className="flex flex-row gap-x-2">
               <div
-                className="flex items-center justify-center font-semibold text-shade-gray-500"
+                className="flex items-center justify-center font-semibold text-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {"Page"}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-gray-500"
+                className="flex items-center justify-center font-semibold text-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {activePage}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-gray-500"
+                className="flex items-center justify-center font-semibold text-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {"of"}
               </div>
               <div
-                className="flex items-center justify-center font-semibold text-shade-gray-500"
+                className="flex items-center justify-center font-semibold text-gray-500"
                 style={{ userSelect: "none" }}
               >
                 {numPages}
@@ -252,11 +249,11 @@ export default function PDFViewer({ signedURL }: { signedURL: string }) {
             </div>
             <div className="flex flex-row gap-x-2">
               <MagnifyingGlassPlusIcon
-                className="h-6 w-6 cursor-pointer text-shade-gray-500 hover:text-shade-pencil-black"
+                className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
                 onClick={handleZoomIn}
               />
               <MagnifyingGlassMinusIcon
-                className="h-6 w-6 cursor-pointer text-shade-gray-500 hover:text-shade-pencil-black"
+                className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
                 onClick={handleZoomOut}
               />
             </div>

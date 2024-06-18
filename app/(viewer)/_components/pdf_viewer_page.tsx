@@ -5,7 +5,7 @@ const PDFViewer = dynamic(() => import("./pdf_viewer"), {
   ssr: false,
 });
 
-export default async function PDFViewerPage({
+export default function PDFViewerPage({
   signedURL,
 }: {
   signedURL: string;

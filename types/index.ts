@@ -20,13 +20,14 @@ export type DocumentType = Merge<
     org_id: string;
     updated_at: string;
     document_name: string;
+    page_count: number;
   }
 >;
 
 export type DocumentDetailType = Merge<
   {
     links: Tables<'tbl_links'>[];
-    views: Tables<'view_logs'>[];
+    views: ViewType[];
     versions: Tables<'tbl_document_versions'>[];
   },
   DocumentType
@@ -35,6 +36,25 @@ export type DocumentDetailType = Merge<
 /* ---------------------------------- LINK ---------------------------------- */
 
 export type LinkViewType = Merge<Tables<'tbl_links'>, DocumentType>;
+
+/* ---------------------------------- VIEW ---------------------------------- */
+
+export type ViewType = Merge<Tables<'view_logs'>, {
+  geo: {
+    city?: string;
+    region?: string;
+    country?: string;
+  } | null;
+  view_id: string;
+  viewer: string;
+  viewed_at: string;
+  link_id: string;
+  document_id: string;
+  org_id: string;
+  completion: number;
+  duration: number;
+  view_logs: Record<string,number>;
+}>;
 
 
 /* --------------------------------- COLORS --------------------------------- */

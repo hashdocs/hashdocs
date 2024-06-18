@@ -40,7 +40,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
   return (
     <tr
       className={clsx(
-        'sticky top-0 z-10 border-b border-gray-100  bg-white shadow-sm',
+        'sticky top-0 z-10 border-b border-gray-100 shadow-sm',
         className
       )}
       data-testid="table-header"
@@ -59,7 +59,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
               id="checkbox"
               name="all"
               className={clsx(
-                'h-3 w-3 cursor-pointer rounded-sm border border-gray-300 text-green-700 indeterminate:text-green-700 focus:border-gray-300 focus:ring-transparent'
+                'h-3 w-3 cursor-pointer rounded-sm border border-gray-300 text-blue-700 indeterminate:text-blue-700 focus:border-gray-300 focus:ring-transparent'
               )}
               onChange={handleSelectAll}
               data-testid="table-all-checkbox"

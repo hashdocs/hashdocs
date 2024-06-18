@@ -13,7 +13,5 @@ export default async function Page({
     redirect('/documents');
   }
 
-  return (
-    <ViewsTable document={document} />
-  );
+  return <ViewsTable views={document.views} document={document} show_search />;
 }

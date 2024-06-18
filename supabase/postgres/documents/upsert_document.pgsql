@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION upsert_document(org_id_input uuid, document_id_input 
 	AS $$
 DECLARE
 	found_document_id text;
-	insert_data tbl_document_versions;
+	document_count integer;
 	return_data json;
 BEGIN
 	INSERT INTO tbl_documents(
@@ -46,6 +46,15 @@ ON CONFLICT (
 		document_id = found_document_id
 		AND org_id = org_id_input;
 	--
+	--
+	SELECT 
+		count(*) INTO document_count 
+	FROM 
+		tbl_document_versions 
+	WHERE 
+		document_id = found_document_id 
+		AND org_id = org_id_input;
+	--
 	-- insert new version
 	--
 	INSERT INTO tbl_document_versions(
@@ -57,14 +66,9 @@ ON CONFLICT (
 	VALUES (
 		org_id_input,
 		found_document_id,
-(
-			SELECT
-				coalesce(max(document_version), 0) + 1
-			FROM
-				tbl_document_versions
-			WHERE
-				document_id = found_document_id AND org_id = org_id_input), TRUE, 
-				 sign(json_build_object('url', 'documents/' || tbl_document_versions.org_id || '/' || tbl_document_versions.document_id || '/' || tbl_document_versions.document_version || '.pdf', 'iat', ROUND(extract(epoch FROM now())), 'exp', ROUND(extract(epoch FROM now())) + 60 * 60 * 7 * 24 * 52 * 20), current_setting('app.settings.jwt_secret', TRUE)));
+		COALESCE(document_count,0) + 1, 
+		TRUE, 
+		sign(json_build_object('url', 'documents/' || org_id_input || '/' || found_document_id || '/' || COALESCE(document_count,0) + 1 || '.pdf', 'iat', ROUND(extract(epoch FROM now())), 'exp', ROUND(extract(epoch FROM now())) + 60 * 60 * 7 * 24 * 52 * 20), current_setting('app.settings.jwt_secret', TRUE)));
 	--
 	--
 	SELECT row_to_json(view_documents) INTO return_data FROM view_documents WHERE document_id = found_document_id AND org_id = org_id_input;

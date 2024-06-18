@@ -4,9 +4,10 @@ import {
     createServerComponentClient,
     supabaseAdminClient,
 } from '@/app/_utils/supabase';
-import { LinkViewType } from '@/types';
+import { LinkViewType, TablesInsert } from '@/types';
 import disposableEmailDetector from 'disposable-email-detector';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { userAgent } from 'next/server';
 
 export const getLink = async ({ link_id }: { link_id: string }) => {
   const supabase = createServerComponentClient({ cookies: cookies() });
@@ -23,14 +24,39 @@ export const getLink = async ({ link_id }: { link_id: string }) => {
   return data;
 };
 
-async function getSignedURL({ link }: { link: LinkViewType }) {
+export const getSignedURL = async ({
+  link,
+  preview = false,
+  download = false,
+}: {
+  link: LinkViewType;
+  preview?: boolean;
+  download?: boolean;
+}) => {
   const supabase = supabaseAdminClient();
+
+  if (!preview) {
+    const cookie_val = cookies().get('hashdocs');
+
+    if (!cookie_val || !cookie_val.value) {
+      return null;
+    }
+
+    const link_val = JSON.parse(cookie_val.value || '{}')?.[link.link_id];
+
+    if (!link_val) {
+      return null;
+    }
+  }
 
   const { data, error } = await supabase.storage
     .from('documents')
     .createSignedUrl(
       `${link.org_id}/${link.document_id}/${link.document_version}.pdf`,
-      3600
+      60,
+      {
+        download: download ? link.source_path ?? undefined : undefined,
+      }
     );
 
   if (error || !data) return null;
@@ -38,46 +64,17 @@ async function getSignedURL({ link }: { link: LinkViewType }) {
   const { signedUrl } = data;
 
   return signedUrl;
-}
+};
 
-export async function getDownloadUrl({ link_id }: { link_id: string }) {
-  const link = await getLink({ link_id });
-
-  const supabase = supabaseAdminClient();
-
-  const { data, error } = await supabase.storage
-    .from('documents')
-    .createSignedUrl(
-      `${link?.org_id}/${link?.document_id}/${link?.document_version}.pdf`,
-      60,
-      {
-        download: link?.source_path ?? undefined,
-      }
-    );
-
-  if (error || !data || !data.signedUrl) {
-    console.error(error);
-    return null;
-  }
-
-  return data.signedUrl;
-}
-
-export async function authorizeViewer({
+export const authorizeViewer = async ({
   link_id,
   email,
   password,
-  ip,
-  geo,
-  ua,
 }: {
   link_id: string;
   email?: string;
   password?: string;
-  ip?: string;
-  geo?: string;
-  ua?: any;
-}) {
+}) => {
   try {
     const supabase = supabaseAdminClient();
 
@@ -96,9 +93,13 @@ export async function authorizeViewer({
         document_version: link.document_version,
         view_id: `${link.link_id}-${generateRandomString(6)}`,
         viewer: email && email.length > 0 ? email : 'Anonymous',
-        ip: ip,
-        geo: geo,
-        ua: ua,
+        ip: headers().get('x-real-ip'),
+        geo: {
+          city: headers().get('x-vercel-ip-city'),
+          region: headers().get('x-vercel-ip-country-region'),
+          country: headers().get('x-vercel-ip-country'),
+        },
+        ua: userAgent({ headers: headers() }),
         is_authorized: false,
       })
       .select('view_id')
@@ -193,17 +194,65 @@ export async function authorizeViewer({
       .from('tbl_views')
       .update({
         is_authorized: true,
-      }).eq('view_id', insert_view.view_id);
+      })
+      .eq('view_id', insert_view.view_id);
 
     if (update_view_error) {
       throw new Error('Authorization failed. Please try again');
     }
 
-    // Generate the signed URL
-    const signed_url = await getSignedURL({ link });
+    cookies().set(
+      'hashdocs',
+      JSON.stringify({
+        [link_id]: {
+          document_id: link.document_id,
+          org_id: link.org_id,
+          view_id: insert_view.view_id,
+        },
+      }),
+      {
+        expires: new Date(new Date().getTime() + 1000 * 60 * 60),
+      }
+    );
 
-    return { data: signed_url, error: null };
+    return { data: insert_view.view_id, error: null };
   } catch (error: any) {
     return { data: null, error: error?.message };
   }
-}
+};
+
+export const updatePageTimes = async ({
+  pageTimes,
+  link_id,
+}: {
+  pageTimes: { pageNumber: number; entryTime: number; exitTime?: number }[];
+  link_id: string;
+}) => {
+  const supabase = supabaseAdminClient();
+
+  const cookie_val = cookies().get('hashdocs');
+
+  if (!cookie_val || !cookie_val.value) {
+    return;
+  }
+
+  const { document_id, org_id, view_id } =
+    JSON.parse(cookie_val.value || '{}')?.[link_id] ?? {};
+
+  const insert_rows: TablesInsert<'tbl_view_logs'>[] = pageTimes.map((item) => {
+    return {
+      page_num: item.pageNumber,
+      start_time: item.entryTime,
+      end_time: item.exitTime ?? item.entryTime + 1,
+      document_id,
+      link_id,
+      org_id,
+      view_id,
+    };
+  });
+
+  await supabase.from('tbl_view_logs').upsert(insert_rows, {
+    onConflict: 'view_id, page_num, start_time',
+    ignoreDuplicates: false,
+  });
+};

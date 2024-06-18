@@ -5,7 +5,7 @@ import { DocumentType } from '@/types';
 import Link from 'next/link';
 import { IoEye, IoLink } from 'react-icons/io5';
 import {
-    DocumentRowButtons
+  DocumentRowButtons
 } from './documentButtons';
 
 /*=========================================== MAIN COMPONENT FUNCTION ===========================================*/
@@ -62,18 +62,6 @@ const DocumentRow: React.FC<{ document: DocumentType }> = ({ document }) => {
       </div>
 
       <DocumentRowButtons document={document} />
-      {/* <EditLinkModal
-        isOpen={showNewLinkModal}
-        setIsOpen={setShowNewLinkModal}
-        link_id={null}
-        {...props}
-      />
-      <UploadDocumentModal
-        isOpen={showUpdateDocumentModal}
-        setIsOpen={setShowUpdateDocumentModal}
-        document_id={document_id}
-        document_name={document_name}
-      /> */}
     </li>
   );
 };

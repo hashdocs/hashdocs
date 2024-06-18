@@ -9,17 +9,21 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { authorizeViewer } from '../_actions/link.actions';
 
-export default function ViewerAuth({ link }: { link: LinkViewType }) {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function ViewerAuth({
+  link_id,
+  is_email_required,
+  is_password_required,
+}: Pick<
+  LinkViewType,
+  'link_id' | 'is_email_required' | 'is_password_required'
+>) {
   const router = useRouter();
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<boolean>(false);
 
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState<boolean>(false);
-
-  const { is_email_required, is_password_required, link_id } = link;
 
   const handleAuthorizeViewer = async (e: any) => {
     e.preventDefault();
@@ -32,12 +36,15 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
           email,
           password,
         });
+
         if (error || !data) {
           console.error(error);
           reject(error);
           return;
         }
+
         resolve(data);
+        router.refresh();
       } catch (error) {
         reject();
       } finally {
@@ -47,7 +54,8 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
 
     await toast.promise(authorizePromise, {
       loading: 'Authorizing...',
-      success: (data: string) => `Authorization successful - ${data}`,
+      success: (data: string) =>
+        `Authorization successful - Loading document...`,
       error: (e: string) => (
         <p>{e ?? 'Authorization failed! Please try again'}</p>
       ),
@@ -75,7 +83,7 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
     if (emailError) {
       e.preventDefault();
       return;
-    } 
+    }
 
     if (passwordError) {
       e.preventDefault();
@@ -103,7 +111,7 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
         >
           {is_email_required && (
             <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
+              <p className="w-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
                 Email
               </p>
               <input
@@ -111,7 +119,7 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
                 type="email"
                 onChange={handleEmailChange}
                 value={email}
-                className="shrink-0 basis-3/4 rounded-md border border-gray-200 p-2 shadow-inner focus:ring-1 focus:ring-blue-700"
+                className="!w-3/4 !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
                 autoFocus={true}
                 disabled={isLoading}
               />
@@ -127,7 +135,7 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
                 type="password"
                 onChange={handlePasswordChange}
                 value={password}
-                className="shrink-0 basis-3/4 rounded-md border border-gray-200 p-2 shadow-inner focus:ring-1 focus:ring-blue-700"
+                className="!w-3/4 !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
                 autoFocus={true}
                 disabled={isLoading}
               />
@@ -144,8 +152,9 @@ export default function ViewerAuth({ link }: { link: LinkViewType }) {
           </Button>
         </form>
 
-        <p className="text-gray-500 text-xs w-96">
-          This information will be shared with the author.<br/> For more info, please read our{' '}
+        <p className="w-96 text-xs text-gray-500">
+          This information will be shared with the author.
+          <br /> For more info, please read our{' '}
           <Link href="/privacy" className="text-blue-700 hover:underline">
             privacy policy
           </Link>

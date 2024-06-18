@@ -29,8 +29,10 @@ SELECT tbl_views.*,
         ),
         0
     ) AS duration,
-    tbl_document_versions.page_count
+    tbl_document_versions.page_count,
+    tbl_links.link_name
 FROM tbl_views
+    LEFT JOIN tbl_links ON tbl_views.link_id = tbl_links.link_id AND tbl_views.org_id = tbl_links.org_id AND tbl_views.document_id = tbl_links.document_id
     LEFT JOIN tbl_view_logs ON tbl_view_logs.view_id = tbl_views.view_id
     AND tbl_view_logs.link_id = tbl_views.link_id
     AND tbl_view_logs.document_id = tbl_views.document_id
@@ -42,4 +44,6 @@ GROUP BY tbl_views.view_id,
     tbl_views.org_id,
     tbl_views.document_id,
     tbl_views.link_id,
+    tbl_links.link_name,
     tbl_document_versions.page_count
+ORDER BY tbl_views.viewed_at DESC;

@@ -54,7 +54,7 @@ const TableRow: React.FC<TableRowProps> = ({
               type="checkbox"
               name={id}
               className={clsx(
-                'h-3 w-3 cursor-pointer rounded-sm border border-gray-300 text-green-700'
+                'h-3 w-3 cursor-pointer rounded-sm border border-gray-300 text-blue-700'
               )}
               value={rowSelection?.includes(id) ? 'true' : 'false'}
               data-testid={`table-checkbox-${id}`}

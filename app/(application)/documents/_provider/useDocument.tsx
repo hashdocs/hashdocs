@@ -232,7 +232,7 @@ export const DocumentProvider = ({
           let base_req: any = supabase.from('tbl_links');
 
           if (link.link_id) {
-            base_req = supabase.from('tbl_links').update(link);
+            base_req = supabase.from('tbl_links').update(link).eq('link_id', link.link_id).eq('document_id', document.document_id).eq('org_id', document.org_id);
           } else {
             base_req = supabase
               .from('tbl_links')

@@ -22,6 +22,8 @@ BEGIN
                         tbl_links
                     WHERE 
                         tbl_links.document_id = document_id_input
+                    ORDER BY
+                        tbl_links.created_at DESC
                 ) a
             ) AS links,
             (
@@ -34,6 +36,8 @@ BEGIN
                         tbl_document_versions
                     WHERE 
                         tbl_document_versions.document_id = document_id_input
+                    ORDER BY
+                        tbl_document_versions.updated_at DESC
                 ) b
             ) AS versions,
             (

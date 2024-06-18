@@ -1,6 +1,6 @@
-import Loader from "@/app/_components/navigation/loader";
-import { classNames } from "@/app/_utils/classNames";
-import { Document, Thumbnail, pdfjs } from "react-pdf";
+import Loader from '@/app/_components/loader';
+import clsx from 'clsx';
+import { Document, Thumbnail, pdfjs } from 'react-pdf';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export default function ChartViewer({
@@ -21,8 +21,8 @@ export default function ChartViewer({
         pageNumber={page_num}
         height={200}
         loading={<Loader />}
-        className={classNames(
-          "rounded-sm ring-2 ring-shade-overlay ring-offset-2 border border-shade-line"
+        className={clsx(
+          'ring-shade-overlay border-shade-line rounded-sm border ring-2 ring-offset-2'
         )}
       />
     </Document>

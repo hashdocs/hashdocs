@@ -8,7 +8,6 @@ import { CalendarDaysIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
 import { DiGoogleDrive } from 'react-icons/di';
 import { FiHardDrive } from 'react-icons/fi';
 import { MdArrowBack, MdEdit } from 'react-icons/md';
@@ -73,56 +72,13 @@ export default function DocumentHeader({
     await updatePromise;
   };
 
-  // Download document
-  const handleDownload = async () => {
-    const getPromise = new Promise(async (resolve, reject) => {
-      const res = await fetch(`/api/documents/${document_id}`, {
-        method: 'GET',
-      });
-
-      if (res.status !== 200) reject(res.statusText);
-
-      const data = await res.json();
-
-      if (!data.signedUrl) reject('error');
-
-      if (typeof window !== 'undefined') {
-        window.location.href = data.signedUrl;
-      }
-
-      resolve(data.signedUrl);
-    });
-
-    toast.promise(
-      getPromise,
-      {
-        loading: 'Generating download link...',
-        success: (url: any) => (
-          <p>
-            Your document is fetched.{' '}
-            <Link
-              href={url}
-              target="_blank"
-              className="text-stratos-default underline"
-            >
-              Click here
-            </Link>{' '}
-            to download
-          </p>
-        ),
-        error: 'Error in downloading the document',
-      },
-      { duration: 6000 }
-    );
-  };
-
   /* --------------------------------- RENDER --------------------------------- */
 
   return (
     <div className="flex flex-col gap-y-2">
       <Link
         href="/documents"
-        className="flex items-center gap-x-1 text-xs text-gray-500 hover:text-blue-700"
+        className="flex items-center pt-4 gap-x-1 text-xs text-gray-500 hover:text-blue-700"
       >
         <MdArrowBack className="" />
         <p>Back to documents</p>

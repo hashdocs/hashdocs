@@ -18,8 +18,10 @@ export default async function DocumentIdLayout({
 
   return (
     <div className="flex flex-1 flex-col">
-      <DocumentHeader document={document} />
-      <DocumentTabs document={document} />
+      <div className="sticky top-0 z-50 bg-gray-50">
+        <DocumentHeader document={document} />
+        <DocumentTabs document={document} />
+      </div>
       {children}
     </div>
   );

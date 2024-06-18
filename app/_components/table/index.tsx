@@ -52,7 +52,7 @@ const TableComponent = ({
       <div
         ref={scrollRef}
         className={clsx(
-          'periskope-scrollbar relative flex-1 !overflow-y-scroll overflow-x-auto bg-white p-0',
+          'hashdocs-scrollbar relative flex-1 !overflow-y-scroll overflow-x-auto p-0',
           wrapperClassName,
           disabled && 'pointer-events-none'
         )}
@@ -71,7 +71,7 @@ const TableComponent = ({
         _condition={!!enablePagination}
         _then={
           <div
-            className="no-select sticky bottom-0 left-0 flex w-full items-center gap-x-2 border-t bg-white px-2 py-2 text-xs shadow-sm"
+            className="no-select sticky bottom-0 left-0 flex w-full items-center gap-x-2 border-t px-2 py-2 text-xs shadow-sm"
             data-testid="table-pagination"
           >
             <span

@@ -241,18 +241,19 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
               }
             />
             <input
-              name="link_name"
-              id="link_name"
+              name="password"
+              id="password"
               onChange={(e) =>
                 setLinkValue({ ...linkValue, link_password: e.target.value })
               }
+              type='password'
               value={linkValue?.link_password ?? undefined}
-              className={clsx(
-                'ml-7 w-full max-w-[16rem] rounded border px-2 py-2 text-sm font-normal shadow-inner outline-0 placeholder:text-gray-400',
-                !linkValue?.is_password_required
-                  ? '!cursor-not-allowed bg-gray-200/20'
-                  : ''
-              )}
+              className={
+                `ml-7 w-full max-w-[16rem] !rounded !border !border-gray-200 !px-2 !py-2 !text-sm !font-normal !shadow-inner !outline-0 !placeholder:text-gray-400 
+                ${!linkValue?.is_password_required
+                  ? '!cursor-not-allowed !bg-gray-200/20'
+                  : ''}`
+              }
               placeholder="Enter password"
               maxLength={30}
               autoFocus={!linkValue?.link_id}

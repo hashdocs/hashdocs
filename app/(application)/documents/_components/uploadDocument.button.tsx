@@ -28,7 +28,7 @@ const UploadDocumentButton = ({
           You have reached the maximum number of documents for the free plan.
           Please{' '}
           <Link
-            className="text-stratos-default underline"
+            className="text-blue-700 underline"
             href={'/settings/billing'}
           >
             upgrade

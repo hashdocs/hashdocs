@@ -328,7 +328,7 @@ export type Database = {
         Row: {
           document_id: string
           document_version: number | null
-          geo: string | null
+          geo: Json | null
           ip: string | null
           is_authorized: boolean
           link_id: string
@@ -341,7 +341,7 @@ export type Database = {
         Insert: {
           document_id: string
           document_version?: number | null
-          geo?: string | null
+          geo?: Json | null
           ip?: string | null
           is_authorized?: boolean
           link_id: string
@@ -354,7 +354,7 @@ export type Database = {
         Update: {
           document_id?: string
           document_version?: number | null
-          geo?: string | null
+          geo?: Json | null
           ip?: string | null
           is_authorized?: boolean
           link_id?: string
@@ -412,10 +412,11 @@ export type Database = {
           document_id: string | null
           document_version: number | null
           duration: number | null
-          geo: string | null
+          geo: Json | null
           ip: string | null
           is_authorized: boolean | null
           link_id: string | null
+          link_name: string | null
           org_id: string | null
           page_count: number | null
           ua: Json | null
@@ -461,12 +462,6 @@ export type Database = {
         }
         Returns: string
       }
-      gen_view_id: {
-        Args: {
-          link_id_input: string
-        }
-        Returns: string
-      }
       get_document:
         | {
             Args: {
@@ -496,12 +491,6 @@ export type Database = {
       get_org: {
         Args: {
           org_id_input?: string
-        }
-        Returns: Json
-      }
-      get_views: {
-        Args: {
-          document_id_input?: string
         }
         Returns: Json
       }

@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
-import { getLink } from './_actions/link.actions';
+import PDFViewerPage from '../../_components/pdf_viewer_page';
+import ViewerTopBar from '../../_components/viewerTopbar';
+import { getLink, getSignedURL } from './_actions/link.actions';
 import InvalidLink from './_components/invalid_link';
 import ViewerAuth from './_components/viewerAuth';
-import ViewerTopBar from './_components/viewerTopbar';
 
 export const revalidate = 0;
 
@@ -59,12 +60,24 @@ export default async function DocumentViewerPage({
 
   if (!link) return <InvalidLink />;
 
+  const signedUrl = await getSignedURL({ link });
+
   return (
     <main className="flex h-full w-full flex-1 flex-col bg-gray-50">
-      <ViewerTopBar link={link} />
-      <ViewerAuth link={link} />
+      <ViewerTopBar
+        document_name={link.document_name}
+        updated_by={link.updated_by}
+        is_download_allowed={link.is_download_allowed}
+      />
+      {!signedUrl ? (
+        <ViewerAuth
+          link_id={link.link_id}
+          is_email_required={link.is_email_required}
+          is_password_required={link.is_password_required}
+        />
+      ) : (
+        <PDFViewerPage signedURL={signedUrl} />
+      )}
     </main>
   );
-
-  // return !signedUrl ? <ViewerAuth /> : <PDFViewerPage signedURL={signedUrl} />;
 }

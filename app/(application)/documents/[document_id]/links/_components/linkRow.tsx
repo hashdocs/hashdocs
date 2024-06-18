@@ -5,10 +5,7 @@ import Switch from '@/app/_components/switch';
 import { CopyLinkToClipboard } from '@/app/_utils/common';
 import { formatDate } from '@/app/_utils/dateFormat';
 import { DocumentDetailType } from '@/types';
-import {
-  ChevronDownIcon,
-  ChevronUpIcon
-} from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,6 +14,7 @@ import { BiCopy, BiLinkExternal } from 'react-icons/bi';
 import { IoEye, IoOptions } from 'react-icons/io5';
 import LinkModal from '../../../_components/linkModal';
 import useDocument from '../../../_provider/useDocument';
+import { ViewsTable } from '../../views/_components/views.table';
 
 type LinkDocumentProps = {
   link_id: string;
@@ -39,7 +37,7 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
 
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
 
-  const {handleLinkToggle} = useDocument();
+  const { handleLinkToggle } = useDocument();
 
   /*================================ RENDER ==============================*/
 
@@ -109,8 +107,11 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
             callback={(checked) => handleLinkToggle({ checked, link })}
             disabled={!document?.is_enabled}
           />
-          <Button size='sm' variant='icon' >
-            <IoOptions className='h-5 w-5' onClick={() => modalRef.current?.openModal()} />
+          <Button size="sm" variant="icon">
+            <IoOptions
+              className="h-5 w-5"
+              onClick={() => modalRef.current?.openModal()}
+            />
           </Button>
           <div
             className="pointer-events-auto cursor-pointer rounded-md p-2 hover:bg-gray-50"
@@ -135,16 +136,12 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
         style={{ overflow: 'hidden' }}
       >
         <AnimatePresence initial={false}>
-          {isOpen && views && views.length > 0 && (
+          {isOpen && views.length > 0 && (
             <div className="accordion-content mt-6 flex w-full flex-col">
-              {/* {ViewsHeader()} */}
-              {views &&
-                views.map((view, idx) =>
-                  idx < 5 ? (
-                    // ViewRow({link_name, ...view},idx)
-                    <></>
-                  ) : null
-                )}
+              <ViewsTable
+                views={views.filter((v) => v.link_id == link_id).slice(0, 5)}
+                document={document}
+              />
               <div className=" text-shade-gray-500 hover:text-stratos-default grid grid-cols-12 justify-end pt-2 text-xs shadow-sm hover:underline">
                 <Link
                   href={{
