@@ -26,7 +26,7 @@ export default async function Page() {
   const _documents = await getDocuments();
 
   return (
-    <div className="flex flex-1 flex-col w-full">
+    <div className="flex flex-1 flex-col w-full max-w-screen-xl mx-auto">
       <div className="mb-8 flex items-center justify-between">
         <PageHeader />
         <UploadDocumentButton documents={_documents} />

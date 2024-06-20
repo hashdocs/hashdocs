@@ -1,11 +1,9 @@
+
+import { features, pricingPlans } from "@/app/(application)/settings/billing/constants";
 import {
-    features,
-    pricingPlans,
-} from "@/app/_lib/stripe/constants";
-import {
-    CheckCircleIcon,
-    MinusCircleIcon,
-    XCircleIcon,
+  CheckCircleIcon,
+  MinusCircleIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Metadata } from "next";
 import Link from "next/link";

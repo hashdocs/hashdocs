@@ -2,7 +2,7 @@
     "imports": {
       "supabase": "https://esm.sh/@supabase/supabase-js",
       "crypto-js":"https://esm.sh/crypto-js",
-      "stripe":"https://esm.sh/stripe"
+      "stripe":"npm:stripe"
     }
   }
   

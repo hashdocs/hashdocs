@@ -1,4 +1,4 @@
-import { parseMarkdownContent } from "@/app/_lib/markdownParser";
+import { parseMarkdownContent } from "@/app/_utils/markdownParser";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

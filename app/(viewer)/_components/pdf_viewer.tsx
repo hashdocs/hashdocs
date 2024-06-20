@@ -157,6 +157,7 @@ export default function PDFViewer({
         (ref) => ref?.current && observer.unobserve(ref.current)
       );
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageRefs, activePage]);
 
   useEffect(() => {
@@ -186,6 +187,7 @@ export default function PDFViewer({
     return () => {
       clearInterval(interval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* -------------------------------- SECURITY -------------------------------- */

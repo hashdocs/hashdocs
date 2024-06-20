@@ -1,5 +1,5 @@
 "use client";
-import useMobile from "@/app/_hooks/useMobile";
+import useMobile from "@/app/_utils/useMobile";
 import { Fragment } from "react";
 import toast, { ToastBar, Toaster } from "react-hot-toast";
 import { IoClose } from "react-icons/io5";

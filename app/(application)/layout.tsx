@@ -10,24 +10,22 @@ export default async function ApplicationLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const org = await getOrg();
+  const { org, user } = await getOrg();
 
   return (
-    <OrgProvider org_data={org}>
-      <DocumentProvider>
-        <div className="flex h-full max-h-[100vh] w-full max-w-[100vw] flex-1 overflow-hidden">
-          <MainSidebar />
-          <div className="flex w-full lg:min-w-[816px] flex-1 flex-col">
-            <TopBar />
-            <MobileTopBar />
-            <section className="hashdocs-scrollbar flex h-full w-full flex-1 flex-col items-center !overflow-y-scroll !overflow-x-hidden bg-gray-50">
-              <div className="flex w-full max-w-screen-xl flex-1 flex-col py-4 pl-4 pr-2">
-                {children}
-              </div>
-            </section>
-          </div>
+    <OrgProvider org_data={org} user={user}>
+      <div className="flex h-full max-h-[100vh] w-full max-w-[100vw] flex-1 overflow-hidden">
+        <MainSidebar />
+        <div className="flex w-full flex-1 flex-col lg:min-w-[816px]">
+          <TopBar />
+          <MobileTopBar />
+          <section className="hashdocs-scrollbar flex h-full w-full flex-1 flex-col items-center !overflow-x-hidden !overflow-y-scroll bg-gray-50">
+            <div className="flex w-full flex-1 flex-col py-4 pl-4 pr-2">
+              <DocumentProvider>{children}</DocumentProvider>
+            </div>
+          </section>
         </div>
-      </DocumentProvider>
+      </div>
     </OrgProvider>
   );
 }

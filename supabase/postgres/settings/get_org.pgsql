@@ -19,15 +19,6 @@ BEGIN
 	WITH org AS (
 		SELECT
 			tbl_org.*,
-			(
-				SELECT 
-					row_to_json(tbl_org_members.*) 
-				FROM 
-					tbl_org_members
-				WHERE
-					org_id = tbl_org.org_id AND 
-					email = auth.email()
-			) AS user,
 			coalesce(
 				(
 					SELECT json_agg(row_to_json(tbl_org_members) ORDER BY LOWER(COALESCE(tbl_org_members.member_name, tbl_org_members.email)) NULLS LAST)

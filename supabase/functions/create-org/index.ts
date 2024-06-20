@@ -1,15 +1,12 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { resend_email } from "../_emails/resend.ts";
-import { welcome } from "../_emails/templates/welcome.ts";
-import { stripe } from "../_shared/stripeClient.ts";
-import {
-  InsertPayload,
-  OrgType,
-  supabaseAdmin,
-} from "../_shared/supabaseClient.ts";
+import { OrgType } from '../../../types/index.ts';
+import { Tables } from '../../../types/supabase.types.ts';
+import { resend_email } from '../_emails/resend.ts';
+import { welcome } from '../_emails/templates/welcome.ts';
+import { stripeClient } from '../_shared/stripeClient.ts';
+import { InsertPayload, supabaseAdmin } from '../_shared/supabaseClient.ts';
 
 async function new_org_notification(payload: Record<string, any>) {
-  const { email, org_id, stripe_customer_id, user_id } = payload;
+  const { email, org_id, stripe_customer_id } = payload;
 
   const template = `{
     "blocks": [
@@ -17,7 +14,7 @@ async function new_org_notification(payload: Record<string, any>) {
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "👤New org signup - *${email}*"
+          "text": "👤New user - *${email}*"
         }
       },
       {
@@ -35,87 +32,43 @@ async function new_org_notification(payload: Record<string, any>) {
           },
         ]
       },
-      {
-        "type": "context",
-        "elements": [
-          {
-            "type": "plain_text",
-            "text": "env: ${Deno.env.get("ENV")}",
-            "emoji": true
-          },
-          {
-            "type": "plain_text",
-            "text": "user_id: ${user_id}",
-            "emoji": true
-          },
-        ]
-      },
     ]
   }`;
 
-  await fetch(Deno.env.get("SLACK_MONITOR")!, {
-    method: "POST",
+  await fetch(Deno.env.get('SLACK_MONITOR')!, {
+    method: 'POST',
     body: template,
   });
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   try {
     const body = (await req.json()) as InsertPayload;
 
-    const { id, email } = body.record;
+    const { org_id } = body.record as Tables<'tbl_org'>;
 
-    console.log(`${id} - Starting create-org function for ${email}`);
-
-    /* ------------------------- Fetch org_info from body ------------------------- */
-
-    const { data: insert_org, error: insert_error } = await supabaseAdmin
-      .from("tbl_org")
-      .insert({
-        org_name: "My Org",
-      })
-      .select("*")
-      .maybeSingle();
-
-    if (insert_error || !insert_org) {
-      throw Error(`Error inserting org - ${insert_error}`);
-    }
-
-    const org_id = insert_org.org_id;
-
-    const { data: _insert_member, error: insert_member_error } =
-      await supabaseAdmin.from("tbl_org_members").insert({
-        org_id: org_id,
-        user_id: id,
-        user_role: "OWNER",
-      });
-
-    if (insert_member_error) {
-      throw Error(`Error inserting member - ${insert_member_error}`);
-    }
-
-    console.log(`${org_id} - Initiating stripe customer creation`);
+    console.log(`Initiating org processing for - ${org_id}`);
 
     const { data: org_info, error: org_error } = await supabaseAdmin
-      .rpc("get_org", { org_id_input: org_id })
-      .returns<OrgType>();
+      .rpc('get_org', { org_id_input: org_id })
+      .returns<OrgType[]>();
 
-    console.log(
-      `${org_id} - Fetched email from org - ${org_info?.users[0].email}`
-    );
-
-    if (org_error || !org_info) {
-      throw Error(`Error fetching org - ${org_error}`);
+    if (org_error || !org_info || !org_info?.at(0)) {
+      throw org_error || new Error(`Error fetching org`);
     }
 
-    const owner = org_info.users.find((user) => user.user_role === "OWNER");
+    const new_org = org_info[0];
+    const owner = new_org.find(
+      (user: Tables<'tbl_org_members'>) => user.is_owner
+    );
+
+    console.log(`${org_id} - Fetched email from org - ${owner.email}`);
 
     /* ------------------------ Create customer in stripe ----------------------- */
 
-    //@ts-expect-error: <Stripe Deno error>
-    const customer = await stripe.customers.create({
+    const customer = await stripeClient.customers.create({
       email: owner?.email,
-      metadata: { org_id: org_info.org_id },
+      metadata: { org_id: new_org.org_id },
     });
 
     console.log(`${org_id} - Created customer - ${customer.id}`);
@@ -124,17 +77,11 @@ serve(async (req) => {
 
     const { data: customer_update, error: customer_update_error } =
       await supabaseAdmin
-        .from("tbl_org")
-        .upsert(
-          {
-            stripe_customer_id: customer.id,
-            org_id: org_id,
-          },
-          {
-            onConflict: "org_id",
-            ignoreDuplicates: false,
-          }
-        )
+        .from('tbl_org')
+        .update({
+          stripe_customer_id: customer.id,
+        })
+        .eq('org_id', org_id)
         .select()
         .maybeSingle();
 
@@ -157,8 +104,8 @@ serve(async (req) => {
     /* ------------------------ Send welcome email ------------------------- */
 
     const email_res = await resend_email({
-      to: [owner?.email ?? ""],
-      subject: "Welcome to Hashdocs",
+      to: [owner?.email ?? ''],
+      subject: 'Welcome to Hashdocs',
       html: welcome,
     });
 
@@ -170,11 +117,11 @@ serve(async (req) => {
 
     return new Response(JSON.stringify(error), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   return new Response(null, {
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
   });
 });

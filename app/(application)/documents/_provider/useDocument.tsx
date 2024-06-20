@@ -90,7 +90,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   // Set version
@@ -146,7 +146,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   // Delete document
@@ -180,7 +180,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   /* ---------------------------------- LINK ---------------------------------- */
@@ -233,7 +233,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   // Delete link
@@ -268,7 +268,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   // Update link
@@ -329,7 +329,7 @@ export const DocumentProvider = ({
           router.refresh();
         });
     },
-    []
+    [router,supabase]
   );
 
   const value = useMemo(
@@ -346,7 +346,8 @@ export const DocumentProvider = ({
       handleDocumentToggle,
       handleLinkToggle,
       handleLinkUpdate,
-      handleDocumentVersionSwitch
+      handleDocumentVersionSwitch,
+      handleLinkDelete
     ]
   );
 

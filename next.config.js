@@ -53,6 +53,11 @@ const nextConfig = {
         destination: '/documents/:slug/links', // Matched parameters can be used in the destination
         permanent: true,
       },
+      {
+        source: '/settings',
+        destination: '/settings/general', // Matched parameters can be used in the destination
+        permanent: true,
+      },
     ];
   },
 };

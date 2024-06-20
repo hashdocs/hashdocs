@@ -1,6 +1,7 @@
 'use client';
 import { createClientComponentClient } from '@/app/_utils/supabase';
 import { OrgType } from '@/types';
+import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import {
   createContext,
@@ -15,6 +16,7 @@ import { getOrg } from './org.actions';
 
 interface OrgContext {
   org: OrgType;
+  user: User;
   orgData: OrgType[];
   handleLogout: () => void;
 }
@@ -24,9 +26,11 @@ export const OrgContext = createContext<OrgContext>(null!);
 export const OrgProvider = ({
   children,
   org_data,
+  user,
 }: {
   children: React.ReactNode;
   org_data: OrgType[];
+  user: User;
 }) => {
   const [orgData, setOrgData] = useState(org_data);
 
@@ -61,18 +65,17 @@ export const OrgProvider = ({
       success: 'Logged out successfully',
       error: 'Failed to logout',
     });
-    setActiveOrgId(undefined);
     router.push('/login');
-  }, []);
+  }, [router, supabase.auth]);
 
   /* -------------------------------------------------------------------------- */
   /*                               REVALIDATE ORG                               */
   /* -------------------------------------------------------------------------- */
 
   const revalidateOrg = useCallback(async () => {
-    const _org = await getOrg();
+    const { org } = await getOrg();
 
-    setOrgData(_org);
+    setOrgData(org);
   }, []);
 
   //! UseEffect for auth realtime
@@ -105,9 +108,10 @@ export const OrgProvider = ({
     () => ({
       org,
       orgData,
+      user,
       handleLogout,
     }),
-    [org, orgData]
+    [org, orgData, user, handleLogout]
   );
 
   return <OrgContext.Provider value={value}>{children}</OrgContext.Provider>;

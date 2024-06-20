@@ -10,8 +10,8 @@ import useOrg from '../../_provider/useOrg';
 
 // Component for the top button and popover
 export function SidebarUserButton() {
-  const { org, handleLogout } = useOrg();
   const router = useRouter();
+  const { org, user, handleLogout } = useOrg();
 
   const org_popover_options = [
     {
@@ -56,11 +56,11 @@ export function SidebarUserButton() {
               >
                 <>
                   <div className={clsx('flex items-center gap-x-2.5 p-0.5')}>
-                    {org.user.member_image ? (
+                    {user ? (
                       <Image
                         className="h-7 w-7 shrink-0 rounded-full  "
-                        src={org.user.member_image || ''}
-                        alt=""
+                        src={user.user_metadata.avatar_url}
+                        alt={user.id}
                         height={32}
                         width={32}
                       />
@@ -75,7 +75,7 @@ export function SidebarUserButton() {
                         {org.org_name}
                       </span>
                       <span className="w-28 truncate text-left text-xs text-gray-600">
-                        {org.user?.email}
+                        {user.email}
                       </span>
                     </div>
                     <BiExpandVertical className="-ml-1 h-4 w-4 text-gray-300" />
@@ -94,7 +94,6 @@ export function SidebarUserButton() {
                         <button
                           key={item.name}
                           onClick={item.optionClick}
-                          disabled={item.admin_only && org.user.role != 'admin'}
                           className={clsx(
                             'focus:ring-none flex items-center p-2 transition duration-150 ease-in-out hover:bg-gray-200/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-inherit max-lg:hidden'
                           )}

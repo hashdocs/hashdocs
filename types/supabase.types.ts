@@ -202,6 +202,7 @@ export type Database = {
           org_image: string | null
           org_name: string | null
           org_plan: string | null
+          stripe_customer_id: string | null
           stripe_metadata: Json | null
         }
         Insert: {
@@ -210,6 +211,7 @@ export type Database = {
           org_image?: string | null
           org_name?: string | null
           org_plan?: string | null
+          stripe_customer_id?: string | null
           stripe_metadata?: Json | null
         }
         Update: {
@@ -218,6 +220,7 @@ export type Database = {
           org_image?: string | null
           org_name?: string | null
           org_plan?: string | null
+          stripe_customer_id?: string | null
           stripe_metadata?: Json | null
         }
         Relationships: []

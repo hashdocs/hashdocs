@@ -1,12 +1,14 @@
 'use client';
 import PercentageCircle from '@/app/_components/percentageCircle';
 import Table from '@/app/_components/table';
+import Tooltip from '@/app/_components/tooltip';
 import { CopyLinkToClipboard } from '@/app/_utils/common';
 import { formatTime, relativeDate } from '@/app/_utils/dateFormat';
 import { DocumentDetailType, ViewType, enum_colors } from '@/types';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { MdCopyAll } from 'react-icons/md';
+import { IoMdCopy } from 'react-icons/io';
+import { MdCopyAll, MdWarning } from 'react-icons/md';
 import { ViewAnalyticsChartButton } from './analytics.modal';
 import SearchInput from './views.search';
 
@@ -54,7 +56,7 @@ export const ViewsTable: React.FC<{
           <Table.Cell className="w-48">Link</Table.Cell>
           <Table.Cell className="w-48 text-center">Date</Table.Cell>
           <Table.Cell className="w-48 text-center">Duration (min)</Table.Cell>
-          <Table.Cell className="w-48 text-center">Version</Table.Cell>
+          <Table.Cell className="w-48 text-center">Location</Table.Cell>
           <Table.Cell className="w-48 text-center">Completion %</Table.Cell>
         </Table.Header>
         {viewsMemo.map((view) => (
@@ -64,22 +66,32 @@ export const ViewsTable: React.FC<{
             className="h-12 border-none align-middle"
           >
             <Table.Cell className="">
-              <div className="flex items-center gap-x-2">
-                <div
-                  className="flex h-6 w-6 items-center justify-center rounded-full font-mono font-extrabold uppercase text-white"
-                  style={{
-                    backgroundColor:
-                      enum_colors[
-                        (view.viewer.toLowerCase().charCodeAt(0) -
-                          'a'.charCodeAt(0) +
-                          1) %
-                          enum_colors.length
-                      ],
-                  }}
-                >
-                  {view.viewer?.charAt(0)}
-                </div>
+              <div
+                className="group flex cursor-pointer items-center gap-x-2"
+                onClick={() => CopyLinkToClipboard(view.viewer, false)}
+              >
+                {view.is_authorized ? (
+                  <div
+                    className="flex h-6 w-6 items-center justify-center rounded-full font-mono font-extrabold uppercase text-white"
+                    style={{
+                      backgroundColor:
+                        enum_colors[
+                          (view.viewer.toLowerCase().charCodeAt(0) -
+                            'a'.charCodeAt(0) +
+                            1) %
+                            enum_colors.length
+                        ],
+                    }}
+                  >
+                    {view.viewer?.charAt(0)}
+                  </div>
+                ) : (
+                  <Tooltip content="This view attempt was blocked">
+                    <MdWarning className="h-6 w-6 text-red-500" />
+                  </Tooltip>
+                )}
                 <p className={`truncate font-semibold`}>{view.viewer}</p>
+                <IoMdCopy className="text-gray-500 opacity-0 transition-opacity group-hover:opacity-100" />
               </div>
             </Table.Cell>
             <Table.Cell className="truncate">
@@ -100,10 +112,10 @@ export const ViewsTable: React.FC<{
               {relativeDate(view.viewed_at)}
             </Table.Cell>
             <Table.Cell className="text-center">
-              {formatTime(view.duration)}
+              {view.is_authorized ? formatTime(view.duration) : '-'}
             </Table.Cell>
             <Table.Cell className="text-center">
-              {view.document_version}
+              {`${view.geo?.city ?? ''},${view.geo?.country ?? ''}`}
             </Table.Cell>
             <Table.Cell className="text-center">
               <div className="flex items-center justify-end gap-x-2 text-center">

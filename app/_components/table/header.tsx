@@ -35,6 +35,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({ children, className }) => {
     ) {
       headerCheckboxRef.current.indeterminate = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowSelection]);
 
   return (

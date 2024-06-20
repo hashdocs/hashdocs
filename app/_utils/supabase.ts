@@ -127,19 +127,19 @@ export const createServerActionClient = ({
     }
   );
 
+export type ServerActionGenerticType<T> = {
+  status: boolean;
+  data: T | null;
+  error: string | null;
+};
+
 export const supabaseAdminClient = () =>
   createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     {
       auth: {
-        persistSession: false
-      }
+        persistSession: false,
+      },
     }
   );
-
-export type ServerActionGenerticType<T> = {
-  status: boolean;
-  data: T | null;
-  error: string | null;
-};

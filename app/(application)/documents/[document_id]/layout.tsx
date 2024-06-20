@@ -19,7 +19,7 @@ export default async function DocumentIdLayout({
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col w-full mx-auto max-w-screen-xl">
       <div className="sticky top-0 z-50 bg-gray-50 flex flex-col gap-y-4">
         <Link
           href="/documents"

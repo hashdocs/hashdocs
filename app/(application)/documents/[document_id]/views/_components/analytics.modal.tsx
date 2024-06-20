@@ -112,7 +112,7 @@ export const ViewAnalyticsModal: React.FC<ViewAnalyticsModalProps> = ({
               <div className="basis-2/3 truncate font-semibold">
                 {!view.geo
                   ? 'Unknown'
-                  : `${view.geo?.city ?? ''},${view.geo?.region ?? ''},${
+                  : `${view.geo?.city ?? ''},${
                       view.geo?.country ?? ''
                     }`}
               </div>

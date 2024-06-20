@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FaGithub } from 'react-icons/fa6';
-import useOrg from '../../_provider/useOrg';
 import { primaryNavigation } from '../sidebar/nav.constants';
 
 function splitPath(path: string) {
@@ -22,7 +21,6 @@ function splitPath(path: string) {
 
 export default function TopBar() {
   const path = usePathname();
-  const { org } = useOrg();
 
   const pathArray = splitPath(path);
 

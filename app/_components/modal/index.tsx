@@ -87,4 +87,7 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
 
 const Modal = Object.assign(Container, { Actions });
 
+Container.displayName = 'Container';
+Modal.displayName = 'Modal';
+
 export default Modal;

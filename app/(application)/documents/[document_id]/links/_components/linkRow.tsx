@@ -26,10 +26,8 @@ type LinkDocumentProps = {
 const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
   const link = document.links.find((link) => link.link_id === link_id);
 
-  if (!link) return null;
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isActive, setIsActive] = useState<boolean>(link.is_active);
+  const [isActive, setIsActive] = useState<boolean>(link?.is_active ?? false);
   const modalRef = useRef<ModalRef>(null);
 
   const views = document.views.filter((view) => view.link_id === link_id);
@@ -38,6 +36,8 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
   const path = `${process.env.NEXT_PUBLIC_BASE_URL}/d/${link_id}`;
 
   const { handleLinkToggle } = useDocument();
+
+  if (!link) return null;
 
   /*================================ RENDER ==============================*/
 
