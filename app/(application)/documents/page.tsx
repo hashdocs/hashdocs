@@ -1,10 +1,10 @@
 import { createServerComponentClient } from '@/app/_utils/supabase';
 import { DocumentType } from '@/types';
 import { cookies } from 'next/headers';
-import { primaryNavigation } from '../_components/sidebar/nav.constants';
-import DocumentRow from './_components/documentRow';
+import { PageHeader } from '../_components/pageHeader';
+import DocumentHeader from './[document_id]/_components/documentHeader';
 import EmptyDocuments from './_components/emptyDocuments';
-import UploadDocumentButton from './_components/uploadDocument.button';
+import { UploadDocumentButton } from './_components/uploadDocument';
 
 async function getDocuments() {
   const supabase = createServerComponentClient({ cookies: cookies() });
@@ -25,31 +25,27 @@ async function getDocuments() {
 export default async function Page() {
   const _documents = await getDocuments();
 
-  const pageProps = primaryNavigation.find((p) => p.path === '/documents');
-
-  if (!pageProps) {
-    throw new Error('Could not load pag properties');
-  }
-
   return (
-      <div className="flex flex-1 flex-col py-2">
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex flex-col items-start gap-y-1">
-            <h3 className="text-lg font-semibold">{pageProps.name}</h3>
-            <p className="text-sm text-gray-400">{pageProps.description}</p>
-          </div>
-          <UploadDocumentButton documents={_documents} />
-        </div>
-
-        <ul role="list" className="flex w-full flex-1 flex-col">
-          {_documents.length > 0 ? (
-            _documents.map((document) => (
-              <DocumentRow key={document.document_id} document={document} />
-            ))
-          ) : (
-            <EmptyDocuments />
-          )}
-        </ul>
+    <div className="flex flex-1 flex-col w-full">
+      <div className="mb-8 flex items-center justify-between">
+        <PageHeader />
+        <UploadDocumentButton documents={_documents} />
       </div>
+
+      <ul role="list" className="flex w-full flex-1 flex-col">
+        {_documents.length > 0 ? (
+          _documents.map((document) => (
+            <li
+              key={document.document_id}
+              className="my-2 bg-white rounded-md p-2 md:p-4 shadow-sm"
+            >
+              <DocumentHeader document={document} />
+            </li>
+          ))
+        ) : (
+          <EmptyDocuments />
+        )}
+      </ul>
+    </div>
   );
 }

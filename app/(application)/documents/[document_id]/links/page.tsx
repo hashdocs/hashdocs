@@ -15,7 +15,7 @@ export default async function LinksPage({
   }
 
   return document.links.length > 0 ? (
-    <ul className="flex flex-col p-2">
+    <ul className="flex flex-col">
       {document.links.map((link) => (
         <LinkRow
           document={document}

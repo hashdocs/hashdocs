@@ -6,7 +6,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { MdDownload, MdEmail } from 'react-icons/md';
 
-export default function ViewerTopBar({ document_name, updated_by, is_download_allowed, preview = false }: { document_name:string | null, updated_by: string | null, is_download_allowed:boolean, preview?: boolean}) {
+export default function ViewerTopBar({ document_name, updated_by, is_download_allowed, preview = false, version }: { document_name:string | null, updated_by: string | null, is_download_allowed:boolean, preview?: boolean, version?: number}) {
   const handleDownload = () => {
     const downloadLinkPromise = new Promise<string>(async (resolve, reject) => {
       try {
@@ -60,7 +60,7 @@ export default function ViewerTopBar({ document_name, updated_by, is_download_al
       <div className="mr-4 flex flex-row items-center justify-center gap-x-4">
         {(
           <h1 className="text-shade-gray-500 hidden text-base font-semibold leading-6 tracking-wide lg:flex">
-            {`${document_name}${preview ? ' (Preview)' : ''}`}
+            {`${document_name}${preview ? ' (Preview)' : ''}${version ? ` - Version ${version}` : ''}`}
           </h1>
         )}
         <Tooltip content="Download document">

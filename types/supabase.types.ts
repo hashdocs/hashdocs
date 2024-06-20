@@ -32,9 +32,12 @@ export type Database = {
         Row: {
           document_id: string
           document_version: number
+          file_type: string | null
           is_active: boolean
           org_id: string
           page_count: number | null
+          source_path: string
+          source_type: string
           thumbnail_image: string | null
           token: string | null
           updated_at: string
@@ -43,9 +46,12 @@ export type Database = {
         Insert: {
           document_id: string
           document_version?: number
+          file_type?: string | null
           is_active?: boolean
           org_id?: string
           page_count?: number | null
+          source_path: string
+          source_type?: string
           thumbnail_image?: string | null
           token?: string | null
           updated_at?: string
@@ -54,9 +60,12 @@ export type Database = {
         Update: {
           document_id?: string
           document_version?: number
+          file_type?: string | null
           is_active?: boolean
           org_id?: string
           page_count?: number | null
+          source_path?: string
+          source_type?: string
           thumbnail_image?: string | null
           token?: string | null
           updated_at?: string
@@ -82,30 +91,27 @@ export type Database = {
       tbl_documents: {
         Row: {
           created_at: string
+          custom_image: string | null
           document_id: string
           document_name: string
           is_enabled: boolean
           org_id: string
-          source_path: string
-          source_type: string
         }
         Insert: {
           created_at?: string
+          custom_image?: string | null
           document_id?: string
           document_name: string
           is_enabled?: boolean
           org_id: string
-          source_path: string
-          source_type: string
         }
         Update: {
           created_at?: string
+          custom_image?: string | null
           document_id?: string
           document_name?: string
           is_enabled?: boolean
           org_id?: string
-          source_path?: string
-          source_type?: string
         }
         Relationships: [
           {
@@ -380,9 +386,11 @@ export type Database = {
         Row: {
           active_links_count: number | null
           created_at: string | null
+          custom_image: string | null
           document_id: string | null
           document_name: string | null
           document_version: number | null
+          file_type: string | null
           is_active: boolean | null
           is_enabled: boolean | null
           org_id: string | null
@@ -462,23 +470,9 @@ export type Database = {
         }
         Returns: string
       }
-      get_document:
-        | {
-            Args: {
-              document_id_input: string
-            }
-            Returns: Json
-          }
-        | {
-            Args: {
-              document_id_input: string
-              org_id_input: string
-            }
-            Returns: Json
-          }
-      get_documents: {
+      get_document: {
         Args: {
-          document_id_input?: string
+          document_id_input: string
         }
         Returns: Json
       }
@@ -505,6 +499,7 @@ export type Database = {
           document_name_input?: string
           source_path_input?: string
           source_type_input?: string
+          file_type_input?: string
         }
         Returns: Json
       }
@@ -527,7 +522,6 @@ export type Database = {
         | "#FF2E74"
         | "#DB2777"
       enum_member_role: "admin" | "member"
-      org_role: "OWNER"
       pricing_plans: "Free" | "Pro" | "Enterprise"
     }
     CompositeTypes: {

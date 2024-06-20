@@ -78,7 +78,7 @@ export function SidebarUserButton() {
                         {org.user?.email}
                       </span>
                     </div>
-                    <BiExpandVertical className="-ml-1 h-4 w-4 text-gray-500" />
+                    <BiExpandVertical className="-ml-1 h-4 w-4 text-gray-300" />
                   </div>
                 </>
               </Popover.Button>

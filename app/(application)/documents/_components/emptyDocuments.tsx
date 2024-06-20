@@ -1,6 +1,6 @@
 'use client';
 
-import UploadDocumentButton from './uploadDocument.button';
+import { UploadDocumentButton } from './uploadDocument';
 
 export default function EmptyDocuments() {
   return (

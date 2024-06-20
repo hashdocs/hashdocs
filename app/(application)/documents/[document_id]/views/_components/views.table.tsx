@@ -1,5 +1,5 @@
 'use client';
-import PercentageCircle from '@/app/_components/shared/buttons/percentageCircle';
+import PercentageCircle from '@/app/_components/percentageCircle';
 import Table from '@/app/_components/table';
 import { CopyLinkToClipboard } from '@/app/_utils/common';
 import { formatTime, relativeDate } from '@/app/_utils/dateFormat';
@@ -33,7 +33,7 @@ export const ViewsTable: React.FC<{
   );
 
   return (
-    <div className="flex flex-col gap-y-2">
+    <div className="my-2 flex flex-col gap-y-2">
       {show_search && (
         <SearchInput
           query={searchQuery}
@@ -70,7 +70,10 @@ export const ViewsTable: React.FC<{
                   style={{
                     backgroundColor:
                       enum_colors[
-                        Math.floor(Math.random() * enum_colors.length)
+                        (view.viewer.toLowerCase().charCodeAt(0) -
+                          'a'.charCodeAt(0) +
+                          1) %
+                          enum_colors.length
                       ],
                   }}
                 >
@@ -102,13 +105,13 @@ export const ViewsTable: React.FC<{
             <Table.Cell className="text-center">
               {view.document_version}
             </Table.Cell>
-            <Table.Cell className="">
-              <div className="flex items-center justify-between text-center">
-                <div className="w-1/3"></div>
-                <div className="flex w-1/3 justify-start">
+            <Table.Cell className="text-center">
+              <div className="flex items-center justify-end gap-x-2 text-center">
+                <div className="w-1/5"></div>
+                <div className="flex w-2/5 justify-start">
                   <PercentageCircle percentage={view.completion} />
                 </div>
-                <div className="flex w-1/3 justify-end">
+                <div className="flex w-2/5 justify-end">
                   <ViewAnalyticsChartButton
                     document={document}
                     view_id={view.view_id}

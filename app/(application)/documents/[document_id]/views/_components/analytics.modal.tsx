@@ -6,14 +6,14 @@ import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 import { MdBarChart } from 'react-icons/md';
 import {
-    Bar,
-    BarChart,
-    Cell,
-    Pie,
-    PieChart,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 
 export type ViewAnalyticsModalProps = {
@@ -232,6 +232,7 @@ export const ViewAnalyticsChartButton: React.FC<{
         onClick={() => {
           modalRef.current?.openModal();
         }}
+        className='shrink-0'
         disabled={!view}
       >
         <MdBarChart />

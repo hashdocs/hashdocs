@@ -1,6 +1,6 @@
 DROP FUNCTION IF EXISTS upsert_document;
 
-CREATE OR REPLACE FUNCTION upsert_document(org_id_input uuid, document_id_input text DEFAULT NULL, document_name_input text DEFAULT NULL, source_path_input text DEFAULT NULL, source_type_input text DEFAULT NULL)
+CREATE OR REPLACE FUNCTION upsert_document(org_id_input uuid, document_id_input text DEFAULT NULL, document_name_input text DEFAULT NULL, source_path_input text DEFAULT NULL, source_type_input text DEFAULT NULL, file_type_input text DEFAULT NULL)
 	RETURNS json
 	LANGUAGE PLPGSQL
 	AS $$
@@ -12,21 +12,15 @@ BEGIN
 	INSERT INTO tbl_documents(
 		org_id,
 		document_id,
-		document_name,
-		source_path,
-		source_type)
+		document_name)
 	VALUES (
 		org_id_input,
 		coalesce(document_id_input, gen_document_id()),
-		document_name_input,
-		source_path_input,
-		source_type_input)
+		document_name_input)
 ON CONFLICT (
 	document_id)
 	DO UPDATE SET
-		source_path = EXCLUDED.source_path,
-		source_type = EXCLUDED.source_type,
-		document_name = EXCLUDED.document_name
+		document_id = EXCLUDED.document_id
 	RETURNING
 		document_id INTO found_document_id;
 	--
@@ -62,13 +56,20 @@ ON CONFLICT (
 		document_id,
 		document_version,
 		is_active, 
-		token)
+		token, 
+		source_path,
+		source_type,
+		file_type)
 	VALUES (
 		org_id_input,
 		found_document_id,
 		COALESCE(document_count,0) + 1, 
 		TRUE, 
-		sign(json_build_object('url', 'documents/' || org_id_input || '/' || found_document_id || '/' || COALESCE(document_count,0) + 1 || '.pdf', 'iat', ROUND(extract(epoch FROM now())), 'exp', ROUND(extract(epoch FROM now())) + 60 * 60 * 7 * 24 * 52 * 20), current_setting('app.settings.jwt_secret', TRUE)));
+		sign(json_build_object('url', 'documents/' || org_id_input || '/' || found_document_id || '/' || COALESCE(document_count,0) + 1 || '.pdf', 'iat', ROUND(extract(epoch FROM now())), 'exp', ROUND(extract(epoch FROM now())) + 60 * 60 * 7 * 24 * 52 * 20), current_setting('app.settings.jwt_secret', TRUE)),
+		source_path_input,
+		source_type_input,
+		file_type_input
+		);
 	--
 	--
 	SELECT row_to_json(view_documents) INTO return_data FROM view_documents WHERE document_id = found_document_id AND org_id = org_id_input;

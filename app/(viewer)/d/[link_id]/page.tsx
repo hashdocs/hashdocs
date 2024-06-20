@@ -60,7 +60,7 @@ export default async function DocumentViewerPage({
 
   if (!link) return <InvalidLink />;
 
-  const signedUrl = await getSignedURL({ link });
+  const { signedUrl, view } = await getSignedURL({ link });
 
   return (
     <main className="flex h-full w-full flex-1 flex-col bg-gray-50">
@@ -76,7 +76,7 @@ export default async function DocumentViewerPage({
           is_password_required={link.is_password_required}
         />
       ) : (
-        <PDFViewerPage signedURL={signedUrl} />
+        <PDFViewerPage signedURL={signedUrl} viewer={view ?? undefined} />
       )}
     </main>
   );

@@ -4,11 +4,11 @@
 import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
 import { classNames } from "@/app/_utils/classNames";
 import {
-    BuildingOfficeIcon,
-    CheckBadgeIcon,
-    CreditCardIcon,
-    PuzzlePieceIcon,
-    UserIcon
+  BuildingOfficeIcon,
+  CheckBadgeIcon,
+  CreditCardIcon,
+  PuzzlePieceIcon,
+  UserIcon
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";

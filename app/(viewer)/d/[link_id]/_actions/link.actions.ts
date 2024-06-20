@@ -1,10 +1,10 @@
 'use server';
 import { generateRandomString } from '@/app/_utils/common';
 import {
-    createServerComponentClient,
-    supabaseAdminClient,
+  createServerComponentClient,
+  supabaseAdminClient,
 } from '@/app/_utils/supabase';
-import { LinkViewType, TablesInsert } from '@/types';
+import { LinkViewType, TablesInsert, ViewCookieType } from '@/types';
 import disposableEmailDetector from 'disposable-email-detector';
 import { cookies, headers } from 'next/headers';
 import { userAgent } from 'next/server';
@@ -35,17 +35,18 @@ export const getSignedURL = async ({
 }) => {
   const supabase = supabaseAdminClient();
 
+  let view_details: ViewCookieType | null = null;
   if (!preview) {
     const cookie_val = cookies().get('hashdocs');
 
     if (!cookie_val || !cookie_val.value) {
-      return null;
+      return { signedUrl: null, view: null };
     }
 
-    const link_val = JSON.parse(cookie_val.value || '{}')?.[link.link_id];
+    view_details = JSON.parse(cookie_val.value || '{}')?.[link.link_id];
 
-    if (!link_val) {
-      return null;
+    if (!view_details) {
+      return { signedUrl: null, view: null };
     }
   }
 
@@ -59,11 +60,13 @@ export const getSignedURL = async ({
       }
     );
 
-  if (error || !data) return null;
+  if (error || !data) {
+    return { signedUrl: null, view: null };
+  }
 
   const { signedUrl } = data;
 
-  return signedUrl;
+  return { signedUrl, view: view_details };
 };
 
 export const authorizeViewer = async ({
@@ -208,6 +211,8 @@ export const authorizeViewer = async ({
           document_id: link.document_id,
           org_id: link.org_id,
           view_id: insert_view.view_id,
+          viewer: email && email.length > 0 ? email : 'Anonymous',
+          ip: headers().get('x-real-ip'),
         },
       }),
       {

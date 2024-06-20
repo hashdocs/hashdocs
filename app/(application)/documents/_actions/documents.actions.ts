@@ -1,8 +1,8 @@
 'use server';
 
 import {
-    createServerActionClient,
-    createServerComponentClient,
+  createServerActionClient,
+  createServerComponentClient,
 } from '@/app/_utils/supabase';
 import { DocumentDetailType, DocumentType } from '@/types';
 import { cookies } from 'next/headers';
@@ -14,6 +14,7 @@ export async function uploadDocument({
   document_name,
   source_type,
   org_id,
+  file_type
 }: {
   document_id?: string;
   path: string;
@@ -21,6 +22,7 @@ export async function uploadDocument({
   document_name?: string;
   source_type?: string;
   org_id: string;
+  file_type?: string;
 }) {
   try {
     const supabase = createServerActionClient({ cookies: cookies() });
@@ -37,6 +39,7 @@ export async function uploadDocument({
           document_name_input: document_name ?? name_without_extension,
           source_path_input: source_path,
           source_type_input: source_type ?? 'LOCAL',
+          file_type_input: file_type,
         })
         .returns<DocumentType>();
 

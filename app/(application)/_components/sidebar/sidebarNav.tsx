@@ -1,12 +1,12 @@
+'use client';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { Fragment, useCallback, useEffect, useState } from 'react';
-import { primaryNavigation, primaryNavigationType } from './nav.constants';
+import { usePathname } from 'next/navigation';
+import { Fragment, useState } from 'react';
+import { primaryNavigation } from './nav.constants';
 
 export default function SidebarNav() {
   const path = usePathname();
-  const router = useRouter();
 
   const defaultNav =
     primaryNavigation.find((nav) => {
@@ -14,25 +14,6 @@ export default function SidebarNav() {
     }) || primaryNavigation[0];
 
   const [activeNav, setActiveNav] = useState(defaultNav);
-
-  const changeSelectedNav = useCallback((newNav: primaryNavigationType) => {
-    setActiveNav(newNav);
-  }, []);
-
-  useEffect(() => {
-    const defaultNav =
-      primaryNavigation.find((nav) => {
-        return path.includes(nav.path);
-      }) || primaryNavigation[0];
-
-    setActiveNav(defaultNav);
-  }, [path, router]);
-
-  useEffect(() => {
-    primaryNavigation.forEach((nav) => {
-      router.prefetch(nav.path);
-    });
-  }, [router]);
 
   return (
     <>
@@ -43,7 +24,7 @@ export default function SidebarNav() {
               <Link
                 key={nav.path}
                 href={nav.path}
-                onClick={() => changeSelectedNav(nav)}
+                onClick={() => setActiveNav(nav)}
                 className={clsx(
                   nav.path === activeNav.path
                     ? 'bg-gray-200/50 font-semibold text-blue-700'
@@ -65,11 +46,11 @@ export default function SidebarNav() {
                     }
                     placement="right"
                   > */}
-                    <nav.icon
-                      className={'h-6 w-6 scale-90 shrink-0'}
-                      aria-hidden="true"
-                    />
-                    {nav.name}
+                  <nav.icon
+                    className={'h-6 w-6 shrink-0 scale-90'}
+                    aria-hidden="true"
+                  />
+                  {nav.name}
                   {/* </Tooltip> */}
                 </div>
               </Link>

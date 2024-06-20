@@ -15,13 +15,13 @@ export default async function ApplicationLayout({
   return (
     <OrgProvider org_data={org}>
       <DocumentProvider>
-        <div className="flex h-full w-full flex-1 overflow-hidden">
+        <div className="flex h-full max-h-[100vh] w-full max-w-[100vw] flex-1 overflow-hidden">
           <MainSidebar />
-          <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="flex w-full lg:min-w-[816px] flex-1 flex-col">
             <TopBar />
             <MobileTopBar />
-            <section className="flex h-full w-full flex-1 flex-col items-center bg-gray-50 hashdocs-scrollbar !overflow-y-scroll">
-              <div className="flex w-full max-w-screen-xl flex-1 flex-col px-4 ">
+            <section className="hashdocs-scrollbar flex h-full w-full flex-1 flex-col items-center !overflow-y-scroll !overflow-x-hidden bg-gray-50">
+              <div className="flex w-full max-w-screen-xl flex-1 flex-col py-4 pl-4 pr-2">
                 {children}
               </div>
             </section>

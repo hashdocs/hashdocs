@@ -1,24 +1,13 @@
-import Empty from "@/app/_components/navigation/empty";
-import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
+import Placeholder from '@/app/_components/placeholder';
+import { PageHeader } from '../_components/pageHeader';
 
-export default function SignaturePage() {
-  const pageProps = primaryNavigation.find(
-    (page) => page.path === "/signatures"
-  );
-
+export default function Page() {
   return (
-    <section className="flex flex-1 flex-col">
-      <div className="mb-2 flex flex-row items-center justify-between">
-        <div className="flex flex-col space-y-1">
-          <h1 className="text-lg font-semibold text-shade-pencil-black">
-            {pageProps?.name}
-          </h1>
-          <p className="text-sm text-shade-gray-500">
-            {pageProps?.description}
-          </p>
-        </div>
+    <div className="flex flex-1 flex-col py-2">
+      <div className="mb-8 flex items-center justify-between">
+        <PageHeader />
       </div>
-      <Empty />
-    </section>
+      <Placeholder />
+    </div>
   );
 }

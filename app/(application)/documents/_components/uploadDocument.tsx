@@ -1,3 +1,5 @@
+'use client';
+import Button from '@/app/_components/button';
 import Modal, { ModalRef } from '@/app/_components/modal';
 import {
   base64ToArrayBuffer,
@@ -14,8 +16,9 @@ import { Dashboard } from '@uppy/react';
 import XHR from '@uppy/xhr-upload';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import toast from 'react-hot-toast';
-import { HiPresentationChartBar } from 'react-icons/hi2';
+import { HiDocumentArrowUp, HiPresentationChartBar } from 'react-icons/hi2';
 import useOrg from '../../_provider/useOrg';
 import { getPdfDetails } from '../_actions/document.details';
 import { uploadDocument } from '../_actions/documents.actions';
@@ -26,7 +29,7 @@ interface UploadDocumentModalProps {
   document_name?: string;
 }
 
-const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
+export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   modalRef,
   document_id,
   document_name,
@@ -80,6 +83,7 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             document_name,
             source_type: 'LOCAL',
             org_id: org.org_id,
+            file_type: file?.type
           });
 
           if (!new_document) {
@@ -197,4 +201,54 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   );
 };
 
-export default UploadDocumentModal;
+export const UploadDocumentButton = ({
+  documents,
+}: {
+  documents?: DocumentType[];
+}) => {
+  const modalRef = useRef<ModalRef>(null);
+
+  const { org } = useOrg();
+
+  const handleUploadClick = () => {
+    if (
+      (!org.org_plan || org.org_plan === 'Free') &&
+      (documents ?? []).length > 0
+    ) {
+      toast.error(
+        <p>
+          You have reached the maximum number of documents for the free plan.
+          Please{' '}
+          <Link
+            className="text-blue-700 underline"
+            href={'/settings/billing'}
+          >
+            upgrade
+          </Link>{' '}
+          to our Pro plan for unlimited documents.
+        </p>,
+        {
+          duration: 10000,
+        }
+      );
+      return;
+    } else {
+      modalRef.current?.openModal();
+    }
+  };
+
+  return (
+    <>
+      <Button
+        className="flex items-center gap-x-1 flex-nowrap shrink-0"
+        variant="solid"
+        size="md"
+        onClick={handleUploadClick}
+      >
+        <HiDocumentArrowUp className="h-4 w-4" />
+        <span className="hidden md:flex text-sm font-semibold">Upload Document</span>
+      </Button>
+      <UploadDocumentModal modalRef={modalRef} />
+    </>
+  );
+};

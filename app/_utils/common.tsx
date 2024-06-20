@@ -17,7 +17,7 @@ export const CopyLinkToClipboard = async (
         loading: 'Copying...',
         success: (
           <p className="font-normal">
-            Successfully copied{' '}
+            Copied{' '}
             <Link
               href={copyText}
               target="_blank"
@@ -46,8 +46,8 @@ export const generateRandomString = (length: number) => {
   return result;
 };
 
-export const getDocumentPath = ({ document }: { document: DocumentType }) =>
-  `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document.org_id}/${document.document_id}/${document.document_version}.pdf?token=${document.token}`;
+export const getDocumentPath = ({ document, document_version }: { document: DocumentType, document_version?: number }) =>
+  `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document.org_id}/${document.document_id}/${document_version ?? document.document_version}.pdf?token=${document.token}`;
 
 export const getThumbnailPath = ({path}:{path:string}) => `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/thumbnails/${path}`;
 

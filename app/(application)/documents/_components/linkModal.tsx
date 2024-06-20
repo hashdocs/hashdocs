@@ -25,13 +25,13 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
     useDocument();
 
   return (
-    <Modal ref={modalRef} className="w-full max-w-xl">
-      <div className="flex flex-col gap-y-6">
+    <Modal ref={modalRef} className='w-full md:max-w-xl'>
+      <div className="flex flex-col gap-y-6 max-w-[90vw] max-h-[80vh] overflow-hidden w-full">
         <div className="flex items-center justify-between gap-x-4">
           <div className="text-sm leading-6">
             <label className="font-medium">Link Name</label>
             <p className="text-xs text-gray-500/80">
-              {'Enter the organization or recipient name'}
+              {'e.g. organization or recipient name'}
             </p>
           </div>
           <input
@@ -70,7 +70,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
           <p className="pr-3">LINK SETTINGS</p>
           <div className=" h-[1px] flex-grow bg-gray-200"></div>
         </div>
-        <div className="hashdocs-scrollbar flex h-96 flex-col gap-y-6">
+        <div className="hashdocs-scrollbar flex flex-col gap-y-6">
           <div className="flex flex-col">
             <LinkModalCheckBox
               isChecked={linkValue?.is_email_required ?? false}
@@ -97,7 +97,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
             >
               <AnimatePresence initial={linkValue?.is_email_required ?? false}>
                 {
-                  <div className="accordion-content ml-7 mt-4 flex w-full flex-col space-y-4">
+                  <div className="ml-7 mt-4 flex flex-col space-y-4">
                     <LinkModalCheckBox
                       isChecked={linkValue?.is_verification_required ?? false}
                       setIsChecked={(checked) =>
@@ -140,7 +140,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
                         })
                       }
                       className={clsx(
-                        'ml-7 w-full max-w-[20rem] rounded !border-gray-200 px-2 py-2 text-sm font-normal !shadow-inner !outline-none placeholder:text-gray-400',
+                        'ml-7 max-w-[20rem] rounded !border-gray-200 px-2 py-2 text-sm font-normal !shadow-inner !outline-none placeholder:text-gray-400',
                         !linkValue?.is_domain_restricted
                           ? 'pointer-events-none bg-gray-200/20'
                           : ''
@@ -186,7 +186,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
                 initial={linkValue?.is_expiration_enabled ?? false}
               >
                 {
-                  <div className="accordion-content ml-7 mt-4 flex w-full flex-col">
+                  <div className="ml-7 mt-4 flex flex-col">
                     <DatePicker
                       selected={
                         linkValue?.expiration_date
@@ -249,7 +249,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
               type='password'
               value={linkValue?.link_password ?? undefined}
               className={
-                `ml-7 w-full max-w-[16rem] !rounded !border !border-gray-200 !px-2 !py-2 !text-sm !font-normal !shadow-inner !outline-0 !placeholder:text-gray-400 
+                `ml-7 max-w-[16rem] !rounded !border !border-gray-200 !px-2 !py-2 !text-sm !font-normal !shadow-inner !outline-0 !placeholder:text-gray-400 
                 ${!linkValue?.is_password_required
                   ? '!cursor-not-allowed !bg-gray-200/20'
                   : ''}`
@@ -267,7 +267,7 @@ const LinkModal: React.FC<LinkModalProps> = ({ modalRef, document, link }) => {
             }
             id={'watermarked-checkbox'}
             name={'watermarked-checkbox'}
-            label={'Watermark (coming soon)'}
+            label={'Custom Watermark (coming soon)'}
             description={
               "All files are watermarked with the viewer's email. Custom watermarks are coming soon"
             }

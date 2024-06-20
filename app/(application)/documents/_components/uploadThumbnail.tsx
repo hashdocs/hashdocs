@@ -1,175 +1,119 @@
-import { Dialog, Transition } from "@headlessui/react";
-import Uppy, { UppyFile } from "@uppy/core";
-import { Dashboard } from "@uppy/react";
-import XHR from "@uppy/xhr-upload";
-import { Fragment, useState } from "react";
+import Uppy, { UppyFile } from '@uppy/core';
+import { Dashboard } from '@uppy/react';
+import XHR from '@uppy/xhr-upload';
 
-import Loader from "@/app/_components/navigation/loader";
-import "@uppy/core/dist/style.min.css";
-import "@uppy/dashboard/dist/style.min.css";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import Modal, { ModalRef } from '@/app/_components/modal';
+import { generateRandomString } from '@/app/_utils/common';
+import { createClientComponentClient } from '@/app/_utils/supabase';
+import { DocumentType } from '@/types';
+import '@uppy/core/dist/style.min.css';
+import '@uppy/dashboard/dist/style.min.css';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 interface UploadThumbnailProps {
-  isOpen: boolean;
-  setIsOpen: (state: boolean) => void;
-  document_id: string;
-  document_name?: string | null;
-  image?: string | null;
+  modalRef: React.RefObject<ModalRef>;
+  document: DocumentType;
 }
 
 const UploadThumbnailModal: React.FC<UploadThumbnailProps> = ({
-  isOpen,
-  setIsOpen,
-  document_id,
-  document_name = null,
-  image = null,
+  modalRef,
+  document,
 }) => {
   const router = useRouter();
-
-  /*-------------------------------- SET STATE VARIABLES  ------------------------------*/
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isCustomImage, setIsCustomImage] = useState<boolean>(
-    image ? true : false
-  );
 
   /*-------------------------------- FUNCTIONS ------------------------------*/
 
   const handleBeforeUpload = (files: {
     [key: string]: UppyFile<Record<string, unknown>, Record<string, unknown>>;
   }) => {
-    if (Object.keys(files).length > 1) return false;
+    if (Object.keys(files).length > 1) {
+      toast.error('Please upload only one file');
+      return false;
+    }
 
     return true;
   };
 
-  const handleToggle = (checked: boolean) => {
-    return new Promise((resolve) => {
-      setIsCustomImage(!isCustomImage);
-      fetch(
-        `/api/documents/${document_id}/thumbnail?image=${false}`,
-        { method: "POST" }
-      );
-      resolve(true);
-    });
-  };
-
   const uppy = new Uppy({
-    id: "uppy",
+    id: 'uppy',
     restrictions: {
-      allowedFileTypes: [".jpg", ".jpeg", ".png"],
-      maxFileSize: 100000000, // 1MB
+      allowedFileTypes: ['.jpg', '.jpeg', '.png'],
+      maxFileSize: 500000000, // 1MB
     },
     onBeforeUpload: (files) => handleBeforeUpload(files),
     allowMultipleUploads: false,
-
   }).use(XHR, {
     //TODO:Update to https
-    endpoint: `/api/documents/${document_id}/thumbnail`,
+    endpoint: `${
+      process.env.NEXT_PUBLIC_SUPABASE_URL
+    }/storage/v1/object/thumbnails/${document.org_id}/${
+      document.document_id
+    }/${generateRandomString(6)}`,
+    headers: {
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
+      'x-upsert': 'true',
+    },
   });
 
-  uppy.on("upload-success", (file, response) => {
-    toast.success(
-      <div className="flex flex-col gap-y-1">
-        <p className="">
-          <span className="font-semibold text-stratos-default">
-            {file?.name}
-          </span>
-          {" - "}
-          Thumbnail updated successfully
-        </p>
-        <p className="font-normal">
-          It may take a few minutes to propagate across our CDN
-        </p>
-      </div>
-    );
-    setIsOpen(false);
-    router.refresh();
+  uppy.on('upload-success', (file, response) => {
+    const postUploadPromise = new Promise(async (resolve, reject) => {
+      const supabase = createClientComponentClient();
+
+      if (!response.body.Key) {
+        reject(false);
+      }
+
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${response.body.Key}`;
+
+      try {
+        const { error } = await supabase
+          .from('tbl_documents')
+          .update({ custom_image: url })
+          .eq('document_id', document.document_id)
+          .eq('org_id', document.org_id);
+
+        if (error) {
+          throw error;
+        }
+
+        resolve(true);
+      } catch (error) {
+        console.error('Error updating document thumbnail', error);
+        reject(false);
+      }
+    });
+
+    toast
+      .promise(postUploadPromise, {
+        loading: `Updating ${document.document_name}...`,
+        success: `Thumbnail updated successfully. It may take a few minutes to propagate across our servers`,
+        error: `Error updating ${document.document_name}. Please try again!`,
+      })
+      .then(() => {
+        router.refresh();
+      });
   });
 
   /*-------------------------------- RENDER ------------------------------*/
 
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="z-100 relative" onClose={setIsOpen}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-gray-50 bg-opacity-75 transition-opacity" />
-        </Transition.Child>
+    <Modal ref={modalRef} title="Upload Thumbnail">
+      <div className="flex flex-col gap-y-2">
+        <p className='text-xs text-gray-500'>{`Please upload a png or jpg file of dimensions 1200x630 (1200px width, 630px height)`}</p>
 
-        <div className="z-100 fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center text-left">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              {isLoading ? (
-                <Loader />
-              ) : (
-                <Dialog.Panel className="relative flex transform flex-col space-y-3 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
-                  <div className="flex items-start justify-between">
-                    <div className="flex flex-col justify-between gap-y-2">
-                      <Dialog.Title
-                        as="h3"
-                        className="text-left font-semibold uppercase"
-                      >
-                        Update thumbnail
-                      </Dialog.Title>
-                      <Dialog.Description
-                        as="h3"
-                        className="text-left text-xs leading-5 text-shade-gray-500"
-                      >
-                        File types: .jpg, .jpeg, .png files<br/>Resolution: 1200x630 px
-                      </Dialog.Description>
-                    </div>
-                    {/* <Toggle
-                      toggleId={`${document_id}-thumbnail-toggle`}
-                      isChecked={isCustomImage}
-                      setIsChecked={setIsCustomImage}
-                      onToggle={handleToggle}
-                      Label={"Custom thumbnail"}
-                    /> */}
-                  </div>
-                  {/* {isCustomImage ? ( */}
-                    <Dashboard
-                      uppy={uppy}
-                      plugins={[]}
-                      proudlyDisplayPoweredByUppy={false}
-                      showProgressDetails={true}
-                      hideUploadButton={false}
-                      target="uppy-upload-area"
-                      height={200}
-                      width={380}
-                    />
-                  {/* // ) : ( */}
-                  {/* //   <Image */}
-                  {/* //     height={200}
-                  //     width={380}
-                  //     src={"/images/default_thumbnail.png"}
-                  //     alt={"Thumbnail"}
-                  //     className="rounded-lg bg-gray-50 p-2"
-                  //   />
-                  // )} */}
-                </Dialog.Panel>
-              )}
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition.Root>
+        <Dashboard
+          uppy={uppy}
+          plugins={[]}
+          proudlyDisplayPoweredByUppy={false}
+          showProgressDetails={true}
+          hideUploadButton={false}
+          target="uppy-upload-area"
+          height={200}
+          width={380}
+        />
+      </div>
+    </Modal>
   );
 };
 

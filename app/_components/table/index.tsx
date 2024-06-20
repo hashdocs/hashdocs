@@ -52,7 +52,7 @@ const TableComponent = ({
       <div
         ref={scrollRef}
         className={clsx(
-          'hashdocs-scrollbar relative flex-1 !overflow-y-scroll overflow-x-auto p-0',
+          'relative flex-1 overflow-x-auto p-0',
           wrapperClassName,
           disabled && 'pointer-events-none'
         )}

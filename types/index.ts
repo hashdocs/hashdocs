@@ -21,6 +21,9 @@ export type DocumentType = Merge<
     updated_at: string;
     document_name: string;
     page_count: number;
+    source_path: string;
+    source_type: string;
+    document_version: number;
   }
 >;
 
@@ -56,6 +59,14 @@ export type ViewType = Merge<Tables<'view_logs'>, {
   view_logs: Record<string,number>;
 }>;
 
+
+export type ViewCookieType = {
+    document_id: string,
+    org_id: string,
+    view_id: string,
+    viewer: string,
+    ip?: string,
+}
 
 /* --------------------------------- COLORS --------------------------------- */
 

@@ -48,13 +48,13 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
         isActive && document?.is_enabled ? '' : 'text-gray-500'
       }`}
     >
-      <div className={` flex items-center justify-between gap-x-4`}>
+      <div className={` flex items-center justify-between gap-x-2`}>
         {/*-------------------------------- LEFT ------------------------------*/}
 
-        <div className=" flex w-1/4 shrink-0 flex-row items-center gap-x-4">
+        <div className=" flex shrink-0 flex-row items-center gap-x-4">
           <div className="flex flex-col ">
             <p className={`font-semibold`}>{link.link_name}</p>
-            <p className="text-shade-gray-500 text-xs">
+            <p className="text-gray-500 text-xs">
               {link.created_at && formatDate(link.created_at, 'MMM D', false)}
             </p>
           </div>
@@ -62,10 +62,10 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
 
         {/*-------------------------------- MIDDLE ------------------------------*/}
 
-        <div className="flex w-1/3 shrink-0 flex-row items-center space-x-2 text-xs">
+        <div className="shrink-0 items-center gap-x-2 text-xs hidden md:flex ">
           <div
             onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)}
-            className={`flex items-center space-x-2 rounded-xl bg-gray-50 px-4 py-2 ${
+            className={`flex items-center gap-x-2 rounded-xl bg-gray-50 px-4 py-2 ${
               isActive && document?.is_enabled
                 ? 'cursor-pointer text-blue-700 '
                 : 'pointer-events-none text-gray-500'
@@ -89,18 +89,22 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
           </div>
         </div>
 
+        <div className="shrink-0 items-center gap-x-2 text-xs flex md:hidden ">
+            <BiCopy className="h-4 w-4 hover:cursor-pointer hover:text-blue-700 " onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)} />
+        </div>
+
         <Link href={`/documents/${document?.document_id}/views?id=${link_id}`}>
           <Button
-            className="flex items-center gap-x-1"
+            className="flex items-center gap-x-1 !whitespace-nowrap"
             size="sm"
             variant="outline"
           >
             <IoEye className="h-4 w-4" />
-            <span>{views.length} views</span>
+            <span className='flex gap-x-1 items-center'>{views.length}<span className='hidden md:inline-flex'>{`views`}</span></span>
           </Button>
         </Link>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-x-2">
           <Switch
             enabled={isActive}
             setEnabled={setIsActive}
@@ -142,7 +146,7 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
                 views={views.filter((v) => v.link_id == link_id).slice(0, 5)}
                 document={document}
               />
-              <div className=" text-shade-gray-500 hover:text-stratos-default grid grid-cols-12 justify-end pt-2 text-xs shadow-sm hover:underline">
+              <div className=" text-gray-500 hover:text-blue-700 grid grid-cols-12 justify-end pt-2 text-xs shadow-sm hover:underline">
                 <Link
                   href={{
                     pathname: `/documents/${document?.document_id}/views`,

@@ -1,6 +1,6 @@
 'use client';
 import { createClientComponentClient } from '@/app/_utils/supabase';
-import { DocumentType, Tables, TablesUpdate } from '@/types';
+import { DocumentDetailType, DocumentType, Tables, TablesUpdate } from '@/types';
 import { useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -14,6 +14,7 @@ interface DocumentContext {
     checked: boolean;
   }) => Promise<void>;
   handleDocumentDelete: ({ document }: { document: DocumentType }) => Promise<void>;
+  handleDocumentVersionSwitch: ({document, new_version} : {document:DocumentDetailType, new_version: number}) => Promise<void>;
   handleLinkToggle: ({
     checked,
     link,
@@ -81,6 +82,62 @@ export const DocumentProvider = ({
             <p>
               {document.document_name} is now{' '}
               {<span className="text-stratos-default">ENABLED</span>}
+            </p>
+          ),
+          error: `Error in updating ${document.document_name}. Please try again!`,
+        })
+        .finally(() => {
+          router.refresh();
+        });
+    },
+    []
+  );
+
+  // Set version
+
+  const handleDocumentVersionSwitch = useCallback(
+    async ({
+      document,
+      new_version,
+    }: {
+      document: DocumentType;
+      new_version: number;
+    }) => {
+      const togglePromise = new Promise(async (resolve, reject) => {
+        try {
+          const { error: error_1 } = await supabase
+            .from('tbl_document_versions')
+            .update({ is_active: false })
+            .eq('document_id', document.document_id);
+
+          if (error_1) {
+            throw error_1;
+          }
+
+          const { error: error_2 } = await supabase
+          .from('tbl_document_versions')
+          .update({ is_active: true })
+          .eq('document_id', document.document_id)
+          .eq('document_version', new_version);
+
+          if (error_2) {
+            throw error_2;
+          }
+
+          resolve(true);
+        } catch (error) {
+          console.error(error);
+          reject(false);
+        }
+      });
+
+      await toast
+        .promise(togglePromise, {
+          loading: `Updating ${document.document_name}...`,
+          success: (
+            <p>
+              Version {new_version} is now{' '}
+              {<span className="text-shade-gray-500">ACTIVE</span>}
             </p>
           ),
           error: `Error in updating ${document.document_name}. Please try again!`,
@@ -282,12 +339,14 @@ export const DocumentProvider = ({
       handleLinkToggle,
       handleLinkDelete,
       handleLinkUpdate,
+      handleDocumentVersionSwitch
     }),
     [
       handleDocumentDelete,
       handleDocumentToggle,
       handleLinkToggle,
       handleLinkUpdate,
+      handleDocumentVersionSwitch
     ]
   );
 
