@@ -3,7 +3,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import React, { useImperativeHandle } from 'react';
-import Actions from './actions';
 import Header from './header';
 
 type ModalProps = {
@@ -85,7 +84,7 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
   }
 );
 
-const Modal = Object.assign(Container, { Actions });
+const Modal = Object.assign(Container);
 
 Container.displayName = 'Container';
 Modal.displayName = 'Modal';
