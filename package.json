@@ -33,6 +33,7 @@
     "@vercel/analytics": "^1.0.1",
     "autoprefixer": "^10.4.14",
     "clsx": "^2.1.1",
+    "cookies-next": "^4.2.1",
     "csstype": "^3.0.10",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.8",
@@ -75,6 +76,7 @@
     "encoding": "^0.1.13",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
-    "tailwind-scrollbar": "^3.0.4"
+    "tailwind-scrollbar": "^3.0.4",
+    "ts-node": "^10.9.2"
   }
 }

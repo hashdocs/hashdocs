@@ -25,25 +25,29 @@ export const getLink = async ({ link_id }: { link_id: string }) => {
 };
 
 export const getSignedURL = async ({
-  link,
-  preview = false,
-  download = false,
+  org_id,
+  document_id,
+  document_version,
+  link_id,
+  download_file_name,
 }: {
-  link: LinkViewType;
-  preview?: boolean;
-  download?: boolean;
+  org_id: string;
+  document_id: string;
+  document_version: number;
+  link_id?: string;
+  download_file_name?: string;
 }) => {
   const supabase = supabaseAdminClient();
 
   let view_details: ViewCookieType | null = null;
-  if (!preview) {
+  if (!!link_id) {
     const cookie_val = cookies().get('hashdocs');
 
     if (!cookie_val || !cookie_val.value) {
       return { signedUrl: null, view: null };
     }
 
-    view_details = JSON.parse(cookie_val.value || '{}')?.[link.link_id];
+    view_details = JSON.parse(cookie_val.value || '{}')?.[link_id];
 
     if (!view_details) {
       return { signedUrl: null, view: null };
@@ -53,10 +57,10 @@ export const getSignedURL = async ({
   const { data, error } = await supabase.storage
     .from('documents')
     .createSignedUrl(
-      `${link.org_id}/${link.document_id}/${link.document_version}.pdf`,
+      `${org_id}/${document_id}/${document_version}.pdf`,
       60,
       {
-        download: download ? link.source_path ?? undefined : undefined,
+        download: download_file_name ?? undefined,
       }
     );
 

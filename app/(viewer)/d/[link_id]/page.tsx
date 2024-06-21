@@ -60,14 +60,23 @@ export default async function DocumentViewerPage({
 
   if (!link) return <InvalidLink />;
 
-  const { signedUrl, view } = await getSignedURL({ link });
+  const { signedUrl, view } = await getSignedURL({
+    document_id: link.document_id,
+    document_version: link.document_version,
+    org_id: link.org_id,
+    link_id: link.link_id,
+  });
 
   return (
     <main className="flex h-full w-full flex-1 flex-col bg-gray-50">
       <ViewerTopBar
+        document_id={link.document_id}
+        document_version={link.document_version}
+        org_id={link.org_id}
+        preview={false}
+        download_file_name={link.is_download_allowed ? link.source_path : undefined}
         document_name={link.document_name}
         updated_by={link.updated_by}
-        is_download_allowed={link.is_download_allowed}
       />
       {!signedUrl ? (
         <ViewerAuth

@@ -15,6 +15,8 @@ import {
   OnItemClickArgs,
   PageCallback,
 } from 'react-pdf/dist/cjs/shared/types';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
 import { updatePageTimes } from '../d/[link_id]/_actions/link.actions';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -52,7 +54,7 @@ export default function PDFViewer({
   function handleThumbnailClick(args: OnItemClickArgs) {
     // setActivePage(args.pageNumber);
     scrollableElementRef.current?.scrollTo({
-      top: pageRefs[args.pageNumber]?.current?.offsetTop! - 136,
+      top: pageRefs[args.pageIndex]?.current?.offsetTop! - 136,
       behavior: 'instant',
     });
   }
@@ -329,8 +331,8 @@ export default function PDFViewer({
                 key={`page_${index + 1}`}
                 pageNumber={index + 1}
                 loading={<Loader />}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
+                renderAnnotationLayer={true}
+                renderTextLayer={true}
                 className="my-4"
                 // height={pageHeight}
                 width={pageWidth}
@@ -352,8 +354,8 @@ export default function PDFViewer({
               key={`page_${index + 1}`}
               pageNumber={index + 1}
               loading={<Loader />}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
+              renderAnnotationLayer={true}
+              renderTextLayer={true}
               className="my-4"
               // height={pageHeight}
               width={window.innerWidth - 32}

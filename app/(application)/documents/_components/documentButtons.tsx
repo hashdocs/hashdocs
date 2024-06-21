@@ -401,7 +401,8 @@ export const DocumentName: React.FC<{
       }}
     />
   ) : (
-    <div
+    <Link
+      href={editable ? '' : `/documents/${document.document_id}`}
       className={clsx(
         'group flex items-center gap-x-1 truncate',
         editable ? 'cursor-text' : 'cursor-pointer'
@@ -409,7 +410,7 @@ export const DocumentName: React.FC<{
       onClick={() =>
         editable
           ? setIsEditing(true)
-          : router.push(`/documents/${document.document_id}`)
+          : {}
       }
     >
       <h3 className="pb-0.5 text-base font-semibold hover:text-blue-700 md:text-lg">
@@ -421,7 +422,7 @@ export const DocumentName: React.FC<{
           !editable && 'hidden'
         )}
       />
-    </div>
+    </Link>
   );
 };
 
