@@ -1,10 +1,21 @@
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc"; // dependent on utc plugin
+import calendar from 'dayjs/plugin/calendar';
 import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc"; // dependent on utc plugin
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(calendar);
 
 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+export const dateFormat = {
+  sameDay: 'HH:mm',
+  nextDay: '[Tomorrow]',
+  nextWeek: 'dddd',
+  lastDay: '[Yesterday]',
+  lastWeek: 'DD-MMM-YY',
+  sameElse: 'DD-MMM-YY',
+};
 
 export function formatDate(
   dateval: string,
@@ -21,6 +32,10 @@ export function formatDate(
   }
 
   return returnval;
+}
+
+export function relativeDate(dateval: string): string {
+  return dayjs(dateval).calendar(null, dateFormat)
 }
 
 export function formatTime(duration: number) {

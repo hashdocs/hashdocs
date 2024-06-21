@@ -1,88 +1,61 @@
-import { Fragment, useContext, useEffect, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import Uppy, { UppyFile } from "@uppy/core";
-import { Dashboard } from "@uppy/react";
-import XHR from "@uppy/xhr-upload";
-
-import "@uppy/core/dist/style.min.css";
-import "@uppy/dashboard/dist/style.min.css";
-import { useRouter } from "next/navigation";
-import Loader from "@/app/_components/navigation/loader";
-import toast from "react-hot-toast";
-import Link from "next/link";
-import { PresentationChartBarIcon } from "@heroicons/react/24/outline";
-import { DocumentsContext } from "./documentsProvider";
-import { DocumentType } from "@/types/documents.types";
-import { classNames } from "@/app/_utils/classNames";
-import { UserContext } from "../../_components/userProvider";
+'use client';
+import Button from '@/app/_components/button';
+import Modal, { ModalRef } from '@/app/_components/modal';
+import {
+  base64ToArrayBuffer,
+  generateRandomString,
+  getDocumentPath,
+  getThumbnailPath,
+} from '@/app/_utils/common';
+import { createClientComponentClient } from '@/app/_utils/supabase';
+import { DocumentType } from '@/types';
+import Uppy, { UppyFile } from '@uppy/core';
+import '@uppy/core/dist/style.min.css';
+import '@uppy/dashboard/dist/style.min.css';
+import { Dashboard } from '@uppy/react';
+import XHR from '@uppy/xhr-upload';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
+import toast from 'react-hot-toast';
+import { HiDocumentArrowUp, HiPresentationChartBar } from 'react-icons/hi2';
+import useOrg from '../../_provider/useOrg';
+import { getPdfDetails } from '../_actions/document.details';
+import { uploadDocument } from '../_actions/documents.actions';
 
 interface UploadDocumentModalProps {
-  isOpen: boolean;
-  setIsOpen: (state: boolean) => void;
-  document_id?: string | null;
-  document_name?: string | null;
+  modalRef: React.RefObject<ModalRef>;
+  document_id?: string;
+  document_name?: string;
 }
 
-const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
-  isOpen,
-  setIsOpen,
-  document_id = null,
-  document_name = null,
+export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
+  modalRef,
+  document_id,
+  document_name,
 }) => {
   const router = useRouter();
-
-  /*-------------------------------- SET STATE VARIABLES  ------------------------------*/
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-
-  const _documentContext = useContext(DocumentsContext);
-  const _userContext = useContext(UserContext);
-
-  if (!_documentContext || !_userContext) return null;
-
-  const { documents, setDocuments } = _documentContext;
-  const { user, org } = _userContext;
+  const { org } = useOrg();
+  const supabase = createClientComponentClient();
 
   /*-------------------------------- FUNCTIONS ------------------------------*/
 
   const handleBeforeUpload = (files: {
     [key: string]: UppyFile<Record<string, unknown>, Record<string, unknown>>;
   }) => {
-    if (
-      !document_id &&
-      org?.stripe_product_plan === "Free" &&
-      (documents ?? []).length > 0
-    ) {
-      toast.error(
-        <p>
-          You have reached the maximum number of documents for the free plan.
-          Please{" "}
-          <Link
-            className="text-stratos-default underline"
-            href={"/settings/billing"}
-          >
-            upgrade
-          </Link>{" "}
-          to our Pro plan for unlimited documents.
-        </p>
-      );
-      return false;
-    }
-
     if (Object.keys(files).length > 1) return false;
 
     let file = files[Object.keys(files)[0]];
 
-    if (file.type !== "application/pdf") return false;
+    if (file.type !== 'application/pdf') return false;
 
     return true;
   };
 
   const uppy = new Uppy({
-    id: "uppy",
+    id: 'uppy',
     restrictions: {
-      allowedFileTypes: [".pdf"],
+      allowedFileTypes: ['.pdf'],
       maxFileSize: 100000000, // 1MB
     },
     onBeforeUpload: (files) => handleBeforeUpload(files),
@@ -90,73 +63,100 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   }).use(XHR, {
     headers: {
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-      "x-upsert": "true",
+      'x-upsert': 'true',
     },
     endpoint: `${
       process.env.NEXT_PUBLIC_SUPABASE_URL
     }/storage/v1/object/documents/TEMP/${Math.round(Math.random() * 1000000)}`,
   });
 
-  uppy.on("upload-success", (file, response) => {
-    const path = (response.body.Key as string).replace(`documents/`, "");
+  uppy.on('upload-success', async (file, response) => {
+    const path = (response.body.Key as string).replace(`documents/`, '');
 
     const postUploadPromise = new Promise<DocumentType>(
       async (resolve, reject) => {
-        setIsOpen(false);
-        const res = await fetch(`/api/documents`, {
-          method: "POST",
-          body: JSON.stringify({
+        try {
+          const new_document = await uploadDocument({
             document_id,
             path,
-            source_path: file?.name,
-            document_name: document_name,
-            source_type: "LOCAL",
-          }),
-        });
-
-        if (!res.ok) {
-          reject();
-          return;
-        }
-
-        const new_document = (await res.json()) as DocumentType;
-
-        resolve(new_document);
-        setDocuments((prevDocuments: DocumentType[]) => {
-          const docIndex = prevDocuments.findIndex((doc) => {
-            return doc.document_id === new_document.document_id;
+            source_path: file?.name ?? 'New document',
+            document_name,
+            source_type: 'LOCAL',
+            org_id: org.org_id,
+            file_type: file?.type
           });
-          if (docIndex > -1) {
-            const newDocuments = [...prevDocuments];
-            newDocuments[docIndex] = new_document;
-            return newDocuments;
-          } else {
-            const newDocuments = [new_document, ...prevDocuments];
-            return newDocuments;
+
+          if (!new_document) {
+            throw new Error('Error uploading document');
           }
-        });
-        router.push(`/documents/${new_document.document_id}/links`);
-        router.refresh();
+
+          let num_pages = 0;
+          let thumbnail_url: string | null = null;
+
+          try {
+            const _pdf_data = await getPdfDetails(
+              getDocumentPath({ document: new_document })
+            );
+
+            num_pages = _pdf_data.num_pages;
+
+            if (_pdf_data.thumbnail_image) {
+              const array_buffer = base64ToArrayBuffer(
+                _pdf_data.thumbnail_image
+              );
+
+              const { data, error } = await supabase.storage
+                .from('thumbnails')
+                .upload(
+                  `${new_document.org_id}/${new_document.document_id}/${
+                    new_document.document_version
+                  }/${generateRandomString(6)}.png`,
+                  array_buffer,
+                  {
+                    contentType: 'image/png',
+                    upsert: true,
+                  }
+                );
+
+              if (error) {
+                throw new Error('Error uploading thumbnail');
+              }
+
+              thumbnail_url = getThumbnailPath({ path: data.path });
+            }
+          } catch (error) {
+            console.error(error);
+          }
+
+          await supabase
+            .from('tbl_document_versions')
+            .update({ page_count: num_pages, thumbnail_image: thumbnail_url })
+            .eq('document_id', new_document.document_id)
+            .eq('document_version', new_document.document_version);
+
+          resolve(new_document);
+          router.refresh();
+          modalRef.current?.closeModal();
+        } catch (error) {
+          reject(false);
+        }
       }
     );
 
-    toast.promise(postUploadPromise, {
-      loading: "Processing your document...",
+    await toast.promise(postUploadPromise, {
+      loading: 'Processing your document...',
       success: (new_doc: DocumentType) => (
         <div className={`max-w-1/2 flex items-center justify-start gap-x-4`}>
           <div className="flex flex-col gap-y-1">
             <p className="">
-              <span className="font-semibold text-stratos-default">
+              <span className="text-stratos-default font-semibold">
                 {document_name || file?.name}
-              </span>{" "}
-              {document_id ? "updated" : "uploaded"} successfully
+              </span>{' '}
+              {document_id ? 'updated' : 'uploaded'} successfully
             </p>
             <p className="font-normal">
               You can now create secure links for sharing.
             </p>
-            {/* <p className="font-normal">
-            It may take a few seconds to generate the thumbnail. But if you prefer, you can upload a custom thumbnail from the three dots
-          </p> */}
           </div>
           <Link
             onClick={(e) => {
@@ -166,134 +166,89 @@ const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
             href={`/preview/${new_doc.document_id}`}
             target="_blank"
             rel="noreferrer"
-            className="flex flex-col items-center gap-y-1 border-l pl-2 hover:text-stratos-default hover:underline"
+            className="hover:text-stratos-default flex flex-col items-center gap-y-1 border-l pl-2 hover:underline"
           >
-            <PresentationChartBarIcon className="h-5 w-5 " />
+            <HiPresentationChartBar className="h-5 w-5 " />
             <span className="font-normal">{`Preview`}</span>
           </Link>
         </div>
       ),
-      error: "Upload failed, please try again",
+      error: 'Upload failed, please try again',
     });
   });
 
-  uppy.on("upload-error", (file, error) => {
-    toast.error("Upload failed, please try again");
+  uppy.on('upload-error', (file, error) => {
+    toast.error('Upload failed, please try again');
   });
 
   /*-------------------------------- RENDER ------------------------------*/
 
   return (
-    <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="z-100 relative" onClose={setIsOpen}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-shade-overlay bg-opacity-75 transition-opacity" />
-        </Transition.Child>
-
-        <div className="z-100 fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center text-left">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              enterTo="opacity-100 translate-y-0 sm:scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-              {isLoading ? (
-                <Loader />
-              ) : (
-                <Dialog.Panel className="relative flex w-full max-w-xl transform flex-col space-y-6 overflow-hidden rounded-lg bg-white px-6 py-4 shadow-xl transition-all">
-                  <div className="flex items-start justify-between">
-                    <div className="flex flex-col justify-between">
-                      <Dialog.Title
-                        as="h3"
-                        className="text-left font-semibold uppercase leading-6"
-                      >
-                        {document_id
-                          ? "Update document"
-                          : "Upload new document"}
-                      </Dialog.Title>
-                      <Dialog.Description
-                        as="h3"
-                        className="text-left text-xs leading-6 text-shade-pencil-light"
-                      >
-                        {
-                          "Your documents are securely stored with AES-256 encryption"
-                        }
-                      </Dialog.Description>
-                    </div>
-                    {/* <CustomThumbnailCheckbox
-                      isChecked={isChecked}
-                      setIsChecked={setIsChecked}
-                      id="custom-thumbnail"/> */}
-                  </div>
-                  <Dashboard
-                    uppy={uppy}
-                    plugins={[]}
-                    proudlyDisplayPoweredByUppy={false}
-                    showProgressDetails={true}
-                    hideUploadButton={false}
-                    target="uppy-upload-area"
-                    height={200}
-                  />
-                </Dialog.Panel>
-              )}
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition.Root>
+    <Modal
+      ref={modalRef}
+      title={document_id ? 'Update document' : 'Upload new document'}
+    >
+      <Dashboard
+        uppy={uppy}
+        plugins={[]}
+        proudlyDisplayPoweredByUppy={false}
+        showProgressDetails={true}
+        hideUploadButton={false}
+        target="uppy-upload-area"
+        height={200}
+      />
+    </Modal>
   );
 };
 
-function CustomThumbnailCheckbox({
-  isChecked,
-  setIsChecked,
-  id,
+export const UploadDocumentButton = ({
+  documents,
 }: {
-  isChecked: boolean;
-  setIsChecked: Function;
-  id: string;
-}): JSX.Element {
-  return (
-    <div className="relative flex items-start">
-      <div className="ml-3 text-sm leading-6">
-        <label
-          htmlFor={id}
-          className={classNames(
-            "font-medium",
-            isChecked ? "" : "text-shade-pencil-light",
-            "cursor-pointer"
-          )}
-        >
-          {`Custom thumbnail?`}
-        </label>
-        <p className="text-xs text-shade-pencil-light/80">{`Generated from the 1st page`}</p>
-      </div>
-      <div className="flex h-6 items-center">
-        <input
-          id={id}
-          checked={isChecked}
-          onChange={() => setIsChecked(!isChecked)}
-          type="checkbox"
-          className={classNames(
-            "h-4 w-4 rounded border-shade-line text-stratos-default focus:ring-white",
-            "cursor-pointer"
-          )}
-        />
-      </div>
-    </div>
-  );
-}
+  documents?: DocumentType[];
+}) => {
+  const modalRef = useRef<ModalRef>(null);
 
-export default UploadDocumentModal;
+  const { org } = useOrg();
+
+  const handleUploadClick = () => {
+    if (
+      (!org.org_plan || org.org_plan === 'Free') &&
+      (documents ?? []).length > 0
+    ) {
+      toast.error(
+        <p>
+          You have reached the maximum number of documents for the free plan.
+          Please{' '}
+          <Link
+            className="text-blue-700 underline"
+            href={'/settings/billing'}
+          >
+            upgrade
+          </Link>{' '}
+          to our Pro plan for unlimited documents.
+        </p>,
+        {
+          duration: 10000,
+        }
+      );
+      return;
+    } else {
+      modalRef.current?.openModal();
+    }
+  };
+
+  return (
+    <>
+      <Button
+        className="flex items-center gap-x-1 flex-nowrap shrink-0"
+        variant="solid"
+        size="md"
+        onClick={handleUploadClick}
+      >
+        <HiDocumentArrowUp className="h-4 w-4" />
+        <span className="hidden md:flex text-sm font-semibold">Upload Document</span>
+      </Button>
+      <UploadDocumentModal modalRef={modalRef} />
+    </>
+  );
+};

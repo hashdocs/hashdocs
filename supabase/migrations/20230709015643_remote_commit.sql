@@ -497,15 +497,15 @@ $function$
 ;
 
 
-CREATE INDEX flow_state_created_at_idx ON auth.flow_state USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS flow_state_created_at_idx ON auth.flow_state USING btree (created_at DESC);
 
-CREATE INDEX mfa_challenge_created_at_idx ON auth.mfa_challenges USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS mfa_challenge_created_at_idx ON auth.mfa_challenges USING btree (created_at DESC);
 
-CREATE INDEX refresh_tokens_updated_at_idx ON auth.refresh_tokens USING btree (updated_at DESC);
+CREATE INDEX IF NOT EXISTS refresh_tokens_updated_at_idx ON auth.refresh_tokens USING btree (updated_at DESC);
 
-CREATE INDEX saml_relay_states_created_at_idx ON auth.saml_relay_states USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS saml_relay_states_created_at_idx ON auth.saml_relay_states USING btree (created_at DESC);
 
-CREATE INDEX sessions_not_after_idx ON auth.sessions USING btree (not_after DESC);
+CREATE INDEX IF NOT EXISTS sessions_not_after_idx ON auth.sessions USING btree (not_after DESC);
 
 CREATE TRIGGER "slack-notification-new-user" AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('https://dblpeefwccpldqwuzwza.functions.supabase.co/trigger-slack-notification', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
 

@@ -1,7 +1,5 @@
-import {
-  features,
-  pricingPlans,
-} from "@/app/_lib/stripe/constants";
+
+import { features, pricingPlans } from "@/app/(application)/settings/billing/constants";
 import {
   CheckCircleIcon,
   MinusCircleIcon,
@@ -51,12 +49,12 @@ export default async function PricingPage() {
                   <h3 className="font-display my-3 text-center text-3xl font-bold">
                     {plan}
                   </h3>
-                  <p className="text-shade-pencil-light">{tagline}</p>
+                  <p className="text-shade-gray-500">{tagline}</p>
                   <p className="font-display my-5 text-6xl font-semibold">
                     {price.monthly.currency}
                     {price.monthly.amount}
                   </p>
-                  <p className="text-shade-pencil-light">{meter}</p>
+                  <p className="text-shade-gray-500">{meter}</p>
                 </div>
                 <ul className="my-6 flex flex-col gap-y-2 px-8">
                   {features.map((feature) => (

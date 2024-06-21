@@ -1,65 +1,51 @@
-"use client";
-import { primaryNavigation } from "@/app/_components/navigation/routes.constants";
-import { DocumentPlusIcon } from "@heroicons/react/24/solid";
-import LargeButton from "@/app/_components/shared/buttons/largeButton";
-import { useContext, useState } from "react";
-import UploadDocumentModal from "./_components/uploadDocument";
-import DocumentRow from "./_components/documentRow";
-import EmptyDocuments from "./_components/emptyDocuments";
-import { DocumentsContext } from "./_components/documentsProvider";
-import Loader from "@/app/_components/navigation/loader";
+import { createServerComponentClient } from '@/app/_utils/supabase';
+import { DocumentType } from '@/types';
+import { cookies } from 'next/headers';
+import { PageHeader } from '../_components/pageHeader';
+import DocumentHeader from './[document_id]/_components/documentHeader';
+import EmptyDocuments from './_components/emptyDocuments';
+import { UploadDocumentButton } from './_components/uploadDocument';
 
-/*=========================================== COMPONENT ===========================================*/
+async function getDocuments() {
+  const supabase = createServerComponentClient({ cookies: cookies() });
 
-export default function DocumentsPage() {
-  const pageProps = primaryNavigation.find(
-    (page) => page.path === "/documents"
-  );
+  const { data: documents, error } = await supabase
+    .from('view_documents')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .returns<DocumentType[]>();
 
-  if (!pageProps) {
-    throw new Error("Error in rendering document page properties");
+  if (error) {
+    throw error;
   }
 
-  const [showUploadModal, setShowUploadModal] = useState(false);
+  return documents || [];
+}
 
-  const _documents = useContext(DocumentsContext);
-
-  const { documents } = _documents!;
+export default async function Page() {
+  const _documents = await getDocuments();
 
   return (
-    <section className="flex flex-1 flex-col">
-      <div className="mb-2 flex flex-row items-center justify-between">
-        <div className="flex flex-col space-y-1">
-          <h3 className="text-lg font-semibold text-shade-pencil-black">
-            {pageProps.name}
-          </h3>
-          <p className="text-sm text-shade-pencil-light">
-            {pageProps.description}
-          </p>
-        </div>
-        {
-          <LargeButton
-            ButtonText={"Upload Document"}
-            ButtonIcon={DocumentPlusIcon}
-            ButtonId={"upload-document"}
-            ButtonClassName="bg-stratos-gradient hover:bg-stratos-gradient/80 text-white"
-            onClick={() => setShowUploadModal(true)}
-          />
-        }
+    <div className="flex flex-1 flex-col w-full max-w-screen-xl mx-auto">
+      <div className="mb-8 flex items-center justify-between">
+        <PageHeader />
+        <UploadDocumentButton documents={_documents} />
       </div>
+
       <ul role="list" className="flex w-full flex-1 flex-col">
-        {documents.length > 0 ? (
-          documents.map((document) => (
-            <DocumentRow key={document.document_id} {...document} />
+        {_documents.length > 0 ? (
+          _documents.map((document) => (
+            <li
+              key={document.document_id}
+              className="my-2 bg-white rounded-md p-2 md:p-4 shadow-sm"
+            >
+              <DocumentHeader document={document} />
+            </li>
           ))
         ) : (
           <EmptyDocuments />
         )}
       </ul>
-      <UploadDocumentModal
-        isOpen={showUploadModal}
-        setIsOpen={setShowUploadModal}
-      />
-    </section>
+    </div>
   );
 }

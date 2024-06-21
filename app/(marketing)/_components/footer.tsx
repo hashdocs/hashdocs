@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { FaGithub, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
+import Link from "next/link";
+import { FaGithub, FaTwitter } from "react-icons/fa";
 
 const navigation = {
   product: [
@@ -29,12 +28,12 @@ export default function Footer() {
           <div className="flex items-center gap-x-2">
             <div className="relative h-10 w-8 scale-75 rounded-md">
               <Image
-                src={"/hashdocs_gradient.svg"}
+                src={"/assets/hashdocs_gradient.svg"}
                 fill={true}
                 alt={"Hashdocs"}
               />
             </div>
-            <p className="max-w-xs text-sm text-shade-pencil-light">
+            <p className="max-w-xs text-sm text-shade-gray-500">
               An open-source Docsend alternative with powerful link controls and
               realtime tracking
             </p>
@@ -47,7 +46,7 @@ export default function Footer() {
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               <span className="sr-only">Twitter</span>
-              <FaTwitter className="h-5 w-5 text-shade-pencil-light" />
+              <FaTwitter className="h-5 w-5 text-shade-gray-500" />
             </Link>
             <Link
               href="https://github.com/hashdocs/hashdocs"
@@ -56,7 +55,7 @@ export default function Footer() {
               className="rounded-md p-1 transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               <span className="sr-only">Github</span>
-              <FaGithub className="h-5 w-5 text-shade-pencil-light" />
+              <FaGithub className="h-5 w-5 text-shade-gray-500" />
             </Link>
             <p className="text-sm leading-5 text-shade-disabled">
               © {new Date().getFullYear()} Hashlabs Holdings Inc.
@@ -70,7 +69,7 @@ export default function Footer() {
               <Link
                 href={item.href}
                 key={`footer-product-${item.name}`}
-                className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
+                className="text-sm text-shade-gray-500 hover:text-shade-pencil-black"
               >
                 {item.name}
               </Link>
@@ -82,7 +81,7 @@ export default function Footer() {
               <Link
                 href={item.href}
                 key={`footer-company-${item.name}`}
-                className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
+                className="text-sm text-shade-gray-500 hover:text-shade-pencil-black"
               >
                 {item.name}
               </Link>
@@ -94,7 +93,7 @@ export default function Footer() {
               <Link
                 href={item.href}
                 key={`footer-legal-${item.href}`}
-                className="text-sm text-shade-pencil-light hover:text-shade-pencil-black"
+                className="text-sm text-shade-gray-500 hover:text-shade-pencil-black"
               >
                 {item.name}
               </Link>

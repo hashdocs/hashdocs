@@ -1,7 +1,5 @@
-import Loader from "@/app/_components/navigation/loader";
+import Loader from '@/app/_components/loader';
 
 export default function Loading() {
-  return (
-      <Loader />
-  );
+  return <Loader />;
 }
