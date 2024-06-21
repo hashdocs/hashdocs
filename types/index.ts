@@ -97,7 +97,6 @@ export const enum_colors = [
 /* --------------------------------- BILLING -------------------------------- */
 
 export type StripeMetdata = {
-  stripe_customer_id: string;
   stripe_subscription_id?: string;
   stripe_price_id?: string;
   billing_cycle_start?: string;
