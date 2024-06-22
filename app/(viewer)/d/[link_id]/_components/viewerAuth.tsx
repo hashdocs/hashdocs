@@ -107,7 +107,7 @@ export default function ViewerAuth({
 
         <form
           onSubmit={handleSubmit}
-          className="flex w-full flex-col items-center space-y-6"
+          className="flex w-full max-w-xs  flex-col items-center space-y-6"
         >
           {is_email_required && (
             <div className="flex w-full flex-col flex-1 items-center gap-y-2">
