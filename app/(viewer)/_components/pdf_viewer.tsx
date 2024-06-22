@@ -29,7 +29,7 @@ export default function PDFViewer({
 }) {
   const numPagesRef = useRef<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
-  const pageWidth = Math.max(window.innerWidth * 0.65, window.innerWidth - 72);
+  const pageWidth = window.innerWidth > 1024 ? window.innerWidth * 0.65 : window.innerWidth - 72;
   const thumbnailHeight = window.innerHeight * 0.2;
   const [zoom, setZoom] = useState(1);
   const [pageRefs, setPageRefs] = useState<
@@ -230,7 +230,7 @@ export default function PDFViewer({
     return (
       <div
         className={clsx(
-          'sticky top-2 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white opacity-20 px-3 py-2 transition-all hover:opacity-90 hover:shadow-lg'
+          'sticky top-2 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white px-3 py-2 opacity-20 transition-all hover:opacity-90 hover:shadow-lg'
         )}
       >
         <div className="flex flex-row gap-x-2">
@@ -259,7 +259,10 @@ export default function PDFViewer({
             {numPagesRef.current}
           </div>
         </div>
-        <div className="flex flex-row items-center gap-x-2">
+        <div
+          className="flex flex-row items-center gap-x-2"
+          style={{ userSelect: 'none' }}
+        >
           <MagnifyingGlassMinusIcon
             className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
             onClick={() => setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0.4))}
@@ -289,7 +292,10 @@ export default function PDFViewer({
       className="no-print hashdocs-scrollbar flex w-full flex-1 flex-row justify-center bg-gray-50"
       externalLinkTarget="_blank"
     >
-      <div className="hidden flex-col py-2 shadow-md lg:flex" ref={thumbnailContainerRef}>
+      <div
+        className="hidden flex-col py-2 shadow-md lg:flex"
+        ref={thumbnailContainerRef}
+      >
         {Array.from({ length: numPagesRef.current }, (_, index) => (
           <div
             key={`page_${index + 1}`}
@@ -318,7 +324,7 @@ export default function PDFViewer({
       </div>
       <div
         ref={scrollableElementRef}
-        className="hashdocs-scrollbar flex-1 flex-col items-center flex"
+        className="hashdocs-scrollbar flex flex-1 flex-col items-center"
       >
         <ScrollButton />
         <div className="p-4 focus:outline-none ">
@@ -329,7 +335,7 @@ export default function PDFViewer({
               loading={<Loader />}
               renderAnnotationLayer={true}
               renderTextLayer={true}
-              className=""
+              className="my-4"
               // height={pageHeight}
               width={pageWidth}
               scale={zoom}

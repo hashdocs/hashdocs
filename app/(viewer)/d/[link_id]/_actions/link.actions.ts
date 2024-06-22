@@ -1,22 +1,21 @@
 'use server';
 import { generateRandomString } from '@/app/_utils/common';
 import {
-  createServerComponentClient,
-  supabaseAdminClient,
+  supabaseAdminClient
 } from '@/app/_utils/supabase';
 import { LinkViewType, TablesInsert, ViewCookieType } from '@/types';
 import { cookies, headers } from 'next/headers';
 import { userAgent } from 'next/server';
 
 export const getLink = async ({ link_id }: { link_id: string }) => {
-  const supabase = createServerComponentClient({ cookies: cookies() });
-
+  const supabase = supabaseAdminClient();
+  
   const { data, error } = await supabase
     .rpc('get_link_props', { link_id_input: link_id })
     .returns<LinkViewType | null>();
 
   if (error || !data) {
-    console.error(error);
+    console.error(`Error at getLink: ${error}`);
     return null;
   }
 
@@ -165,17 +164,17 @@ export const authorizeViewer = async ({
 
       if (link.is_domain_restricted && link.restricted_domains) {
 
-        const domains_list = link.restricted_domains.toLowerCase().split(',');
+        const domains_list = link.restricted_domains.toLowerCase().split(',').map((part) => part.trim());
 
         if (
           !domains_list.some((part) => {
             if (part.includes('@')) {
-              return part === domain;
+              return part === email;
             }
             return domain.includes(part);
           })
         ) {
-          throw new Error('Unauthorized email domain');
+          throw new Error('The author has restricted access to this document. Please contact the author to get access');
         }
       }
     }
