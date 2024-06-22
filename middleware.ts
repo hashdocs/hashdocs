@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { createMiddlewareClient } from './app/_utils/supabase';
 
 export const config = {
-  matcher: ['/login'],
+  matcher: ['/login', '/dashboard'],
 };
 
 export async function middleware(req: NextRequest) {
@@ -23,6 +23,34 @@ export async function middleware(req: NextRequest) {
       } = await supabase.auth.getSession();
       if (session?.expires_in) {
         return NextResponse.redirect(new URL('/dashboard', req.url));
+      }
+      break;
+    }
+
+    case 'dashboard': {
+      const supabase = createMiddlewareClient(req, res);
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        return NextResponse.redirect(new URL('/login', req.url));
+      }
+
+      const parsed_token = JSON.parse(
+        Buffer.from(session.access_token.split('.')[1], 'base64').toString()
+      );
+
+      if (parsed_token.app_metadata['org_ids'].at(0)) {
+        return NextResponse.redirect(
+          new URL(
+            `/dashboard/${parsed_token.app_metadata['org_ids'].at(
+              0
+            )}/documents`,
+            req.url
+          )
+        );
       }
       break;
     }

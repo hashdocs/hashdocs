@@ -2,7 +2,7 @@ import MobileTopBar from './[org_id]/_components/mobileTopBar';
 import MainSidebar from './[org_id]/_components/sidebar';
 import TopBar from './[org_id]/_components/topbar';
 
-export default async function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-full max-h-[100vh] w-full max-w-[100vw] flex-1 overflow-hidden">
