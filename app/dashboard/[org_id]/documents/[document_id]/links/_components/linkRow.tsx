@@ -51,7 +51,7 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
       <div className={` flex items-center justify-between gap-x-2`}>
         {/*-------------------------------- LEFT ------------------------------*/}
 
-        <div className=" flex shrink-0 flex-row items-center gap-x-4">
+        <div className=" flex shrink-0 md:w-1/4 flex-row items-center gap-x-4">
           <div className="flex flex-col ">
             <p className={`font-semibold`}>{link.link_name}</p>
             <p className="text-gray-500 text-xs">
@@ -62,7 +62,7 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
 
         {/*-------------------------------- MIDDLE ------------------------------*/}
 
-        <div className="shrink-0 items-center gap-x-2 text-xs hidden md:flex ">
+        <div className="shrink-0 md:w-1/3 items-center gap-x-2 text-xs hidden md:flex ">
           <div
             onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)}
             className={`flex items-center gap-x-2 rounded-xl bg-gray-50 px-4 py-2 ${
@@ -93,6 +93,7 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
             <BiCopy className="h-4 w-4 hover:cursor-pointer hover:text-blue-700 " onClick={() => CopyLinkToClipboard(path, true, `${link_id}-url`)} />
         </div>
 
+        <div className="flex items-center gap-x-2">
         <Link href={`/dashboard/${document.org_id}/documents/${document.document_id}/views?id=${link_id}`}>
           <Button
             className="flex items-center gap-x-1 !whitespace-nowrap"
@@ -103,8 +104,6 @@ const LinkRow: React.FC<LinkDocumentProps> = ({ link_id, document }) => {
             <span className='flex gap-x-1 items-center'>{views.length}<span className='hidden md:inline-flex'>{`views`}</span></span>
           </Button>
         </Link>
-
-        <div className="flex items-center gap-x-2">
           <Switch
             enabled={isActive}
             setEnabled={setIsActive}
