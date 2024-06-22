@@ -85,7 +85,7 @@ export default function LoginPage() {
 
       if (data.user) {
         resolve(true);
-        router.push('/documents');
+        router.push('/dashboard');
         router.refresh();
       }
     });
@@ -136,7 +136,7 @@ export default function LoginPage() {
                 />
                 <Button
                   variant="solid"
-                  size="sm"
+                  size="md"
                   className="w-full"
                   onClick={() => handleSignIn()}
                 >

@@ -49,14 +49,14 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/documents/:slug',
-        destination: '/documents/:slug/links', // Matched parameters can be used in the destination
+        source: '/dashboard/:a/documents/:b',
+        destination: '/dashboard/:a/documents/:b/links', // Matched parameters can be used in the destination
         permanent: true,
       },
       {
-        source: '/settings',
-        destination: '/settings/general', // Matched parameters can be used in the destination
-        permanent: true,
+        source: '/dashboard/:a/settings',
+        destination: '/dashboard/:a/settings/general', // Matched parameters can be used in the destination
+        permanent: false,
       },
     ];
   },

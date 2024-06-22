@@ -1,4 +1,4 @@
-import { getDocument } from '@/app/(application)/documents/_actions/documents.actions';
+import { getDocument } from '@/app/dashboard/[org_id]/documents/_actions/documents.actions';
 import PDFViewerPage from '../../_components/pdf_viewer_page';
 import ViewerTopBar from '../../_components/viewerTopbar';
 import { getSignedURL } from '../../d/[link_id]/_actions/link.actions';

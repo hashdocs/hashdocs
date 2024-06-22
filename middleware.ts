@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
         data: { session },
       } = await supabase.auth.getSession();
       if (session?.expires_in) {
-        return NextResponse.redirect(new URL('/documents', req.url));
+        return NextResponse.redirect(new URL('/dashboard', req.url));
       }
       break;
     }

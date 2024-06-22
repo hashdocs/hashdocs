@@ -4,7 +4,6 @@ CREATE OR REPLACE FUNCTION public.get_org(org_id_input uuid DEFAULT NULL::uuid)
 RETURNS jsonb 
 LANGUAGE plpgsql 
 STABLE 
-SECURITY DEFINER 
 AS $function$
 DECLARE
 	return_data jsonb;
@@ -21,7 +20,7 @@ BEGIN
 			tbl_org.*,
 			coalesce(
 				(
-					SELECT json_agg(row_to_json(tbl_org_members) ORDER BY LOWER(COALESCE(tbl_org_members.member_name, tbl_org_members.email)) NULLS LAST)
+					SELECT json_agg(row_to_json(tbl_org_members) ORDER BY is_owner DESC, role DESC, LOWER(COALESCE(tbl_org_members.member_name, tbl_org_members.email)) NULLS LAST)
 					FROM  tbl_org_members
 					WHERE org_id = tbl_org.org_id
 				), '[]'
