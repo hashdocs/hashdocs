@@ -5,7 +5,6 @@ import {
   supabaseAdminClient,
 } from '@/app/_utils/supabase';
 import { LinkViewType, TablesInsert, ViewCookieType } from '@/types';
-import disposableEmailDetector from 'disposable-email-detector';
 import { cookies, headers } from 'next/headers';
 import { userAgent } from 'next/server';
 
@@ -152,18 +151,19 @@ export const authorizeViewer = async ({
         throw new Error('Email is required');
       }
 
+      const domain = email.toLowerCase().split('@')[1];
+
       // Check if the email is disposable
 
-      const is_disposable_email = await disposableEmailDetector(email);
+      const res = await fetch(`https://open.kickbox.com/v1/disposable/${domain}`);
 
-      if (is_disposable_email) {
+      if (!res.ok || (await res.json()).disposable) {
         throw new Error('Disposable emails are not allowed');
       }
 
       // Check if the email is authorized
 
       if (link.is_domain_restricted && link.restricted_domains) {
-        const domain = email.toLowerCase().split('@')[1];
 
         const domains_list = link.restricted_domains.toLowerCase().split(',');
 

@@ -29,9 +29,7 @@ export default function PDFViewer({
 }) {
   const numPagesRef = useRef<number>(0);
   const [activePage, setActivePage] = useState<number>(1);
-  const pageHeight = window.innerHeight * 0.8;
-  const pageWidth = window.innerWidth * 0.65;
-  const thumbnailWidth = window.innerWidth * 0.12;
+  const pageWidth = Math.max(window.innerWidth * 0.65, window.innerWidth - 72);
   const thumbnailHeight = window.innerHeight * 0.2;
   const [zoom, setZoom] = useState(1);
   const [pageRefs, setPageRefs] = useState<
@@ -201,39 +199,82 @@ export default function PDFViewer({
 
     // Disable PrintScreen key
     const disablePrintScreen = (e: any) => {
-
       if (e.key === 'PrintScreen') {
         e.preventDefault();
-        toast.error(
-          'Screenshots are disabled for security reasons'
-        );
+        toast.error('Screenshots are disabled for security reasons');
       }
 
       // Disable Ctrl + P
       if (e.ctrlKey && e.key === 'p') {
         e.preventDefault();
-        toast.error(
-          'Printing is disabled for security reasons'
-        );
+        toast.error('Printing is disabled for security reasons');
       }
 
       // Disable Ctrl + S
       if (e.ctrlKey && e.key === 's') {
         e.preventDefault();
-        toast.error(
-          'Saving is disabled for security reasons'
-        );
+        toast.error('Saving is disabled for security reasons');
       }
-
     };
     document.addEventListener('keydown', disablePrintScreen);
-
 
     return () => {
       document.removeEventListener('contextmenu', disableContextMenu);
       document.removeEventListener('keydown', disablePrintScreen);
     };
   }, []);
+
+  /* ------------------------------ SCROLL BUTTON ----------------------------- */
+
+  const ScrollButton: React.FC = () => {
+    return (
+      <div
+        className={clsx(
+          'sticky top-2 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white opacity-20 px-3 py-2 transition-all hover:opacity-90 hover:shadow-lg'
+        )}
+      >
+        <div className="flex flex-row gap-x-2">
+          <div
+            className="flex items-center justify-center font-semibold text-gray-500"
+            style={{ userSelect: 'none' }}
+          >
+            {'Page'}
+          </div>
+          <div
+            className="flex items-center justify-center font-semibold text-gray-500"
+            style={{ userSelect: 'none' }}
+          >
+            {activePage}
+          </div>
+          <div
+            className="flex items-center justify-center font-semibold text-gray-500"
+            style={{ userSelect: 'none' }}
+          >
+            {'of'}
+          </div>
+          <div
+            className="flex items-center justify-center font-semibold text-gray-500"
+            style={{ userSelect: 'none' }}
+          >
+            {numPagesRef.current}
+          </div>
+        </div>
+        <div className="flex flex-row items-center gap-x-2">
+          <MagnifyingGlassMinusIcon
+            className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
+            onClick={() => setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0.4))}
+          />
+          <MagnifyingGlassPlusIcon
+            className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
+            onClick={() => setZoom((prevZoom) => Math.min(prevZoom + 0.2, 2))}
+          />
+          <div className="font-semibold text-gray-500">{`${Math.round(
+            zoom * 100
+          )}%`}</div>
+        </div>
+      </div>
+    );
+  };
 
   /* --------------------------------- RENDER --------------------------------- */
 
@@ -248,7 +289,7 @@ export default function PDFViewer({
       className="no-print hashdocs-scrollbar flex w-full flex-1 flex-row justify-center bg-gray-50"
       externalLinkTarget="_blank"
     >
-      <div className="hidden flex-col py-2 lg:flex" ref={thumbnailContainerRef}>
+      <div className="hidden flex-col py-2 shadow-md lg:flex" ref={thumbnailContainerRef}>
         {Array.from({ length: numPagesRef.current }, (_, index) => (
           <div
             key={`page_${index + 1}`}
@@ -275,80 +316,12 @@ export default function PDFViewer({
           </div>
         ))}
       </div>
-      {window.innerWidth > 1024 ? (
-        <div
-          ref={scrollableElementRef}
-          className="hashdocs-scrollbar hidden flex-1 flex-col items-center lg:flex"
-        >
-          <div className="sticky top-5 z-50 flex flex-row items-center justify-center gap-x-4 rounded-lg bg-white bg-opacity-90 px-3 py-2 shadow-lg">
-            <div className="flex flex-row gap-x-2">
-              <div
-                className="flex items-center justify-center font-semibold text-gray-500"
-                style={{ userSelect: 'none' }}
-              >
-                {'Page'}
-              </div>
-              <div
-                className="flex items-center justify-center font-semibold text-gray-500"
-                style={{ userSelect: 'none' }}
-              >
-                {activePage}
-              </div>
-              <div
-                className="flex items-center justify-center font-semibold text-gray-500"
-                style={{ userSelect: 'none' }}
-              >
-                {'of'}
-              </div>
-              <div
-                className="flex items-center justify-center font-semibold text-gray-500"
-                style={{ userSelect: 'none' }}
-              >
-                {numPagesRef.current}
-              </div>
-            </div>
-            <div className="flex flex-row items-center gap-x-2">
-              <MagnifyingGlassMinusIcon
-                className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
-                onClick={() =>
-                  setZoom((prevZoom) => Math.max(prevZoom - 0.2, 0.4))
-                }
-              />
-              <MagnifyingGlassPlusIcon
-                className="h-6 w-6 cursor-pointer text-gray-500 hover:text-gray-900"
-                onClick={() =>
-                  setZoom((prevZoom) => Math.min(prevZoom + 0.2, 2))
-                }
-              />
-              <div className="font-semibold text-gray-500">{`${Math.round(
-                zoom * 100
-              )}%`}</div>
-            </div>
-          </div>
-          <div className="hidden flex-1 flex-col p-8 focus:outline-none lg:flex ">
-            {Array.from({ length: numPagesRef.current }, (_, index) => (
-              <Page
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-                loading={<Loader />}
-                renderAnnotationLayer={true}
-                renderTextLayer={true}
-                className="my-4"
-                // height={pageHeight}
-                width={pageWidth}
-                scale={zoom}
-                inputRef={pageRefs[index]}
-                canvasRef={pageCanvasRefs[index]}
-                onRenderSuccess={onRenderSuccess}
-              />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div
-          ref={scrollableElementRef}
-          className="hashdocs-scrollbar flex flex-1 flex-col items-center lg:hidden"
-        >
+      <div
+        ref={scrollableElementRef}
+        className="hashdocs-scrollbar flex-1 flex-col items-center flex"
+      >
+        <ScrollButton />
+        <div className="p-4 focus:outline-none ">
           {Array.from({ length: numPagesRef.current }, (_, index) => (
             <Page
               key={`page_${index + 1}`}
@@ -356,15 +329,17 @@ export default function PDFViewer({
               loading={<Loader />}
               renderAnnotationLayer={true}
               renderTextLayer={true}
-              className="my-4"
+              className=""
               // height={pageHeight}
-              width={window.innerWidth - 32}
+              width={pageWidth}
               scale={zoom}
               inputRef={pageRefs[index]}
+              canvasRef={pageCanvasRefs[index]}
+              onRenderSuccess={onRenderSuccess}
             />
           ))}
         </div>
-      )}
+      </div>
     </Document>
   );
 }

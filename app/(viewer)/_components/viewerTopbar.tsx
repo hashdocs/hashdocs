@@ -78,7 +78,7 @@ export default function ViewerTopBar({
   return (
     <div className="flex h-12 w-full items-center justify-between border-b border-gray-200 bg-gray-50 px-4">
       <HashdocsLogo size="sm" full className="!gap-x-0" link />
-      <div className="mr-4 flex flex-row items-center justify-center gap-x-4">
+      <div className="flex flex-row items-center justify-end gap-x-4">
         {
           <h1 className="text-shade-gray-500 hidden text-base font-semibold leading-6 tracking-wide lg:flex">
             {`${document_name}${preview ? ` (Preview) - Version ${document_version}` : ''}`}

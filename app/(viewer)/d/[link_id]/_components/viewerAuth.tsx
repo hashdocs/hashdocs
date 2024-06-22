@@ -95,11 +95,11 @@ export default function ViewerAuth({
 
   return (
     <section className="flex flex-1 flex-col items-center justify-center ">
-      <div className="flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center gap-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
+      <div className="flex min-h-[400px] w-[576px] max-w-[80vw] flex-col items-center justify-center gap-y-6 rounded-lg bg-white p-4 text-center shadow-lg sm:p-6 lg:p-8">
         <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-blue-700 text-center font-mono text-3xl font-bold text-white shadow-inner ring-2 ring-blue-700 ring-offset-1">
           <LockClosedIcon className="h-5 w-5" />
         </div>
-        <p className="text-base ">
+        <p className="text-sm ">
           {!is_email_required && !is_password_required
             ? 'By continuing, you affirm that you have received permission from the author to view the document'
             : 'The author requires the following details to view the document'}
@@ -107,11 +107,11 @@ export default function ViewerAuth({
 
         <form
           onSubmit={handleSubmit}
-          className="flex w-[400px] flex-col items-center space-y-6"
+          className="flex w-full flex-col items-center space-y-6"
         >
           {is_email_required && (
-            <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="w-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
+            <div className="flex w-full flex-col flex-1 items-center gap-y-2">
+              <p className="w-full text-left text-xs font-semibold uppercase tracking-wide text-gray-500 ">
                 Email
               </p>
               <input
@@ -119,15 +119,15 @@ export default function ViewerAuth({
                 type="email"
                 onChange={handleEmailChange}
                 value={email}
-                className="!w-3/4 !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
+                className="w-full !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
                 autoFocus={true}
                 disabled={isLoading}
               />
             </div>
           )}
           {is_password_required && (
-            <div className="flex w-full flex-1 items-center space-x-4">
-              <p className="basis-1/4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500 ">
+            <div className="flex w-full flex-col flex-1 items-center gap-y-2">
+              <p className="w-full text-left text-xs font-semibold uppercase tracking-wide text-gray-500 ">
                 Password
               </p>
               <input
@@ -135,7 +135,7 @@ export default function ViewerAuth({
                 type="password"
                 onChange={handlePasswordChange}
                 value={password}
-                className="!w-3/4 !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
+                className="w-full !shrink-0 !rounded-md !border !border-gray-200 !p-2 !shadow-inner"
                 autoFocus={true}
                 disabled={isLoading}
               />
@@ -145,14 +145,14 @@ export default function ViewerAuth({
           <Button
             variant="solid"
             size="md"
-            className="flex h-12 w-40 items-center justify-center"
+            className="flex h-12 w-full max-w-[160px] items-center justify-center"
             disabled={isLoading || emailError || passwordError}
           >
             {isLoading ? <Loader size="xs" /> : 'Continue'}
           </Button>
         </form>
 
-        <p className="w-96 text-xs text-gray-500">
+        <p className="max-w-sm text-xs text-gray-500">
           This information will be shared with the author.
           <br /> For more info, please read our{' '}
           <Link href="/privacy" className="text-blue-700 hover:underline">
