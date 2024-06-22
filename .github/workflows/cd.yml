@@ -2,8 +2,8 @@ name: CD
 
 on:
   push:
-    branches:
-      - dev
+    branches-ignore:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -16,31 +16,38 @@ jobs:
       PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: supabase/setup-cli@v1
         with:
           version: latest
 
-      - run: |
-          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
-          supabase db push
-          supabase functions deploy --legacy-bundle --no-verify-jwt
+      - name: Test migrations are passing on staging
+        run: |
+            cd packages/supabase
+            supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
+            supabase db push --dry-run
 
   
-  slackNotification:
-    name: Slack Notification
-    runs-on: ubuntu-latest
-    needs: [supabaseDeploy]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_CHANNEL: general
-        SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
-        SLACK_ICON: https://avatars.githubusercontent.com/u/62215539?size=48
-        SLACK_MESSAGE: ${{ github.event.pull_request.state }}
-        SLACK_TITLE: ${{ github.event.pull_request.title }}
-        SLACK_USERNAME: hashdocs-bot
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_STATUS_MONITORS }}
+      - name: Slack Notification
+        if: failure()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: danger  # or any color you prefer for errors
+          SLACK_ICON: https://avatars.githubusercontent.com/u/141801904?s=48&v=4
+          SLACK_MESSAGE: "Deployment Failed ❌"
+          SLACK_TITLE: "Error in Deployment to Staging"
+          SLACK_USERNAME: periskope-github-bot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_MONITOR }}
+
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: general
+          SLACK_COLOR: ${{ job.status }} # or a specific color like 'good' or '#ff00ff'
+          SLACK_ICON: https://avatars.githubusercontent.com/u/141801904?s=48&v=4
+          SLACK_MESSAGE: ${{ github.event.pull_request.state }}
+          SLACK_TITLE: ${{ github.event.pull_request.title }}
+          SLACK_USERNAME: periskope-github-bot
+          SLACK_WEBHOOK: ${{ secrets.SLACK_MONITOR }}
