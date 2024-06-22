@@ -5,8 +5,6 @@ import { getLink, getSignedURL } from './_actions/link.actions';
 import InvalidLink from './_components/invalid_link';
 import ViewerAuth from './_components/viewerAuth';
 
-export const revalidate = 0;
-
 export async function generateMetadata({
   params: { link_id }, // will be a page or nested layout
 }: {

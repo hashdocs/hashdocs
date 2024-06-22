@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION get_document(document_id_input text)
+CREATE OR REPLACE FUNCTION get_document(document_id_input text, org_id_input uuid DEFAULT NULL)
 RETURNS json
 LANGUAGE PLPGSQL
 AS $$
@@ -56,6 +56,10 @@ BEGIN
             view_documents
         WHERE
             view_documents.document_id = document_id_input
+            AND (
+                org_id_input IS NULL
+                OR view_documents.org_id = org_id_input
+            )
     ) t;
     --
     --

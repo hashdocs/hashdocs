@@ -473,12 +473,27 @@ export type Database = {
         }
         Returns: string
       }
-      get_document: {
-        Args: {
-          document_id_input: string
-        }
-        Returns: Json
-      }
+      get_document:
+        | {
+            Args: {
+              document_id_input: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              document_id_input: string
+              org_id_input?: string
+            }
+            Returns: Json
+          }
+        | {
+            Args: {
+              document_id_input: string
+              org_id_input?: string
+            }
+            Returns: Json
+          }
       get_link_props: {
         Args: {
           link_id_input: string

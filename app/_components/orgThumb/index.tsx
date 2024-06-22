@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 type OrgThumbProps = {
   className?: string;
-  org: OrgType;
+  org?: OrgType;
 };
 
 const OrgThumb: React.FC<OrgThumbProps> = ({

@@ -1,5 +1,4 @@
-
-import { features, pricingPlans } from "@/app/(application)/settings/billing/constants";
+import { features, pricingPlans } from "@/app/dashboard/[org_id]/settings/billing/constants";
 import {
   CheckCircleIcon,
   MinusCircleIcon,

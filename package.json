@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sb:types": "supabase gen types typescript --local > \"types/supabase.types.ts\" && cd types && powershell -ExecutionPolicy Bypass -File .\\mod_types.ps1"
+    "sb:types": "supabase gen types typescript --local > \"types/supabase.types.ts\" && cd types && powershell -ExecutionPolicy Bypass -File .\\mod_types.ps1",
+    "sb:migrate": "supabase db diff --schema public --schema storage --schema auth -f"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",

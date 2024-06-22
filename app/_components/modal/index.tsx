@@ -20,7 +20,7 @@ export type ModalRef = {
   closeModal: () => void;
 };
 
-const Container = React.forwardRef<ModalRef, ModalProps>(
+const Modal = React.forwardRef<ModalRef, ModalProps>(
   ({ children, title, className = 'max-w-sm', classNames }, ref) => {
     const [open, setOpen] = React.useState(false);
 
@@ -68,7 +68,6 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
                 >
                   {title ? (
                     <Header title={title} onClose={() => {
-                      console.log('clicked');
                       setOpen(false)}} />
                   ) : null}
                   <div className={clsx('p-4 text-gray-600', classNames?.body)}>
@@ -84,9 +83,6 @@ const Container = React.forwardRef<ModalRef, ModalProps>(
   }
 );
 
-const Modal = Object.assign(Container);
-
-Container.displayName = 'Container';
 Modal.displayName = 'Modal';
 
 export default Modal;
