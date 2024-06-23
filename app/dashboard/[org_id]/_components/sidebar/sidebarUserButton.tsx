@@ -14,7 +14,7 @@ import { GrOrganization } from 'react-icons/gr';
 import { IoMdHelpCircle } from 'react-icons/io';
 import { IoLogOut } from 'react-icons/io5';
 import { MdAdd, MdCheck } from 'react-icons/md';
-import { createOrg, switchOrg } from '../../_provider/org.actions';
+import { createOrg } from '../../_provider/org.actions';
 import { useUser } from '../../_provider/useUser';
 
 // Component for the top button and popover
@@ -59,7 +59,7 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
       try {
         const org_plan = org.find((o) => o.org_id === org_id)?.org_plan;
 
-        if (org_plan === 'Free') {
+        if (!org_plan || org_plan === 'Free') {
           throw new Error(
             'Multiple orgs are not allowed in free plan. Please upgrade to create additional organizations'
           );
@@ -132,10 +132,7 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
                   <div className="flex w-48 flex-1 flex-col overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black ring-opacity-5">
                     <Button
                       key={'new-org'}
-                      onClick={() =>
-                        user &&
-                        createOrg({ user }).then(() => handleRefreshSession())
-                      }
+                      onClick={() => handleCreateOrg()}
                       variant="outline"
                       className={clsx(
                         'flex w-full items-center justify-between gap-x-1 truncate border-0 !py-2.5 no-underline shadow-none'
@@ -150,7 +147,6 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
                       <Button
                         key={o.org_id}
                         onClick={() => {
-                          switchOrg({ org_id: o.org_id });
                           router.push(path.replace(org_id, o.org_id));
                         }}
                         variant="outline"

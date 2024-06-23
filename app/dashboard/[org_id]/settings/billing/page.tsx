@@ -10,7 +10,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import useOrg from '../../_provider/useOrg';
-import { useUser } from '../../_provider/useUser';
 import { stripeAction } from '../_actions/stripe.actions';
 import { features, pricingPlans } from './constants';
 
@@ -20,25 +19,8 @@ export default function BillingPage() {
   const router = useRouter();
 
   const { org } = useOrg();
-  const { user } = useUser();
 
   const current_plan = org.org_plan ?? 'Free';
-
-  const role = org.members.find((m) => m.email == user?.email)?.role;
-
-  if (!role || role == 'member') {
-    return (
-      <div className="flex h-screen w-full flex-1 flex-col items-center justify-center px-4 gap-y-4 text-center">
-        <h1 className="text-6xl font-black text-gray-200">Restricted</h1>
-
-        <p className="">Settings are restricted to admins only!</p>
-
-        <Button variant="solid" size='md' onClick={() => router.back()}>
-          Go back
-        </Button>
-      </div>
-    );
-  }
 
   const upgradePlan = async () => {
     const stripePromise = new Promise<string>(async (resolve, reject) => {

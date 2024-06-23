@@ -152,7 +152,7 @@ export const ViewAnalyticsModal: React.FC<ViewAnalyticsModalProps> = ({
           </span>
           <div className="border-gray-200 ml-4 flex-grow border-t"></div>
         </div>
-        <TimeSpentByPageChart chart_data={chart_data} signed_url={signed_url} />
+        <TimeSpentByPageChart chart_data={chart_data} signed_url={signed_url} width={900} />
       </div>
     </Modal>
   );

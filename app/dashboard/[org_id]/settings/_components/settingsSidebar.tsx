@@ -1,5 +1,3 @@
-'use client';
-
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';

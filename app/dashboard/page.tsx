@@ -1,10 +1,16 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import OrgThumb from '../_components/orgThumb';
-import { getOrg } from './[org_id]/_provider/org.actions';
+import { createOrg, getOrg } from './[org_id]/_provider/org.actions';
 
 export default async function Page() {
-  const { org } = await getOrg();
+  const { org, user } = await getOrg();
 
+  if (org.length == 0) {
+    const new_org = await createOrg({ user: user });
+
+    redirect(`/dashboard/${new_org.org_id}/documents`);
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-screen-xl flex-1 flex-col gap-y-8">
@@ -20,7 +26,7 @@ export default async function Page() {
           <OrgThumb org={o} className="h-12 w-12 rounded-md" />
           <div className="flex flex-col gap-y-1">
             <h2 className="text-lg font-semibold">{o.org_name}</h2>
-            <p className="text-gray-400 text-xs">{o.org_id}</p>
+            <p className="text-xs text-gray-400">{o.org_id}</p>
           </div>
         </Link>
       ))}

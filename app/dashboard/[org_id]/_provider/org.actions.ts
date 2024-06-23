@@ -37,10 +37,6 @@ export async function getOrg() {
   }
 }
 
-export async function switchOrg({ org_id }: { org_id: string }) {
-  cookies().set('hashdocs_active_org_id', org_id);
-}
-
 export async function createOrg({ user }: { user: User }) {
   const supabaseAdmin = supabaseAdminClient();
   const supabase = createServerComponentClient({ cookies: cookies() });
@@ -91,8 +87,6 @@ export async function createOrg({ user }: { user: User }) {
   if (org_error || !new_org_data || !new_org_data.length) {
     throw org_error ?? new Error(`Error fetching org - ${org_error}`);
   }
-
-  cookies().set('hashdocs_active_org_id', new_org_data[0].org_id);
 
   await supabase.auth.refreshSession();
 
