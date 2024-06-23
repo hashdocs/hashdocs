@@ -12,12 +12,13 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { DiGoogleDrive } from 'react-icons/di';
 import { FiHardDrive } from 'react-icons/fi';
 import { GrDocumentUpdate } from 'react-icons/gr';
 import { IoAnalytics, IoEye, IoLink } from 'react-icons/io5';
+import { LuRefreshCw } from "react-icons/lu";
 import {
   MdAddLink,
   MdDelete,
@@ -25,7 +26,6 @@ import {
   MdEditDocument,
   MdImage,
   MdOutlineCalendarMonth,
-  MdRefresh,
 } from 'react-icons/md';
 import { TbVersions } from 'react-icons/tb';
 import useDocument from '../_provider/useDocument';
@@ -62,15 +62,26 @@ export const DocumentRefresh: React.FC<{ document: DocumentType }> = ({
 }) => {
   const router = useRouter();
 
+  const [isRefreshing, startRefresh] = useTransition();
+
+  const handleRefresh = () => {
+    startRefresh(async () => {
+      router.refresh();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    });
+  };
+
   return (
     <Tooltip content="Refresh document">
       <Button
         key={`${document.document_id}-refresh`}
         variant="icon"
         size="sm"
-        onClick={() => router.refresh()}
+        className="hidden md:flex"
+        onClick={handleRefresh}
+        disabled={isRefreshing}
       >
-        <MdRefresh className={`h-5 w-5`} />
+        <LuRefreshCw className={clsx(`h-5 w-5`, isRefreshing && 'animate-spin')} />
       </Button>
     </Tooltip>
   );
@@ -355,7 +366,6 @@ export const DocumentName: React.FC<{
   const router = useRouter();
   const { document_id } = useParams();
 
-
   // Optimistically set name after change
   const handleNameBlur = async () => {
     setIsEditing(false);
@@ -407,7 +417,11 @@ export const DocumentName: React.FC<{
     />
   ) : (
     <Link
-      href={!!document_id ? '' : `/dashboard/${document.org_id}/documents/${document.document_id}`}
+      href={
+        !!document_id
+          ? ''
+          : `/dashboard/${document.org_id}/documents/${document.document_id}`
+      }
       className={clsx(
         'group flex items-center gap-x-1 truncate',
         !!document_id ? 'cursor-text' : 'cursor-pointer'

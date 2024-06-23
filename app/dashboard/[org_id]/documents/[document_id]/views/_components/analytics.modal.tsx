@@ -2,58 +2,19 @@ import Button from '@/app/_components/button';
 import Modal, { ModalRef } from '@/app/_components/modal';
 import { formatDate, formatTime } from '@/app/_utils/dateFormat';
 import { DocumentDetailType } from '@/types';
-import dynamic from 'next/dynamic';
 import { useRef } from 'react';
 import { MdBarChart } from 'react-icons/md';
 import {
-  Bar,
-  BarChart,
   Cell,
   Pie,
-  PieChart,
-  Tooltip,
-  XAxis,
-  YAxis,
+  PieChart
 } from 'recharts';
+import { TimeSpentByPageChart } from '../../analytics/_components/analyticsCharts';
 
 export type ViewAnalyticsModalProps = {
   modalRef: React.RefObject<ModalRef>;
   view_id: string;
   document: DocumentDetailType;
-};
-
-const ChartViewer = dynamic(() => import('./chart_viewer'), {
-  ssr: false,
-});
-
-const CustomTooltip = ({ active, payload, label, signed_url }: any) => {
-  return (
-    <div className="rounded-sm bg-white p-2">
-      {<ChartViewer signedUrl={signed_url ?? ''} page_num={label as number} />}
-    </div>
-  );
-};
-
-const CustomLabel = ({ x, y, width, height, value }: any) => {
-  const radius = 10;
-
-  const duration = parseFloat(value);
-
-  return (
-    <text
-      x={x + width / 2}
-      y={y - radius}
-      color='#111'
-      textAnchor="middle"
-      dominantBaseline="middle"
-    >
-      {duration <= 0
-        ? '-'
-        : duration < 10
-        ? duration.toFixed(1)
-        : duration.toFixed(0)}
-    </text>
-  );
 };
 
 export const ViewAnalyticsModal: React.FC<ViewAnalyticsModalProps> = ({
@@ -71,9 +32,13 @@ export const ViewAnalyticsModal: React.FC<ViewAnalyticsModalProps> = ({
 
   if (!link) return null;
 
-  const signed_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document.org_id}/${document.document_id}/${document.document_version}.pdf?token=${document.token}`;
+  const version = document.versions.find(v => v.document_version === view.document_version);
 
-  const chart_data = Array.from({ length: document.page_count }, (_, index) => {
+  if (!version) return null;
+
+  const signed_url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document.org_id}/${document.document_id}/${version.document_version}.pdf?token=${version.token}`;
+
+  const chart_data = Array.from({ length: version.page_count || 0 }, (_, index) => {
     return {
       page_num: index + 1,
       duration: (view.view_logs?.[index + 1] ?? 0) / 1000,
@@ -187,30 +152,7 @@ export const ViewAnalyticsModal: React.FC<ViewAnalyticsModalProps> = ({
           </span>
           <div className="border-gray-200 ml-4 flex-grow border-t"></div>
         </div>
-        <BarChart
-          width={800}
-          height={300}
-          data={chart_data}
-          margin={{
-            top: 5,
-            right: 5,
-            left: 5,
-            bottom: 5,
-          }}
-        >
-          <XAxis dataKey="page_num" />
-          <YAxis name="Duration" allowDecimals={false} />
-          <Tooltip
-            offset={20}
-            content={<CustomTooltip signed_url={signed_url} />}
-          />
-          <Bar
-            dataKey="duration"
-            fill="#0010FF"
-            minPointSize={1}
-            label={CustomLabel}
-          ></Bar>
-        </BarChart>
+        <TimeSpentByPageChart chart_data={chart_data} signed_url={signed_url} />
       </div>
     </Modal>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import clsx from 'clsx';
+import Image from 'next/image';
 import React from 'react';
 
 type ImageUploadProps = {
@@ -48,7 +49,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       <div className={clsx('relative', className)}>
         <div className="w-16 h-16">
           {file ? (
-            <img src={URL.createObjectURL(file)} alt={`logo`} />
+            <Image src={URL.createObjectURL(file)} width={64} height={64} alt={`logo`} />
           ) : (
             fallback || <></>
           )}

@@ -3,6 +3,7 @@ import {
   DocumentName,
   DocumentNewLink,
   DocumentOptionsDropdown,
+  DocumentRefresh,
   DocumentSourceText,
   DocumentSwitch,
   DocumentThumbnail,
@@ -39,6 +40,7 @@ export default function DocumentHeader({
       <div className="flex flex-row items-center justify-start gap-x-1">
         <DocumentSwitch document={document} />
         <DocumentNewLink document={document} />
+        <DocumentRefresh document={document} />
         <DocumentOptionsDropdown document={document} />
       </div>
     </div>

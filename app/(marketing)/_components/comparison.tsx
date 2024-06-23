@@ -3,18 +3,16 @@ import {
   CheckBadgeIcon,
   CodeBracketSquareIcon,
   CreditCardIcon,
-  CubeTransparentIcon,
-  LockClosedIcon,
+  LockClosedIcon
 } from "@heroicons/react/24/outline";
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   XCircleIcon,
 } from "@heroicons/react/24/solid";
-import { CheckCheckIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import Image from "next/image";
 
 interface ComparisonProps {
   icon: React.ForwardRefExoticComponent<any>;
@@ -165,7 +163,7 @@ const Comparison = () => {
             <div className="flex flex-row items-center">
               <div className="relative h-10 w-8 scale-75 rounded-md">
                 <Image
-                  src={"/hashdocs_gradient.svg"}
+                  src={"/assets/hashdocs_gradient.svg"}
                   fill={true}
                   alt={"Hashdocs"}
                 />
