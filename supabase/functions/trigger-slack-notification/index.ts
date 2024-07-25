@@ -1,4 +1,3 @@
-import { PublicSchema, Tables } from '../../../types/supabase.types.ts';
 import { InsertPayload } from '../_shared/supabaseClient.ts';
 
 async function slack_notification(data: InsertPayload) {
@@ -10,27 +9,27 @@ async function slack_notification(data: InsertPayload) {
   switch (table) {
     case 'tbl_documents':
       table_val = 'Document';
-      record_val = (record as Tables<'tbl_documents'>).document_name;
+      record_val = (record as any).document_name;
       break;
 
     case 'tbl_org':
       table_val = 'Org';
-      record_val = (record as Tables<'tbl_org'>).org_name;
+      record_val = (record as any).org_name;
       break;
 
     case 'tbl_org_members':
       table_val = 'Org Member';
-      record_val = (record as Tables<'tbl_org_members'>).email;
+      record_val = (record as any).email;
       break;
 
     case 'tbl_links':
       table_val = 'Link';
-      record_val = (record as Tables<'tbl_links'>).link_name;
+      record_val = (record as any).link_name;
       break;
 
     case 'tbl_views':
       table_val = 'View';
-      record_val = (record as Tables<'tbl_views'>).viewer;
+      record_val = (record as any).viewer;
       break;
 
     default:
@@ -75,7 +74,7 @@ async function slack_notification(data: InsertPayload) {
 Deno.serve(async (req) => {
   const data = await req.json();
 
-  switch (data.table as keyof PublicSchema['Tables']) {
+  switch (data.table) {
     case 'tbl_org':
     case 'tbl_documents':
     case 'tbl_org_members':
