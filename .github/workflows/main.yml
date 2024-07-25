@@ -24,7 +24,6 @@ jobs:
 
       - name: Deploy functions and migrations
         run: |
-            cd packages/supabase
             supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
             supabase db push           
             supabase functions deploy --legacy-bundle --no-verify-jwt
