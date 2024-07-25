@@ -1,6 +1,5 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { createMiddlewareClient } from './app/_utils/supabase';
 
 export const config = {
   matcher: ['/login', '/dashboard'],
@@ -15,56 +14,57 @@ export async function middleware(req: NextRequest) {
   // Handle main routes
   switch (url.at(1)) {
     case '':
-    case 'login': {
-      const supabase = createMiddlewareClient(req, res);
-
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.expires_in) {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-      }
-      break;
-    }
-
-    // case 'dashboard': {
+    // case 'login': {
     //   const supabase = createMiddlewareClient(req, res);
 
     //   const {
     //     data: { session },
     //   } = await supabase.auth.getSession();
-
-    //   if (!session?.access_token) {
-    //     return NextResponse.redirect(new URL('/login', req.url));
+    //   if (session?.expires_in) {
+    //     return NextResponse.redirect(new URL('/dashboard', req.url));
     //   }
-
-    //   if (url.length == 2) {
-    //     const {
-    //       data: { session },
-    //     } = await supabase.auth.getSession();
-
-    //     if (!session?.access_token) {
-    //       return NextResponse.redirect(new URL('/login', req.url));
-    //     }
-
-    //     const parsed_token = JSON.parse(
-    //       Buffer.from(session.access_token.split('.')[1], 'base64').toString()
-    //     );
-
-    //     if (parsed_token.app_metadata['org_ids'].length === 1) {
-    //       return NextResponse.redirect(
-    //         new URL(
-    //           `/dashboard/${parsed_token.app_metadata['org_ids'].at(
-    //             0
-    //           )}/documents`,
-    //           req.url
-    //         )
-    //       );
-    //     }
-    //   }
-
     //   break;
     // }
+
+    case 'dashboard': {
+      // const supabase = createMiddlewareClient(req, res);
+
+      // const {
+      //   data: { session },
+      // } = await supabase.auth.getSession();
+
+      // if (!session?.access_token) {
+      //   await supabase.auth.signOut();
+      //   return NextResponse.redirect(new URL('/login', req.url));
+      // }
+
+      // if (url.length == 2) {
+      //   const {
+      //     data: { session },
+      //   } = await supabase.auth.getSession();
+
+      //   if (!session?.access_token) {
+      //     return NextResponse.redirect(new URL('/login', req.url));
+      //   }
+
+      //   const parsed_token = JSON.parse(
+      //     Buffer.from(session.access_token.split('.')[1], 'base64').toString()
+      //   );
+
+      //   if (parsed_token.app_metadata['org_ids'].length === 1) {
+      //     return NextResponse.redirect(
+      //       new URL(
+      //         `/dashboard/${parsed_token.app_metadata['org_ids'].at(
+      //           0
+      //         )}/documents`,
+      //         req.url
+      //       )
+      //     );
+      //   }
+      // }
+
+      break;
+    }
 
     default:
       break;

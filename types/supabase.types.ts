@@ -454,6 +454,12 @@ export type Database = {
         };
         Returns: Json;
       };
+      create_org: {
+        Args: {
+          new_user_email: string;
+        };
+        Returns: string;
+      };
       custom_access_token_hook: {
         Args: {
           event: Json;

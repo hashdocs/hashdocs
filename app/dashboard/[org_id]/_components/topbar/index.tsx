@@ -5,7 +5,7 @@ import { FaGithub } from 'react-icons/fa6';
 import { IoHelpCircle } from 'react-icons/io5';
 import { PathSplit } from './pathSplit';
 
-export default async function TopBar() {
+export default function TopBar() {
   return (
     <div
       className={clsx(

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import SidebarNav from './sidebarNav';
 import { SidebarUserButton } from './sidebarUserButton';
 
-export default async function MainSidebar() {
+export default function MainSidebar() {
   // const [isOpen, setIsOpen] = useState(true);
 
   return (

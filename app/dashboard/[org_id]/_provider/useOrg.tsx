@@ -1,5 +1,4 @@
 'use client';
-import { createClientComponentClient } from '@/app/_utils/supabase';
 import { OrgType } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -23,26 +22,29 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { handleLogout, handleRefreshSession } = useUser();
 
-  // LOAD ORGS
-
-  useEffect(
-    () => {
-      revalidateOrg();
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  useEffect(() => {
+    revalidateOrg();
+  }, []);
 
   const org = useMemo(
     () => orgData?.find((o) => o.org_id == params.org_id),
     [orgData, params]
   );
 
-  // CREATE ORG
+  // REDIRECT
+
+  useEffect(() => {
+    if (orgData && params.org_id && !org) {
+      router.push(`/dashboard/${orgData[0].org_id}/documents`);
+    }
+
+    if (orgData && orgData.length == 1) {
+      router.push(`/dashboard/${orgData[0].org_id}/documents`);
+    }
+  }, [orgData, router, params.org_id, org]);
 
   const handleCreateOrg = async (with_toast = true) => {
     const createOrgPromise = new Promise(async (resolve, reject) => {
-      const supabase = createClientComponentClient();
       try {
         if (
           orgData &&
@@ -54,16 +56,9 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
           );
         }
 
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (!user) {
-          throw new Error('User not found');
-        }
-
-        const new_org = await createOrg({ user });
-        revalidateOrg();
+        const new_org = await createOrg();
+        await handleRefreshSession();
+        await revalidateOrg();
         resolve(new_org);
       } catch (error) {
         reject(error);
@@ -82,17 +77,7 @@ export const OrgProvider = ({ children }: { children: React.ReactNode }) => {
   const revalidateOrg = async () => {
     await handleRefreshSession();
     let _org = await getOrg();
-
-    if (_org.length === 0) {
-      await handleCreateOrg(false);
-      _org = await getOrg();
-    }
-
     setOrgData(_org);
-
-    if (_org.length == 1) {
-      router.push(`/dashboard/${_org[0].org_id}/documents`);
-    }
   };
 
   const value = useMemo(
