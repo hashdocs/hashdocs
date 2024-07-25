@@ -38,30 +38,30 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/login', req.url));
       }
 
-      // if (url.length == 2) {
-      //   const {
-      //     data: { session },
-      //   } = await supabase.auth.refreshSession();
+      if (url.length == 2) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      //   if (!session?.access_token) {
-      //     return NextResponse.redirect(new URL('/login', req.url));
-      //   }
+        if (!session?.access_token) {
+          return NextResponse.redirect(new URL('/login', req.url));
+        }
 
-      //   const parsed_token = JSON.parse(
-      //     Buffer.from(session.access_token.split('.')[1], 'base64').toString()
-      //   );
+        const parsed_token = JSON.parse(
+          Buffer.from(session.access_token.split('.')[1], 'base64').toString()
+        );
 
-      //   if (parsed_token.app_metadata['org_ids'].length === 1) {
-      //     return NextResponse.redirect(
-      //       new URL(
-      //         `/dashboard/${parsed_token.app_metadata['org_ids'].at(
-      //           0
-      //         )}/documents`,
-      //         req.url
-      //       )
-      //     );
-      //   }
-      // }
+        if (parsed_token.app_metadata['org_ids'].length === 1) {
+          return NextResponse.redirect(
+            new URL(
+              `/dashboard/${parsed_token.app_metadata['org_ids'].at(
+                0
+              )}/documents`,
+              req.url
+            )
+          );
+        }
+      }
 
       break;
     }
