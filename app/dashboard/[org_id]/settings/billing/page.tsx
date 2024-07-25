@@ -20,7 +20,7 @@ export default function BillingPage() {
 
   const { org } = useOrg();
 
-  const current_plan = org.org_plan ?? 'Free';
+  const current_plan = org?.org_plan ?? 'Free';
 
   const upgradePlan = async () => {
     const stripePromise = new Promise<string>(async (resolve, reject) => {
@@ -164,7 +164,7 @@ export default function BillingPage() {
               Number of users
             </div>
             <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-gray-200 bg-gray-50 p-2 font-semibold shadow-inner">
-              {org.members.length}
+              {org?.members.length}
             </div>
           </div>
           <div className="flex w-full flex-1 flex-row items-center">
@@ -172,7 +172,7 @@ export default function BillingPage() {
               Next billing date
             </div>
             <div className="flex h-10 flex-1 basis-1/2 rounded-md border border-gray-200 bg-gray-50 p-2 font-semibold shadow-inner">
-              {org.stripe_metadata?.billing_cycle_end
+              {org?.stripe_metadata?.billing_cycle_end
                 ? formatDate(org.stripe_metadata.billing_cycle_end, 'MMM DD')
                 : '-'}
             </div>

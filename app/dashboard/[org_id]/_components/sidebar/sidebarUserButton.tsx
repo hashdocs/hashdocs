@@ -2,25 +2,26 @@
 
 import Button from '@/app/_components/button';
 import OrgThumb from '@/app/_components/orgThumb';
-import { OrgType } from '@/types';
 import { Popover } from '@headlessui/react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { useState } from 'react';
 import { BiExpandVertical, BiUserPlus } from 'react-icons/bi';
 import { FaCircleUser } from 'react-icons/fa6';
 import { GrOrganization } from 'react-icons/gr';
 import { IoMdHelpCircle } from 'react-icons/io';
 import { IoLogOut } from 'react-icons/io5';
 import { MdAdd, MdCheck } from 'react-icons/md';
-import { createOrg } from '../../_provider/org.actions';
+import useOrg from '../../_provider/useOrg';
 import { useUser } from '../../_provider/useUser';
 
 // Component for the top button and popover
-export function SidebarUserButton({ org }: { org: OrgType[] }) {
+export function SidebarUserButton() {
   const router = useRouter();
   const { user, handleLogout, handleRefreshSession } = useUser();
+  const { org, orgData, handleCreateOrg } = useOrg();
+  const [imageError, setImageError] = useState(false);
 
   const { org_id } = useParams() as { org_id: string };
   const path = usePathname();
@@ -54,36 +55,6 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
     },
   ];
 
-  const handleCreateOrg = async () => {
-    const createOrgPromise = new Promise(async (resolve, reject) => {
-      try {
-        const org_plan = org.find((o) => o.org_id === org_id)?.org_plan;
-
-        if (!org_plan || org_plan === 'Free') {
-          throw new Error(
-            'Multiple orgs are not allowed in free plan. Please upgrade to create additional organizations'
-          );
-        }
-
-        if (!user) {
-          throw new Error('User not found');
-        }
-
-        const new_org = await createOrg({ user });
-        await handleRefreshSession();
-        resolve(new_org);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    await toast.promise(createOrgPromise, {
-      loading: 'Creating org...',
-      success: 'Org created successfully',
-      error: (error) => error?.message ?? 'Failed to create org',
-    });
-  };
-
   return (
     <>
       <div className="flex h-14 items-center justify-between">
@@ -97,17 +68,18 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
               >
                 <>
                   <div className={clsx('flex items-center gap-x-2.5 p-0.5')}>
-                    {user ? (
+                    {(user && !imageError) ? (
                       <Image
                         className="h-7 w-7 shrink-0 rounded-full  "
                         src={user.user_metadata.avatar_url}
                         alt={user.id}
                         height={32}
                         width={32}
+                        onError={() => setImageError(true)}
                       />
                     ) : (
                       <FaCircleUser
-                        className="h-7 w-7 rounded-full text-gray-400"
+                        className="h-7 w-7 rounded-full text-gray-600"
                         aria-hidden="true"
                       />
                     )}
@@ -143,7 +115,7 @@ export function SidebarUserButton({ org }: { org: OrgType[] }) {
                         <p className={clsx('text-gray-500')}>{`Create org`}</p>
                       </div>
                     </Button>
-                    {org.map((o) => (
+                    {orgData?.map((o) => (
                       <Button
                         key={o.org_id}
                         onClick={() => {

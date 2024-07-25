@@ -16,7 +16,7 @@ export default function SettingsLayout({
   const { user } = useUser();
   const router = useRouter();
 
-  const role = org.members.find((m) => m.email == user?.email)?.role;
+  const role = org?.members.find((m) => m.email == user?.email)?.role;
 
   if (!role || role == 'member') {
     return (

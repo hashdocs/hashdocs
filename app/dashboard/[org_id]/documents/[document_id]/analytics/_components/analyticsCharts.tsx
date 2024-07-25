@@ -198,7 +198,7 @@ export const TimeSpentByPageChart: React.FC<{
   signed_url: string;
   width?: number;
   height?: number;
-}> = ({ chart_data, signed_url, width=720, height=300 }) => {
+}> = ({ chart_data, signed_url, width = 720, height = 300 }) => {
   const CustomTooltip = ({ active, payload, label, signed_url }: any) => {
     return (
       <div className="rounded-sm bg-white p-2">
@@ -275,7 +275,7 @@ export const AverageTimeSpentByPageChart: React.FC<{
   const signed_url = useMemo(
     () =>
       `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/sign/documents/${document.org_id}/${document.document_id}/${version?.document_version}.pdf?token=${version?.token}`,
-    [version]
+    [version, document]
   );
 
   const views = useMemo(
@@ -283,28 +283,29 @@ export const AverageTimeSpentByPageChart: React.FC<{
     [selectedVersion, document.views]
   );
 
-  const chart_data = useMemo(() => Array.from(
-    { length: version?.page_count || 0 },
-    (_, index) => {
-      let totalDuration = 0;
-      let count = 0;
+  const chart_data = useMemo(
+    () =>
+      Array.from({ length: version?.page_count || 0 }, (_, index) => {
+        let totalDuration = 0;
+        let count = 0;
 
-      views.forEach((view) => {
-        const duration = view.view_logs?.[index + 1];
-        if (duration != null) {
-          totalDuration += duration / 1000;
-          count++;
-        }
-      });
+        views.forEach((view) => {
+          const duration = view.view_logs?.[index + 1];
+          if (duration != null) {
+            totalDuration += duration / 1000;
+            count++;
+          }
+        });
 
-      const averageDuration = count > 0 ? totalDuration / count : 0;
+        const averageDuration = count > 0 ? totalDuration / count : 0;
 
-      return {
-        page_num: index + 1,
-        duration: averageDuration,
-      };
-    }
-  ), [version]);
+        return {
+          page_num: index + 1,
+          duration: averageDuration,
+        };
+      }),
+    [version, views]
+  );
 
   if (!version) return null;
 
@@ -333,7 +334,11 @@ export const AverageTimeSpentByPageChart: React.FC<{
           </div>
         </Dropdown>
       </div>
-      <TimeSpentByPageChart chart_data={chart_data} signed_url={signed_url} width={1120} />
+      <TimeSpentByPageChart
+        chart_data={chart_data}
+        signed_url={signed_url}
+        width={1120}
+      />
     </div>
   );
 };

@@ -50,6 +50,11 @@ const InviteUserFormModal: React.FC<{
     const inviteUsersPromise = new Promise<Tables<'tbl_org_members'>>(
       async (resolve, reject) => {
         try {
+
+          if (!org) {
+            throw new Error('Organization not found');
+          }
+
           const new_member = await inviteTeam({
             email: newUser.email.toLowerCase(),
             role: newUser.role,
@@ -186,7 +191,7 @@ export const InviteTeamButton: React.FC = () => {
       <Button
         size="sm"
         onClick={() => {
-          if (org.org_plan === 'Free') {
+          if (!org || org.org_plan === 'Free') {
             toast.error('Please upgrade your plan to invite your team');
             return;
           }

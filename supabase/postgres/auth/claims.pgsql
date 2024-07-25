@@ -2,6 +2,7 @@
 create or replace function public.custom_access_token_hook(event jsonb)
 returns jsonb
 language plpgsql
+security definer
 stable
 as $$
   declare
@@ -9,7 +10,7 @@ as $$
     org_ids uuid[];
   begin
     -- Fetch the user role in the user_roles table
-    select COALESCE(array_agg(org_id), '{}') INTO org_ids from public.tbl_org_members where user_id = (event->>'user_id')::uuid;
+    select COALESCE(array_agg(org_id), '{}') INTO org_ids from public.tbl_org_members where email = (SELECT email FROM auth.users WHERE id = (event->>'user_id')::uuid);
 
     claims := event->'claims';
 

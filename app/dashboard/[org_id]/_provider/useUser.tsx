@@ -51,6 +51,8 @@ export function useUser() {
         router.refresh();
       }
     });
+
+    await refreshPromise.then(() => {}).catch(() => {});
   }, [router, supabase.auth]);
 
   //! UseEffect for auth realtime

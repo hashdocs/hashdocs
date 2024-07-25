@@ -43,7 +43,10 @@ export const UploadDocumentModal: React.FC<UploadDocumentModalProps> = ({
   const handleBeforeUpload = (files: {
     [key: string]: UppyFile<Record<string, unknown>, Record<string, unknown>>;
   }) => {
-    if (Object.keys(files).length > 1) return false;
+    if (Object.keys(files).length > 1) {
+      toast.error('Please upload only one file at a time');
+      return false;
+    }
 
     let file = files[Object.keys(files)[0]];
 
