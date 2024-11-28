@@ -46,7 +46,7 @@
     "jsonwebtoken": "^9.0.0",
     "lucide-react": "^0.252.0",
     "next": "^14.2.4",
-    "pdfjs-dist": "^3.7.107",
+    "pdfjs-dist": "^4.2.67",
     "postcss": "^8.4.24",
     "react": "^18.3.1",
     "react-datepicker": "^4.14.1",
